@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>As OS // Terminal Interface v8.0</title>
+<title>As OS // Terminal Interface v9.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=VT323&display=swap" rel="stylesheet">
@@ -18,6 +18,16 @@
   body.theme-amber { --bg: #0a0600; --bg-panel: #120800; --bg-input: #0a0500; --fg: #ffb000; --fg-dim: #7a5a00; --fg-bright: #ffd980; --fg-muted: #8a6a20; --accent: #ff8800; --warn: #ffe060; --err: #ff4444; --magenta: #ff66dd; --border: rgba(255, 176, 0, 0.15); --border-bright: rgba(255, 176, 0, 0.4); --glow: 0 0 8px rgba(255, 176, 0, 0.5); }
   body.theme-cyan { --bg: #030608; --bg-panel: #060f14; --bg-input: #040a0e; --fg: #00d4ff; --fg-dim: #1a6680; --fg-bright: #80e8ff; --fg-muted: #3a7a90; --accent: #00ffcc; --warn: #ffcc00; --err: #ff3366; --magenta: #ff44aa; --border: rgba(0, 212, 255, 0.15); --border-bright: rgba(0, 212, 255, 0.4); --glow: 0 0 8px rgba(0, 212, 255, 0.5); }
   body.theme-matrix { --bg: #000300; --bg-panel: #001500; --bg-input: #000a00; --fg: #00ff41; --fg-dim: #1a7a2a; --fg-bright: #80ff80; --fg-muted: #3a8a4a; --accent: #00cc33; --warn: #ffcc00; --err: #ff3333; --magenta: #ff44aa; --border: rgba(0, 255, 65, 0.15); --border-bright: rgba(0, 255, 65, 0.4); --glow: 0 0 8px rgba(0, 255, 65, 0.5); }
+  
+  /* CLI Mode Theme Overlay */
+  body.cli-mode {
+    --bg: #050810; --bg-panel: #0a1020; --bg-input: #080c18;
+    --fg: #d4d4d4; --fg-dim: #5a5a5a; --fg-bright: #ffffff; --fg-muted: #808080;
+    --accent: #569cd6; --warn: #dcdcaa; --err: #f44747; --magenta: #c586c0;
+    --border: rgba(86, 156, 214, 0.2); --border-bright: rgba(86, 156, 214, 0.5);
+    --glow: 0 0 8px rgba(86, 156, 214, 0.3);
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; width: 100%; background: var(--bg); color: var(--fg); font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 14px; line-height: 1.65; overflow: hidden; -webkit-font-smoothing: antialiased; }
   body { background: radial-gradient(ellipse 100% 80% at 50% 50%, color-mix(in srgb, var(--bg-panel) 80%, var(--bg)) 0%, var(--bg) 70%, #000 100%); transition: background 0.4s; }
@@ -68,10 +78,15 @@
   .tool-card h3 { color: var(--fg-bright); margin-bottom: 6px; font-size: 16px; }
   .tool-card p { color: var(--fg-muted); font-size: 12px; margin-bottom: 8px; }
 
-  .btn { display: inline-block; background: var(--fg); color: var(--bg); padding: 6px 12px; text-decoration: none; font-weight: 700; font-size: 12px; border-radius: 2px; margin-top: 8px; margin-right: 8px; transition: transform 0.1s; }
+  .file-card { border: 1px solid var(--accent); padding: 12px; margin: 10px 0; background: var(--bg-panel); border-radius: 4px; }
+  .file-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 4px; }
+  .file-card-header span { color: var(--accent); font-weight: 700; font-size: 13px; }
+
+  .btn { display: inline-block; background: var(--fg); color: var(--bg); padding: 6px 12px; text-decoration: none; font-weight: 700; font-size: 12px; border-radius: 2px; margin-top: 8px; margin-right: 8px; transition: transform 0.1s; cursor: pointer; border: none; }
   .btn:hover { transform: translateY(-1px); box-shadow: 0 0 10px var(--fg); }
   .btn.secondary { background: transparent; border: 1px solid var(--fg); color: var(--fg); }
   .btn.download { background: var(--accent); color: #000; }
+  .btn.danger { background: var(--err); color: #fff; }
 
   .spinner { display: inline-block; color: var(--fg); }
   .spinner::after { content: '⠋'; animation: spin 0.8s steps(8) infinite; display: inline-block; font-size: 14px; }
@@ -108,7 +123,6 @@
   strong { color: var(--fg-bright); font-weight: 700; }
   ::selection { background: var(--fg); color: var(--bg); }
 
-  /* Search UI */
   .search-container { border: 1px solid var(--border-bright); padding: 14px; margin: 10px 0; background: var(--bg-panel); border-radius: 4px; }
   .search-logo { color: var(--warn); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .search-item { padding: 8px 0; border-bottom: 1px dashed var(--border); }
@@ -127,7 +141,7 @@
 <div id="terminal">
   <header class="header">
     <div class="header-left">
-      <div class="logo">As OS</div>
+      <div class="logo" id="logoText">As OS</div>
       <div class="status-item"><span class="status-dot" id="statusDot"></span><span id="statusText">ONLINE</span></div>
       <div class="status-item"><span>MODEL:</span><span style="color: var(--fg-bright)">agnes-2.0-flash</span></div>
     </div>
@@ -143,6 +157,8 @@
     <div class="input-hint">
       <span><span class="cmd">/help</span> cmds</span>
       <span><span class="cmd">/code</span> CLI mode</span>
+      <span><span class="cmd">/gh-push</span> export</span>
+      <span><span class="cmd">/gh-pull</span> import</span>
       <span><span class="cmd">/brew</span> host html</span>
       <span><span class="cmd">/anime</span> search</span>
       <span><span class="cmd">/nasa</span> images</span>
@@ -169,6 +185,7 @@ let temperature = 0.7;
 let baseSystemPrompt = 'You are AS, an AI assistant operating in a retro terminal interface called "As OS". Be concise, technical, and helpful. You have powerful tools. If a user asks a question that is better explained visually, use `generate_visual_aid`. If they ask about space, use `search_nasa_images`. If you generate a long report or code, use `publish_to_brewpage` to give them a link.';
 let systemPrompt = baseSystemPrompt;
 let isProcessing = false;
+let messageQueue = [];
 let commandHistory = [];
 let historyIndex = -1;
 let bootDone = false;
@@ -181,6 +198,7 @@ let mailPoller = null;
 let mailSeenIds = [];
 let codeMode = false;
 let uploadedFileContent = null;
+let githubToken = null;
 
 const AVAILABLE_TOOLS = [
   { type: "function", function: { name: "get_current_datetime", description: "Get the current exact date and time.", parameters: { type: "object", properties: {} } } },
@@ -196,6 +214,9 @@ const AVAILABLE_TOOLS = [
 const COMMANDS_LIST = [
   { cmd: '/help', desc: 'Show all commands' },
   { cmd: '/code', desc: 'Enter Code Mode (CLI)' },
+  { cmd: '/exit', desc: 'Exit Code Mode / App' },
+  { cmd: '/gh-push', desc: 'Push file to GitHub', args: [{ name: 'repo', desc: 'owner/repo' }, { name: 'path', desc: 'file path' }, { name: 'token', desc: 'GitHub token' }] },
+  { cmd: '/gh-pull', desc: 'Pull file from GitHub', args: [{ name: 'repo', desc: 'owner/repo' }, { name: 'path', desc: 'file path' }, { name: 'token', desc: 'GitHub token' }] },
   { cmd: '/image', desc: 'Generate image', args: [{ name: 'prompt', desc: 'Image description' }] },
   { cmd: '/image2', desc: 'High-density image', args: [{ name: 'prompt', desc: 'Image description' }] },
   { cmd: '/video', desc: 'Generate video', args: [{ name: 'prompt', desc: 'Video description' }] },
@@ -203,7 +224,7 @@ const COMMANDS_LIST = [
   { cmd: '/think', desc: 'Chat with visible thinking', args: [{ name: 'msg', desc: 'Message' }] },
   { cmd: '/brew', desc: 'Host HTML/MD to BrewPage', args: [{ name: 'content', desc: 'HTML or MD text' }] },
   { cmd: '/upload', desc: 'Upload file or read code' },
-  { cmd: '/github', desc: 'GitHub contributions chart', args: [{ name: 'username', desc: 'GitHub username' }] },
+  { cmd: '/github', desc: 'GitHub chart', args: [{ name: 'username', desc: 'GitHub username' }] },
   { cmd: '/nasa', desc: 'Search NASA images', args: [{ name: 'query', desc: 'Search term' }] },
   { cmd: '/anime', desc: 'Anime database (MAL)', args: [{ name: 'title', desc: 'Anime title' }] },
   { cmd: '/mbti', desc: 'MBTI personality test', args: [{ name: 'code', desc: 'INTJ or "test"' }] },
@@ -223,8 +244,7 @@ const COMMANDS_LIST = [
   { cmd: '/reset', desc: 'Reset history' },
   { cmd: '/neofetch', desc: 'System info' },
   { cmd: '/reboot', desc: 'Reboot system' },
-  { cmd: '/cancel', desc: 'Cancel prompt' },
-  { cmd: '/exit', desc: 'Exit Code Mode / App' }
+  { cmd: '/cancel', desc: 'Cancel prompt' }
 ];
 
 // ═══════════════════════════════════════════════════════════
@@ -240,22 +260,33 @@ const promptSymbol = document.getElementById('promptSymbol');
 const tempText = document.getElementById('tempText');
 const acBox = document.getElementById('autocompleteBox');
 const fileInput = document.getElementById('fileInput');
+const logoText = document.getElementById('logoText');
 
 function updateClock() { const n = new Date(); clock.textContent = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`; }
 setInterval(updateClock, 1000); updateClock();
 function appendLine(text, type = '') { const l = document.createElement('div'); l.className = `line ${type}`; l.textContent = text; output.appendChild(l); output.scrollTop = output.scrollHeight; return l; }
 function appendHTML(html, className = '') { const d = document.createElement('div'); d.className = className; d.innerHTML = html; output.appendChild(d); output.scrollTop = output.scrollHeight; return d; }
+
 function setStatus(status) {
   statusDot.className = 'status-dot'; promptSymbol.classList.remove('busy', 'prompt');
-  if (status === 'busy') { statusDot.classList.add('busy'); statusText.textContent = 'PROCESSING'; promptSymbol.classList.add('busy'); input.disabled = true; }
+  // Allow typing even when busy, but change visual state
+  if (status === 'busy') { statusDot.classList.add('busy'); statusText.textContent = 'PROCESSING'; promptSymbol.classList.add('busy'); input.disabled = false; }
   else if (status === 'error') { statusDot.classList.add('error'); statusText.textContent = 'ERROR'; input.disabled = false; }
   else if (status === 'tool') { statusDot.classList.add('tool'); statusText.textContent = 'TOOL CALL'; promptSymbol.classList.add('prompt'); input.disabled = false; }
   else if (status === 'prompt') { statusDot.classList.add('busy'); statusText.textContent = 'AWAITING INPUT'; promptSymbol.classList.add('prompt'); input.disabled = false; }
   else { statusText.textContent = codeMode ? 'CODE MODE' : 'ONLINE'; input.disabled = false; }
 }
+
 function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
 function renderMarkdown(text) {
   let html = escapeHtml(text);
+  // Parse File Blocks
+  html = html.replace(/\[FILE:\s*(.+?)\]\n?```[\s\S]*?\n?([\s\S]*?)\n?```/g, (m, path, content) => {
+    const safeContent = escapeHtml(content.trim());
+    const safePath = escapeHtml(path.trim());
+    return `<div class="file-card"><div class="file-card-header"><span>📄 ${safePath}</span></div><div class="code-block" data-lang="file">${safeContent}</div><button class="btn download" onclick="downloadFile('${safePath}', \`${safeContent.replace(/`/g, '\\`')}\`)">Download</button></div>`;
+  });
   html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, l, c) => `<div class="code-block" data-lang="${l||'code'}">${c.trim()}</div>`);
   html = html.replace(/`([^`\n]+)`/g, '<span class="code-inline">$1</span>');
   html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
@@ -266,6 +297,22 @@ function renderMarkdown(text) {
   html = html.replace(/(^|[^"=])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank">$2</a>');
   html = html.replace(/^[-*] (.+)$/gm, '<div style="padding-left:16px;color:var(--fg)">• $1</div>');
   return html;
+}
+
+function downloadFile(filename, content) {
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename.split('/').pop(); a.click();
+  URL.revokeObjectURL(url);
+}
+
+// UTF-8 Base64
+function b64EncodeUnicode(str) {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) { return String.fromCharCode('0x' + p1); }));
+}
+function b64DecodeUnicode(str) {
+  return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(''));
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -341,6 +388,7 @@ function applyCommandAutocomplete(idx) { idx = idx===undefined?acState.activeInd
 function applyAssetAutocomplete(idx) { idx = idx===undefined?acState.activeIndex:idx; const item = acState.items[idx]; if(!item) return; const val = input.value; const cp = input.selectionStart; const t = val.substring(0, cp); const ins = '@' + item.id + ' '; const m = t.match(/(?:^|\s)@([^\s]*)$/); const ws = m.index + (m[0].length - m[1].length); input.value = val.substring(0, ws) + ins + val.substring(cp); input.focus(); input.setSelectionRange(ws + ins.length, ws + ins.length); hideAutocomplete(); }
 function applyOptionAutocomplete(idx) { idx = idx===undefined?acState.activeIndex:idx; const opt = acState.items[idx]; if(!opt) return; const parts = input.value.split(' '); parts[parts.length - 1] = opt + ' '; input.value = parts.join(' '); input.focus(); input.setSelectionRange(input.value.length, input.value.length); hideAutocomplete(); }
 function hideAutocomplete() { acBox.style.display = 'none'; acState.type = null; acState.items = []; }
+
 function waitForInput() { return new Promise(resolve => { setStatus('prompt'); interactiveCallback = (val) => { setStatus('online'); resolve(val); }; input.focus(); }); }
 async function runForm(title, fields) {
   appendLine(`═══ ${title} ═══`, 'info'); let responses = {};
@@ -419,8 +467,17 @@ async function executeToolCall(name, args) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// CHAT LOGIC
+// CHAT LOGIC & QUEUE
 // ═══════════════════════════════════════════════════════════
+async function processQueue() {
+  if (isProcessing || messageQueue.length === 0) return;
+  isProcessing = true;
+  const { msg, vision, think } = messageQueue.shift();
+  await chat(msg, vision, think);
+  isProcessing = false;
+  processQueue();
+}
+
 async function chat(userMessage, visionContent = null, enableThinking = false) {
   conversationHistory = conversationHistory.filter(m => m.role !== 'system');
   conversationHistory.unshift({ role: 'system', content: systemPrompt });
@@ -524,6 +581,7 @@ async function generateImageFlow(initialPrompt, model) {
     if (data.data?.[0]?.url) { const url = data.data[0].url; const id = addAsset('image', url, prompt); appendHTML(`<div class="media-frame" data-type="IMAGE" data-id="${id}"><img src="${url}"><div class="media-meta"><span>Model: ${model} | Size: ${sizeRes.size}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); appendLine(`[IMAGE] Complete.`, 'success'); }
     else throw new Error('No URL');
   } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('error'); setTimeout(() => setStatus('online'), 3000); }
+  setStatus('online');
 }
 async function generateVideoFlow(initialPrompt) {
   const { urls, text, refs } = resolveReferences(initialPrompt);
@@ -553,8 +611,59 @@ async function generateVideoFlow(initialPrompt) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// COMMANDS
+// GITHUB & COMMANDS
 // ═══════════════════════════════════════════════════════════
+async function githubPush(args) {
+  const parts = args.split(' ');
+  if (parts.length < 3) { appendLine('[ERROR] Usage: /gh-push <owner/repo> <path> <token>', 'error'); return; }
+  const repo = parts[0]; const path = parts[1]; const token = parts[2];
+  appendLine(`[GITHUB] Preparing to push to ${repo}/${path}...`, 'info');
+  
+  if (!uploadedFileContent) { appendLine('[ERROR] No file content loaded. Use /upload first.', 'error'); return; }
+  const content = uploadedFileContent;
+  uploadedFileContent = null;
+
+  const spin = appendHTML('<span class="spinner"></span> Pushing to GitHub...');
+  try {
+    // Check if file exists to get SHA
+    let sha = null;
+    const checkRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (checkRes.ok) { const checkData = await checkRes.json(); sha = checkData.sha; appendLine('[GITHUB] File exists. Updating...', 'system'); }
+
+    const body = { message: `Update ${path} via As OS`, content: b64EncodeUnicode(content) };
+    if (sha) body.sha = sha;
+
+    const pushRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const pushData = await pushRes.json();
+    spin.remove();
+    if (pushRes.ok) { appendHTML(`<div class="tool-card"><div class="info"><h3>Push Successful!</h3><p>File: ${path}</p><p>Commit: ${pushData.commit.sha.substring(0,7)}</p><a href="${pushData.content.html_url}" target="_blank" class="btn">View on GitHub</a></div></div>`); appendLine('[GITHUB] Push complete.', 'success'); }
+    else throw new Error(pushData.message || 'Push failed');
+  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
+}
+
+async function githubPull(args) {
+  const parts = args.split(' ');
+  if (parts.length < 3) { appendLine('[ERROR] Usage: /gh-pull <owner/repo> <path> <token>', 'error'); return; }
+  const repo = parts[0]; const path = parts[1]; const token = parts[2];
+  appendLine(`[GITHUB] Pulling ${repo}/${path}...`, 'info');
+  const spin = appendHTML('<span class="spinner"></span> Fetching...');
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const data = await res.json();
+    spin.remove();
+    if (res.ok) {
+      const content = b64DecodeUnicode(data.content);
+      uploadedFileContent = content;
+      appendHTML(`<div class="file-card"><div class="file-card-header"><span>📄 ${data.name}</span></div><div class="code-block" data-lang="${data.name.split('.').pop()}">${escapeHtml(content)}</div></div>`);
+      appendLine('[GITHUB] File pulled into context. You can now ask the AI about it or push it back.', 'success');
+    } else throw new Error(data.message || 'Pull failed');
+  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
+}
+
 async function brewCommand(text) {
   if (!text) { const res = await runForm('BREWPAGE HOST', [{ name: 'content', question: 'Enter HTML or Markdown content:' }]); text = res.content; }
   appendLine('[BREW] Publishing to BrewPage...', 'info'); const spin = appendHTML('<span class="spinner"></span> Uploading...');
@@ -736,17 +845,19 @@ async function shortenCommand(u) {
 async function bootSequence() {
   const logo = `\n   █████╗  ██████╗ ███████╗███████╗\n  ██╔══██╗██╔════╝ ██╔════╝██╔════╝\n  ███████║██║  ███╗███████╗█████╗  \n  ██╔══██║██║   ██║╚════██║██╔══╝  \n  ██║  ██║╚██████╔╝███████║███████╗\n  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝`;
   const lD = document.createElement('pre'); lD.className = 'ascii-art'; lD.textContent = logo; output.appendChild(lD);
-  appendLine('As OS — Terminal Interface v8.0.0', 'system'); appendLine('© Sapiens AI // Powered by Agnes neural networks', 'system'); appendLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system');
-  const bl = ['[BOOT] Initializing As OS kernel...','[ OK ] TLS handshake complete.','[ OK ] Auth token verified.','[BOOT] Loading model: agnes-2.0-flash','[BOOT] Initializing tools (Code Mode, BrewPage, NASA, Anime, DDG)...','[ OK ] All systems operational.'];
+  appendLine('As OS — Terminal Interface v9.0.0', 'system'); appendLine('© Sapiens AI // Powered by Agnes neural networks', 'system'); appendLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system');
+  const bl = ['[BOOT] Initializing As OS kernel...','[ OK ] TLS handshake complete.','[ OK ] Auth token verified.','[BOOT] Loading model: agnes-2.0-flash','[BOOT] Initializing tools (Code Mode, GitHub, BrewPage, NASA, Anime)...','[ OK ] All systems operational.'];
   for (const t of bl) { const el = document.createElement('div'); el.className = 'line ' + (t.includes('[ OK ]') ? 'success' : 'system'); output.appendChild(el); for (let i=0; i<t.length; i++) { el.textContent += t[i]; if(i%3===0) output.scrollTop = output.scrollHeight; await new Promise(r=>setTimeout(r,4)); } await new Promise(r=>setTimeout(r,30)); }
-  appendLine('Welcome to As OS v8.0. Type /help to see commands.', 'info'); appendLine('New: Code Mode (/code), Anime Search (/anime), Better DDG & NASA.', 'info'); appendLine('', 'system'); bootDone = true; input.focus();
+  appendLine('Welcome to As OS v9.0. Type /help to see commands.', 'info'); appendLine('New: GitHub Push/Pull, File Generation, Non-blocking Chat, CLI Theme.', 'info'); appendLine('', 'system'); bootDone = true; input.focus();
 }
 function showHelp() {
-  appendHTML(`<div class="line info glow">═══ COMMAND REFERENCE v8.0 ═══</div>
+  appendHTML(`<div class="line info glow">═══ COMMAND REFERENCE v9.0 ═══</div>
   <div class="help-section">▸ AI & CODE MODE</div><table class="help-table">
     <tr><td>/code</td><td>Enter Code Mode (CLI pair programmer)</td></tr>
     <tr><td>/exit</td><td>Exit Code Mode</td></tr>
     <tr><td>/upload</td><td>Read local code file into context</td></tr>
+    <tr><td>/gh-push</td><td>Push loaded file to GitHub (repo path token)</td></tr>
+    <tr><td>/gh-pull</td><td>Pull file from GitHub into context</td></tr>
     <tr><td>/think &lt;msg&gt;</td><td>Chat with visible &lt;think&gt; process</td></tr>
     <tr><td>/look &lt;ref&gt; &lt;q&gt;</td><td>Vision: analyze image (@id or URL)</td></tr>
   </table>
@@ -785,17 +896,21 @@ async function processInput(text) {
     switch (c) {
       case 'help': case 'h': case '?': showHelp(); break;
       case 'code':
-        codeMode = true; promptSymbol.textContent = 'code▸'; promptSymbol.style.color = 'var(--magenta)';
-        systemPrompt += '\nYou are now in Code Mode. Focus on software development. If the user asks to host code or a web page, use `publish_to_brewpage`. If the user uploaded a file, read its contents to help them.';
+        codeMode = true; document.body.classList.add('cli-mode'); logoText.textContent = 'As CLI';
+        promptSymbol.textContent = 'code▸'; promptSymbol.style.color = 'var(--magenta)';
+        systemPrompt += '\nYou are now in Code Mode. Focus on software development. If the user asks to host code or a web page, use `publish_to_brewpage`. If you generate code, format it as [FILE: path/to/file]```code ``` so the UI can render it as a file card.';
         appendLine('[CODE] Entered Code Mode. AI is now a pair programmer. Type /exit to leave.', 'info');
         setStatus('online'); break;
       case 'exit':
         if (codeMode) {
-          codeMode = false; promptSymbol.textContent = '▸'; promptSymbol.style.color = 'var(--accent)';
-          appendLine('[CODE] Exited Code Mode.', 'info');
+          codeMode = false; document.body.classList.remove('cli-mode'); logoText.textContent = 'As OS';
+          promptSymbol.textContent = '▸'; promptSymbol.style.color = 'var(--accent)';
+          appendLine('[CODE] Exited Code Mode. Memory retained.', 'info');
           systemPrompt = baseSystemPrompt; setStatus('online');
         } else { appendLine('[SYSTEM] Goodbye.', 'warn'); }
         break;
+      case 'gh-push': await githubPush(a); break;
+      case 'gh-pull': await githubPull(a); break;
       case 'image': case 'img': await generateImageFlow(a, 'agnes-image-2.0-flash'); break;
       case 'image2': case 'img2': await generateImageFlow(a, 'agnes-image-2.1-flash'); break;
       case 'video': case 'vid': await generateVideoFlow(a); break;
@@ -805,12 +920,11 @@ async function processInput(text) {
         if (refMatch) {
           const ref = refMatch[1]; const question = refMatch[2] || 'Describe this image.';
           const { urls } = resolveReferences(ref);
-          if (urls.length > 0) await chat(question, [{type:'text', text:question}, ...urls.map(u=>({type:'image_url', image_url:{url:u}}))]);
-          else appendLine('[ERROR] Invalid reference.', 'error');
+          if (urls.length > 0) messageQueue.push({ msg: question, vision: [{type:'text', text:question}, ...urls.map(u=>({type:'image_url', image_url:{url:u}}))] });
         } else { appendLine('[ERROR] Usage: /look <@id|url> <question>', 'error'); }
         break;
       }
-      case 'think': if(a) await chat(a, null, true); else appendLine('[ERROR] Usage: /think <msg>', 'error'); break;
+      case 'think': if(a) messageQueue.push({ msg: a, think: true }); else appendLine('[ERROR] Usage: /think <msg>', 'error'); break;
       case 'brew': await brewCommand(a); break;
       case 'upload': await uploadFile(); break;
       case 'github': case 'gh': await githubCommand(a); break;
@@ -823,20 +937,21 @@ async function processInput(text) {
       case 'read': await readCommand(a); break;
       case 'shorten': await shortenCommand(a); break;
       case 'mail': await mailCommand(a); break;
-      case 'weather': await chat(`What is the weather like in ${a}?`); break;
-      case 'ask': { if(!a) break; const sv=[...conversationHistory]; conversationHistory=[]; await chat(a); conversationHistory=sv; break; }
-      case 'joke': await chat("Tell me a short programming joke."); break;
+      case 'weather': messageQueue.push({ msg: `What is the weather like in ${a}?` }); break;
+      case 'ask': { if(!a) break; const sv=[...conversationHistory]; conversationHistory=[]; messageQueue.push({ msg: a }); break; }
+      case 'joke': messageQueue.push({ msg: "Tell me a short programming joke." }); break;
       case 'gallery': case 'assets': if(assets.length===0){appendLine('[GALLERY] No assets.','system');break;} appendLine('═══ ASSETS ═══','info'); assets.forEach(a=>appendHTML(`<div class="tool-card">${a.type==='image'?`<img src="${a.url}">`:`<video src="${a.url}"></video>`}<div class="info"><div class="id">@${a.id} [${a.type.toUpperCase()}]</div><p>${escapeHtml(a.prompt.substring(0,100))}</p></div></div>`)); break;
       case 'temp': case 'temperature': if(!a) appendLine(`[CONFIG] Temp: ${temperature.toFixed(1)}`, 'info'); else { const t=parseFloat(a); if(!isNaN(t)&&t>=0&&t<=2){temperature=t;tempText.textContent=t.toFixed(1);appendLine(`[CONFIG] Temp set to ${t}.`, 'success');} else appendLine('[ERROR] 0-2 only.', 'error'); } break;
-      case 'theme': if(!a) appendLine(`[CONFIG] Theme: ${currentTheme}`, 'info'); else { const th=['green','amber','cyan','matrix']; if(th.includes(a.toLowerCase())){document.body.className=`theme-${a.toLowerCase()}`;currentTheme=a.toLowerCase();appendLine(`[CONFIG] Theme: ${a}`, 'success');} else appendLine('[ERROR] Invalid theme.', 'error'); } break;
+      case 'theme': if(!a) appendLine(`[CONFIG] Theme: ${currentTheme}`, 'info'); else { const th=['green','amber','cyan','matrix']; if(th.includes(a.toLowerCase())){document.body.className=`theme-${a.toLowerCase()}${codeMode?' cli-mode':''}`;currentTheme=a.toLowerCase();appendLine(`[CONFIG] Theme: ${a}`, 'success');} else appendLine('[ERROR] Invalid theme.', 'error'); } break;
       case 'clear': case 'cls': output.innerHTML=''; appendLine('[SYSTEM] Cleared.', 'system'); break;
       case 'reset': conversationHistory=[]; ctxCount.textContent='0'; appendLine('[SYSTEM] History reset.', 'success'); break;
-      case 'neofetch': const up=Math.floor((Date.now()-window.performance.timeOrigin)/1000); appendHTML(`<div style="display:flex;gap:20px;"><pre class="ascii-art" style="font-size:10px;">       █████╗  ██████╗\n      ██╔══██╗██╔════╝\n      ███████║██║  ███╗\n      ██╔══██║██║   ██║\n      ██║  ██║╚██████╔╝\n      ╚═╝  ╚═╝ ╚═════╝</pre><div><div>user@as-os</div><div>─────────</div><div>OS: As OS v8.0</div><div>Uptime: ${Math.floor(up/60)}m</div><div>Assets: ${assets.length}</div></div></div>`); break;
-      case 'reboot': output.innerHTML=''; conversationHistory=[]; assets=[]; ctxCount.textContent='0'; codeMode=false; promptSymbol.textContent='▸'; systemPrompt=baseSystemPrompt; await bootSequence(); break;
+      case 'neofetch': const up=Math.floor((Date.now()-window.performance.timeOrigin)/1000); appendHTML(`<div style="display:flex;gap:20px;"><pre class="ascii-art" style="font-size:10px;">       █████╗  ██████╗\n      ██╔══██╗██╔════╝\n      ███████║██║  ███╗\n      ██╔══██║██║   ██║\n      ██║  ██║╚██████╔╝\n      ╚═╝  ╚═╝ ╚═════╝</pre><div><div>user@as-os</div><div>─────────</div><div>OS: As OS v9.0</div><div>Uptime: ${Math.floor(up/60)}m</div><div>Assets: ${assets.length}</div></div></div>`); break;
+      case 'reboot': output.innerHTML=''; conversationHistory=[]; assets=[]; ctxCount.textContent='0'; codeMode=false; document.body.classList.remove('cli-mode'); logoText.textContent='As OS'; promptSymbol.textContent='▸'; systemPrompt=baseSystemPrompt; await bootSequence(); break;
       case 'cancel': if(interactiveCallback){interactiveCallback=null;setStatus('online');appendLine('[SYSTEM] Cancelled.','warn');} else appendLine('[SYSTEM] Nothing to cancel.', 'system'); break;
       default: appendLine(`[ERROR] Unknown cmd: /${c}`, 'error');
     }
-  } else { await chat(tr); }
+  } else { messageQueue.push({ msg: tr }); }
+  processQueue();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -861,8 +976,9 @@ input.addEventListener('keydown', async (e) => {
   }
 
   if (e.key === 'Enter') {
-    e.preventDefault(); if(!bootDone || (isProcessing && !interactiveCallback)) return; const v = input.value; input.value=''; hideAutocomplete();
-    if (interactiveCallback) { appendLine(v, 'user'); const cb = interactiveCallback; interactiveCallback = null; cb(v); } else { isProcessing = true; await processInput(v); isProcessing = false; }
+    e.preventDefault(); if(!bootDone) return; const v = input.value; input.value=''; hideAutocomplete();
+    if (interactiveCallback) { appendLine(v, 'user'); const cb = interactiveCallback; interactiveCallback = null; cb(v); } 
+    else { processInput(v); }
     input.focus();
   } else if (e.key === 'ArrowUp') { e.preventDefault(); if(interactiveCallback) return; if(historyIndex>0){historyIndex--; input.value=commandHistory[historyIndex]||'';} } else if (e.key === 'ArrowDown') { e.preventDefault(); if(interactiveCallback) return; if(historyIndex<commandHistory.length-1){historyIndex++; input.value=commandHistory[historyIndex]||'';} else {historyIndex=commandHistory.length; input.value='';} }
   else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); output.innerHTML=''; }
