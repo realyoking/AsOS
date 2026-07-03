@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>As OS // Terminal Interface</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #030806; --bg-panel: #060f0a; --bg-input: #040a07;
+    --fg: #00ff88; --fg-dim: #2d7a4f; --fg-bright: #aeffd6; --fg-muted: #4a8a5c;
+    --accent: #00d4ff; --warn: #ffcc00; --err: #ff3366; --magenta: #ff44aa;
+    --border: rgba(0, 255, 136, 0.15); --border-bright: rgba(0, 255, 136, 0.4);
+    --glow: 0 0 8px rgba(0, 255, 136, 0.5);
+  }
+  body.theme-amber { --bg: #0a0600; --bg-panel: #120800; --bg-input: #0a0500; --fg: #ffb000; --fg-dim: #7a5a00; --fg-bright: #ffd980; --fg-muted: #8a6a20; --accent: #ff8800; --warn: #ffe060; --err: #ff4444; --magenta: #ff66dd; --border: rgba(255, 176, 0, 0.15); --border-bright: rgba(255, 176, 0, 0.4); --glow: 0 0 8px rgba(255, 176, 0, 0.5); }
+  body.theme-cyan { --bg: #030608; --bg-panel: #060f14; --bg-input: #040a0e; --fg: #00d4ff; --fg-dim: #1a6680; --fg-bright: #80e8ff; --fg-muted: #3a7a90; --accent: #00ffcc; --warn: #ffcc00; --err: #ff3366; --magenta: #ff44aa; --border: rgba(0, 212, 255, 0.15); --border-bright: rgba(0, 212, 255, 0.4); --glow: 0 0 8px rgba(0, 212, 255, 0.5); }
+  body.theme-matrix { --bg: #000300; --bg-panel: #001500; --bg-input: #000a00; --fg: #00ff41; --fg-dim: #1a7a2a; --fg-bright: #80ff80; --fg-muted: #3a8a4a; --accent: #00cc33; --warn: #ffcc00; --err: #ff3333; --magenta: #ff44aa; --border: rgba(0, 255, 65, 0.15); --border-bright: rgba(0, 255, 65, 0.4); --glow: 0 0 8px rgba(0, 255, 65, 0.5); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; width: 100%; background: var(--bg); color: var(--fg); font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 14px; line-height: 1.65; overflow: hidden; -webkit-font-smoothing: antialiased; }
+  body { background: radial-gradient(ellipse 100% 80% at 50% 50%, color-mix(in srgb, var(--bg-panel) 80%, var(--bg)) 0%, var(--bg) 70%, #000 100%); transition: background 0.4s; }
+  .crt-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 100; background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0) 4px); }
+  .crt-vignette { position: fixed; inset: 0; pointer-events: none; z-index: 99; background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.6) 100%); }
+  .crt-flicker { position: fixed; inset: 0; pointer-events: none; z-index: 98; background: color-mix(in srgb, var(--fg) 2%, transparent); animation: flicker 0.15s infinite; }
+  @keyframes flicker { 0% { opacity: 0.95; } 50% { opacity: 1; } 100% { opacity: 0.97; } }
+  #terminal { height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; }
+  .header { border-bottom: 1px solid var(--border); background: linear-gradient(180deg, var(--bg-panel), transparent); padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; flex-shrink: 0; backdrop-filter: blur(4px); }
+  .header-left, .header-right { display: flex; align-items: center; gap: 18px; }
+  .logo { font-family: 'VT323', monospace; font-size: 26px; color: var(--fg-bright); text-shadow: var(--glow); letter-spacing: 4px; }
+  .status-item { display: flex; align-items: center; gap: 6px; color: var(--fg-muted); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg); box-shadow: 0 0 8px var(--fg); animation: pulse 2s infinite; }
+  .status-dot.busy { background: var(--warn); box-shadow: 0 0 8px var(--warn); animation: pulse 0.5s infinite; }
+  .status-dot.error { background: var(--err); box-shadow: 0 0 8px var(--err); }
+  .status-dot.tool { background: var(--magenta); box-shadow: 0 0 8px var(--magenta); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .header-right .status-item span:last-child { color: var(--fg-bright); }
+  .output { flex: 1; overflow-y: auto; padding: 18px 22px 12px; scroll-behavior: smooth; }
+  .output::-webkit-scrollbar { width: 6px; } .output::-webkit-scrollbar-track { background: var(--bg-input); }
+  .output::-webkit-scrollbar-thumb { background: var(--fg-dim); } .output::-webkit-scrollbar-thumb:hover { background: var(--fg); }
+  .line { margin-bottom: 3px; word-wrap: break-word; white-space: pre-wrap; }
+  .line.system { color: var(--fg-muted); } .line.user { color: var(--fg-bright); }
+  .line.user::before { content: '▸ '; color: var(--accent); font-weight: 700; }
+  .line.assistant { color: var(--fg); } .assistant-prefix { color: var(--magenta); margin-right: 4px; }
+  .line.error { color: var(--err); } .line.warn { color: var(--warn); }
+  .line.info { color: var(--accent); } .line.success { color: var(--fg-bright); text-shadow: var(--glow); }
+  .line.prompt { color: var(--warn); font-weight: 700; }
+  .glow { text-shadow: 0 0 5px currentColor; }
+  .ascii-art { color: var(--fg); text-shadow: var(--glow); font-size: 11px; line-height: 1.15; white-space: pre; margin: 10px 0; }
+  .ascii-banner { color: var(--accent); text-shadow: 0 0 10px var(--accent); font-size: 14px; line-height: 1.2; white-space: pre; margin: 12px 0; font-weight: 700; }
+  .ascii-figlet { color: var(--fg-bright); text-shadow: var(--glow); font-size: 10px; line-height: 1.1; white-space: pre; margin: 8px 0; }
+  .code-block { background: color-mix(in srgb, var(--fg) 5%, transparent); border: 1px solid var(--border); border-left: 3px solid var(--fg); padding: 10px 14px; margin: 8px 0; font-size: 13px; color: var(--fg-bright); white-space: pre; overflow-x: auto; position: relative; }
+  .code-block::before { content: attr(data-lang); position: absolute; top: -1px; right: 8px; background: var(--bg-panel); padding: 0 6px; font-size: 10px; color: var(--fg-muted); border: 1px solid var(--border); border-top: none; }
+  .code-inline { background: color-mix(in srgb, var(--fg) 12%, transparent); padding: 1px 5px; border-radius: 2px; color: var(--accent); font-size: 13px; }
+  .media-frame { border: 1px solid var(--border-bright); padding: 6px; margin: 14px 0; display: inline-block; position: relative; background: var(--bg-panel); max-width: 100%; box-shadow: 0 0 20px color-mix(in srgb, var(--fg) 15%, transparent); }
+  .media-frame::before { content: '[ ' attr(data-type) ' OUTPUT // ID: @' attr(data-id) ' ]'; position: absolute; top: -10px; left: 8px; background: var(--bg); padding: 0 6px; font-size: 10px; color: var(--fg); letter-spacing: 1px; }
+  .media-frame img, .media-frame video { display: block; max-width: 100%; max-height: 460px; }
+  .media-frame img { filter: contrast(1.05) saturate(1.1); }
+  .media-meta { font-size: 11px; color: var(--fg-muted); margin-top: 6px; padding: 6px 8px; border-top: 1px dashed var(--border); word-break: break-all; }
+  .asset-card { display: flex; gap: 10px; align-items: center; margin: 6px 0; border: 1px dashed var(--border); padding: 8px; background: color-mix(in srgb, var(--bg-panel) 50%, transparent); }
+  .asset-card img { width: 60px; height: 60px; object-fit: cover; border: 1px solid var(--border-bright); }
+  .asset-card .info { flex: 1; }
+  .asset-card .id { color: var(--accent); font-weight: 700; }
+  .asset-card .prompt { font-size: 11px; color: var(--fg-muted); max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .progress-container { margin: 10px 0; }
+  .progress-bar { width: 100%; height: 18px; background: var(--bg-input); border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--fg-dim), var(--fg)); box-shadow: 0 0 10px var(--fg); transition: width 0.5s ease; position: relative; }
+  .progress-fill::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 20px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--fg-bright) 40%, transparent)); animation: progressShine 1s infinite; }
+  @keyframes progressShine { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+  .progress-text { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--fg-bright); text-shadow: 0 0 4px var(--bg); font-weight: 500; }
+  .spinner { display: inline-block; color: var(--fg); }
+  .spinner::after { content: '⠋'; animation: spin 0.8s steps(8) infinite; display: inline-block; font-size: 14px; }
+  @keyframes spin { 0% { content: '⠋'; } 12.5% { content: '⠙'; } 25% { content: '⠹'; } 37.5% { content: '⠸'; } 50% { content: '⠼'; } 62.5% { content: '⠴'; } 75% { content: '⠦'; } 87.5% { content: '⠧'; } 100% { content: '⠇'; } }
+  .thinking-dots::after { content: '●○○'; animation: thinkDots 1.2s infinite; color: var(--fg-dim); letter-spacing: 2px; }
+  @keyframes thinkDots { 0%, 33% { content: '●○○'; color: var(--fg); } 34%, 66% { content: '○●○'; color: var(--fg); } 67%, 100% { content: '○○●'; color: var(--fg); } }
+  .input-wrapper { border-top: 1px solid var(--border); background: var(--bg-input); flex-shrink: 0; }
+  .input-hint { font-size: 11px; color: var(--fg-muted); padding: 6px 22px 2px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .input-hint .cmd { color: var(--accent); } .input-hint .key { background: color-mix(in srgb, var(--fg) 12%, transparent); padding: 0 4px; border-radius: 2px; color: var(--fg); }
+  .input-area { padding: 10px 22px 14px; display: flex; align-items: center; gap: 10px; }
+  .prompt-symbol { color: var(--accent); font-weight: 700; text-shadow: 0 0 6px var(--accent); font-size: 16px; }
+  .prompt-symbol.busy { color: var(--warn); text-shadow: 0 0 6px var(--warn); }
+  .prompt-symbol.prompt { color: var(--magenta); text-shadow: 0 0 6px var(--magenta); }
+  .input-field { flex: 1; background: transparent; border: none; outline: none; color: var(--fg-bright); font-family: 'JetBrains Mono', monospace; font-size: 14px; caret-color: var(--fg); text-shadow: 0 0 2px color-mix(in srgb, var(--fg) 30%, transparent); }
+  .input-field::placeholder { color: var(--fg-dim); } .input-field:disabled { opacity: 0.5; }
+  .tw-cursor { display: inline-block; width: 7px; height: 15px; background: var(--fg); box-shadow: 0 0 6px var(--fg); animation: blink 1s steps(2) infinite; margin-left: 2px; vertical-align: text-bottom; }
+  @keyframes blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
+  .help-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  .help-table td { padding: 5px 14px; border-bottom: 1px dashed var(--border); vertical-align: top; }
+  .help-table td:first-child { color: var(--accent); white-space: nowrap; width: 1%; font-weight: 500; }
+  .help-table td:last-child { color: var(--fg-muted); }
+  .help-section { color: var(--fg-bright); font-weight: 700; margin: 12px 0 4px; padding: 2px 0; border-bottom: 1px solid var(--border); }
+  a { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; } a:hover { text-shadow: 0 0 5px var(--accent); }
+  strong { color: var(--fg-bright); font-weight: 700; }
+  .tag { display: inline-block; padding: 1px 6px; border: 1px solid var(--border-bright); font-size: 10px; color: var(--fg); margin-right: 4px; letter-spacing: 1px; }
+  .tag.sys { color: var(--accent); border-color: var(--accent); }
+  .tag.usr { color: var(--magenta); border-color: var(--magenta); }
+  .tag.ai { color: var(--fg); border-color: var(--fg); }
+  .tag.tool { color: var(--warn); border-color: var(--warn); }
+  .neofetch-box { display: flex; gap: 24px; margin: 12px 0; flex-wrap: wrap; }
+  .neofetch-logo { color: var(--fg); text-shadow: var(--glow); white-space: pre; font-size: 11px; line-height: 1.2; }
+  .neofetch-info { flex: 1; min-width: 250px; }
+  .neofetch-info .row { display: flex; gap: 8px; } .neofetch-info .key { color: var(--accent); font-weight: 700; min-width: 90px; } .neofetch-info .val { color: var(--fg-bright); }
+  .cowsay-box { margin: 12px 0; white-space: pre; color: var(--fg); }
+  @media (max-width: 768px) { .header { font-size: 10px; padding: 8px 12px; } .logo { font-size: 20px; } .output { padding: 12px 14px 8px; font-size: 13px; } .input-area { padding: 8px 14px 12px; } .input-hint { padding: 4px 14px 2px; font-size: 10px; gap: 6px; } .header-right { gap: 10px; } .ascii-art, .ascii-banner, .ascii-figlet { font-size: 7px; } .status-item:nth-child(3) { display: none; } }
+  ::selection { background: var(--fg); color: var(--bg); }
+</style>
+</head>
+<body class="theme-green">
+<div class="crt-overlay"></div><div class="crt-vignette"></div><div class="crt-flicker"></div>
+
+<div id="terminal">
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">As OS</div>
+      <div class="status-item"><span class="status-dot" id="statusDot"></span><span id="statusText">ONLINE</span></div>
+      <div class="status-item"><span>MODEL:</span><span style="color: var(--fg-bright)" id="modelText">agnes-2.0-flash</span></div>
+    </div>
+    <div class="header-right">
+      <div class="status-item"><span>TEMP:</span><span id="tempText">0.7</span></div>
+      <div class="status-item"><span>MSG:</span><span id="ctxCount">0</span></div>
+      <div class="status-item"><span id="clock">00:00:00</span></div>
+    </div>
+  </header>
+  <main class="output" id="output"></main>
+  <div class="input-wrapper">
+    <div class="input-hint">
+      <span><span class="cmd">/help</span> cmds</span>
+      <span><span class="cmd">/image</span> gen</span>
+      <span><span class="cmd">@id</span> ref media</span>
+      <span><span class="cmd">/video</span> gen</span>
+      <span><span class="cmd">/look</span> vision</span>
+      <span><span class="cmd">/weather</span> tool</span>
+      <span><span class="cmd">/theme</span> colors</span>
+      <span><span class="key">↑↓</span> history</span>
+      <span><span class="key">Tab</span> complete</span>
+    </div>
+    <div class="input-area">
+      <span class="prompt-symbol" id="promptSymbol">▸</span>
+      <input type="text" class="input-field" id="input" placeholder="Type a message or command..." autocomplete="off" autofocus>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG & STATE
+// ═══════════════════════════════════════════════════════════
+const API_KEY = 'sk-xC8TdHdVA6Iy797q4U4uhPsa5SPt5gI3osko9DsSWYaa3a0y';
+const API_BASE = 'https://apihub.agnes-ai.com';
+
+let conversationHistory = [];
+let currentModel = 'agnes-2.0-flash';
+let temperature = 0.7;
+let systemPrompt = 'You are AS, an AI assistant operating in a retro terminal interface called "As OS". Be concise, technical, and helpful. Use markdown: fenced code blocks with language tags, inline code with backticks, bold with **. Keep responses focused unless detail is requested.';
+let isProcessing = false;
+let commandHistory = [];
+let historyIndex = -1;
+let bootDone = false;
+let currentTheme = 'green';
+let assets = []; // Store generated images and videos
+let interactiveCallback = null; // For interactive prompts (size selection, etc.)
+
+// ═══════════════════════════════════════════════════════════
+// DOM
+// ═══════════════════════════════════════════════════════════
+const output = document.getElementById('output');
+const input = document.getElementById('input');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const ctxCount = document.getElementById('ctxCount');
+const clock = document.getElementById('clock');
+const promptSymbol = document.getElementById('promptSymbol');
+const tempText = document.getElementById('tempText');
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function updateClock() {
+  const n = new Date();
+  clock.textContent = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+}
+setInterval(updateClock, 1000); updateClock();
+
+function appendLine(text, type = '') {
+  const line = document.createElement('div');
+  line.className = `line ${type}`;
+  line.textContent = text;
+  output.appendChild(line); scrollToBottom(); return line;
+}
+function appendHTML(html, className = '') {
+  const div = document.createElement('div');
+  div.className = className; div.innerHTML = html;
+  output.appendChild(div); scrollToBottom(); return div;
+}
+function scrollToBottom() { output.scrollTop = output.scrollHeight; }
+
+function setStatus(status) {
+  statusDot.className = 'status-dot';
+  promptSymbol.classList.remove('busy', 'prompt');
+  if (status === 'busy') {
+    statusDot.classList.add('busy'); statusText.textContent = 'PROCESSING';
+    promptSymbol.classList.add('busy'); input.disabled = true;
+  } else if (status === 'error') {
+    statusDot.classList.add('error'); statusText.textContent = 'ERROR'; input.disabled = false;
+  } else if (status === 'tool') {
+    statusDot.classList.add('tool'); statusText.textContent = 'TOOL CALL'; promptSymbol.classList.add('prompt'); input.disabled = false;
+  } else if (status === 'prompt') {
+    statusDot.classList.add('busy'); statusText.textContent = 'AWAITING INPUT'; promptSymbol.classList.add('prompt'); input.disabled = false;
+  } else {
+    statusText.textContent = 'ONLINE'; input.disabled = false;
+  }
+}
+
+function updateCtx() { ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length; }
+function updateTempDisplay() { tempText.textContent = temperature.toFixed(1); }
+function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+async function typeWrite(element, text, delay = 8) {
+  for (let i = 0; i < text.length; i++) {
+    element.textContent += text[i];
+    if (i % 3 === 0) scrollToBottom();
+    await new Promise(r => setTimeout(r, delay));
+  } scrollToBottom();
+}
+
+function renderMarkdown(text) {
+  let html = escapeHtml(text);
+  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, lang, code) => `<div class="code-block" data-lang="${lang || 'code'}">${code.trim()}</div>`);
+  html = html.replace(/`([^`\n]+)`/g, '<span class="code-inline">$1</span>');
+  html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/^### (.+)$/gm, '<div style="color:var(--accent);font-weight:700;margin:8px 0 4px">$1</div>');
+  html = html.replace(/^## (.+)$/gm, '<div style="color:var(--accent);font-weight:700;font-size:15px;margin:10px 0 4px">$1</div>');
+  html = html.replace(/^# (.+)$/gm, '<div style="color:var(--accent);font-weight:700;font-size:16px;margin:10px 0 4px">$1</div>');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  html = html.replace(/(^|[^"=])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank">$2</a>');
+  html = html.replace(/^[-*] (.+)$/gm, '<div style="padding-left:16px;color:var(--fg)">• $1</div>');
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// ASSET MANAGEMENT (@ references)
+// ═══════════════════════════════════════════════════════════
+function addAsset(type, url, prompt) {
+  const id = assets.length + 1;
+  assets.push({ id, type, url, prompt });
+  appendLine(`[SYSTEM] Saved as asset @${id}`, 'success');
+  return id;
+}
+
+function resolveAssets(text) {
+  const matches = [...text.matchAll(/@(\d+)/g)];
+  const urls = [];
+  let cleanText = text;
+  let foundAssets = [];
+  
+  matches.forEach(m => {
+    const id = parseInt(m[1]);
+    const asset = assets.find(a => a.id === id);
+    if (asset) {
+      urls.push(asset.url);
+      foundAssets.push(asset);
+      cleanText = cleanText.replace(m[0], `[Reference Image ${id}]`);
+    }
+  });
+  
+  return { urls, text: cleanText, assets: foundAssets };
+}
+
+function showGallery() {
+  if (assets.length === 0) { appendLine('[GALLERY] No assets generated yet.', 'system'); return; }
+  appendLine('═══ GENERATED ASSETS ═══', 'info');
+  assets.forEach(a => {
+    const thumb = a.type === 'image' 
+      ? `<img src="${a.url}" alt="Asset ${a.id}">`
+      : `<video src="${a.url}" muted></video>`;
+    appendHTML(`
+      <div class="asset-card">
+        ${thumb}
+        <div class="info">
+          <div class="id">@${a.id} [${a.type.toUpperCase()}]</div>
+          <div class="prompt">${escapeHtml(a.prompt.substring(0, 100))}</div>
+          <div style="margin-top:4px;"><a href="${a.url}" target="_blank" style="font-size:11px;">Open URL</a></div>
+        </div>
+      </div>
+    `);
+  });
+  appendLine('Usage: /image @1 make it night  |  /video @1 a cat walking  |  /look @1 describe', 'system');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERACTIVE PROMPTS
+// ═══════════════════════════════════════════════════════════
+function askQuestion(questionText, options, callback) {
+  appendLine(questionText, 'prompt');
+  options.forEach(opt => appendLine(`  ${opt}`, 'system'));
+  setStatus('prompt');
+  interactiveCallback = (answer) => {
+    setStatus('online');
+    callback(answer);
+  };
+  input.focus();
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOT SEQUENCE
+// ═══════════════════════════════════════════════════════════
+async function bootSequence() {
+  const logo = `
+   █████╗  ██████╗ ███████╗███████╗
+  ██╔══██╗██╔════╝ ██╔════╝██╔════╝
+  ███████║██║  ███╗███████╗█████╗  
+  ██╔══██║██║   ██║╚════██║██╔══╝  
+  ██║  ██║╚██████╔╝███████║███████╗
+  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝`;
+  
+  const logoDiv = document.createElement('pre');
+  logoDiv.className = 'ascii-art';
+  logoDiv.textContent = logo;
+  output.appendChild(logoDiv);
+  
+  appendLine('As OS — Terminal Interface v3.0.0', 'system');
+  appendLine('© Sapiens AI // Powered by Agnes neural networks', 'system');
+  appendLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system');
+  
+  const bootLines = [
+    { text: '[BOOT] Initializing As OS kernel...', type: 'system', delay: 6 },
+    { text: '[BOOT] Loading neural network modules...', type: 'system', delay: 6 },
+    { text: '[BOOT] Mounting /dev/agnes ... OK', type: 'system', delay: 6 },
+    { text: '[BOOT] Establishing connection to apihub.agnes-ai.com...', type: 'system', delay: 6 },
+    { text: '[ OK ] TLS handshake complete. Connection encrypted.', type: 'success', delay: 4 },
+    { text: '[BOOT] Authenticating API credentials...', type: 'system', delay: 6 },
+    { text: '[ OK ] Authentication successful. Token verified.', type: 'success', delay: 4 },
+    { text: '[BOOT] Loading model: agnes-2.0-flash', type: 'system', delay: 6 },
+    { text: '[BOOT] Loading image models: agnes-image-2.0-flash, agnes-image-2.1-flash', type: 'system', delay: 6 },
+    { text: '[BOOT] Loading video model: agnes-video-v2.0', type: 'system', delay: 6 },
+    { text: '[BOOT] Initializing tool calling engine...', type: 'system', delay: 6 },
+    { text: '[ OK ] All systems operational.', type: 'success', delay: 4 },
+    { text: '', type: 'system', delay: 2 },
+  ];
+  
+  for (const line of bootLines) {
+    const el = document.createElement('div');
+    el.className = `line ${line.type}`;
+    output.appendChild(el);
+    await typeWrite(el, line.text, line.delay);
+    await new Promise(r => setTimeout(r, 25));
+  }
+  
+  appendLine('Welcome to As OS v3.0. Type /help to see all commands.', 'info');
+  appendLine('New: Use @id to reference generated media in /image, /video, /look.', 'info');
+  appendLine('', 'system');
+  bootDone = true;
+  input.focus();
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHAT (streaming)
+// ═══════════════════════════════════════════════════════════
+function ensureSystemPrompt() {
+  conversationHistory = conversationHistory.filter(m => m.role !== 'system');
+  conversationHistory.unshift({ role: 'system', content: systemPrompt });
+}
+
+async function chat(userMessage, visionContent = null) {
+  ensureSystemPrompt();
+  if (visionContent) conversationHistory.push({ role: 'user', content: visionContent });
+  else conversationHistory.push({ role: 'user', content: userMessage });
+  updateCtx();
+  
+  const assistantDiv = document.createElement('div');
+  assistantDiv.className = 'line assistant';
+  const prefix = document.createElement('span');
+  prefix.className = 'assistant-prefix'; prefix.textContent = 'as▸';
+  assistantDiv.appendChild(prefix);
+  const contentSpan = document.createElement('span');
+  assistantDiv.appendChild(contentSpan);
+  const cursor = document.createElement('span');
+  cursor.className = 'tw-cursor';
+  assistantDiv.appendChild(cursor);
+  output.appendChild(assistantDiv);
+  scrollToBottom();
+  
+  contentSpan.innerHTML = '<span class="thinking-dots"></span>';
+  setStatus('busy');
+  
+  try {
+    const response = await fetch(`${API_BASE}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: currentModel, messages: conversationHistory, stream: true, temperature })
+    });
+    
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
+    }
+    
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '', fullResponse = '', firstToken = true;
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || !trimmed.startsWith('data:')) continue;
+        const data = trimmed.slice(5).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(data);
+          const delta = parsed.choices?.[0]?.delta?.content || '';
+          if (delta) {
+            if (firstToken) { contentSpan.innerHTML = ''; firstToken = false; }
+            fullResponse += delta;
+            contentSpan.innerHTML = renderMarkdown(fullResponse);
+            scrollToBottom();
+          }
+        } catch (e) {}
+      }
+    }
+    
+    cursor.remove();
+    if (!fullResponse) contentSpan.innerHTML = '<span style="color:var(--warn)">(empty response)</span>';
+    conversationHistory.push({ role: 'assistant', content: fullResponse });
+    updateCtx();
+    setStatus('online');
+  } catch (error) {
+    cursor.remove();
+    contentSpan.innerHTML = `<span style="color:var(--err)">[ERROR] ${escapeHtml(error.message)}</span>`;
+    setStatus('error');
+    setTimeout(() => setStatus('online'), 3000);
+    conversationHistory.pop();
+    updateCtx();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// IMAGE GENERATION
+// ═══════════════════════════════════════════════════════════
+async function generateImageFlow(prompt, model) {
+  const { urls, text, assets: refs } = resolveAssets(prompt);
+  
+  const sizeOptions = [
+    '1. 1024x1024 (Square, default)',
+    '2. 1280x720 (16:9 Landscape)',
+    '3. 720x1280 (9:16 Portrait)',
+    '4. 1024x768 (4:3 Landscape)',
+    '5. 768x1024 (4:3 Portrait)'
+  ];
+  
+  askQuestion('[IMAGE] Select output size:', sizeOptions, async (choice) => {
+    let size = '1024x1024';
+    if (choice === '2') size = '1280x720';
+    else if (choice === '3') size = '720x1280';
+    else if (choice === '4') size = '1024x768';
+    else if (choice === '5') size = '768x1024';
+    else if (/^\d+x\d+$/.test(choice)) size = choice;
+    
+    await executeImageGen(text, model, size, urls, refs);
+  });
+}
+
+async function executeImageGen(prompt, model, size, refUrls, refs) {
+  appendLine(`[IMAGE] Initializing generation sequence...`, 'info');
+  appendLine(`[IMAGE] Model: ${model}`, 'system');
+  appendLine(`[IMAGE] Size: ${size}`, 'system');
+  if (refs.length > 0) appendLine(`[IMAGE] Refs: ${refs.map(r => '@'+r.id).join(', ')} (${refUrls.length} img2img)`, 'system');
+  appendLine(`[IMAGE] Prompt: ${prompt}`, 'system');
+  
+  const spinnerLine = document.createElement('div');
+  spinnerLine.className = 'line system';
+  spinnerLine.innerHTML = '<span class="spinner"></span> Rendering pixels...';
+  output.appendChild(spinnerLine);
+  scrollToBottom();
+  setStatus('busy');
+  
+  try {
+    const body = {
+      model: model,
+      prompt: prompt,
+      size: size,
+      extra_body: { response_format: 'url' }
+    };
+    if (refUrls.length > 0) body.extra_body.image = refUrls;
+    
+    const response = await fetch(`${API_BASE}/v1/images/generations`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errText.substring(0, 300)}`);
+    }
+    
+    const data = await response.json();
+    spinnerLine.remove();
+    
+    if (data.data && data.data[0] && data.data[0].url) {
+      const url = data.data[0].url;
+      const id = addAsset('image', url, prompt);
+      appendHTML(`
+        <div class="media-frame" data-type="IMAGE" data-id="${id}">
+          <img src="${url}" alt="Generated image" loading="lazy">
+          <div class="media-meta">
+            <div>▸ URL: <a href="${url}" target="_blank">${url}</a></div>
+            <div>▸ Model: ${model} | Size: ${size} | Refs: ${refs.length}</div>
+          </div>
+        </div>
+      `);
+      appendLine(`[IMAGE] Generation complete.`, 'success');
+    } else throw new Error('No image URL in response');
+    setStatus('online');
+  } catch (error) {
+    spinnerLine.remove();
+    appendLine(`[ERROR] ${error.message}`, 'error');
+    setStatus('error');
+    setTimeout(() => setStatus('online'), 3000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// VIDEO GENERATION
+// ═══════════════════════════════════════════════════════════
+async function generateVideoFlow(prompt) {
+  const { urls, text, assets: refs } = resolveAssets(prompt);
+  
+  const resOptions = [
+    '1. 1152x768 (16:9 Landscape)',
+    '2. 768x1152 (9:16 Portrait)',
+    '3. 768x768 (1:1 Square)'
+  ];
+  
+  askQuestion('[VIDEO] Select resolution:', resOptions, (resChoice) => {
+    let w = 1152, h = 768;
+    if (resChoice === '2') { w = 768; h = 1152; }
+    else if (resChoice === '3') { w = 768; h = 768; }
+    
+    const durOptions = [
+      '1. ~3 seconds (81 frames)',
+      '2. ~5 seconds (121 frames)',
+      '3. ~10 seconds (241 frames)',
+      '4. ~18 seconds (441 frames)'
+    ];
+    
+    askQuestion('[VIDEO] Select duration:', durOptions, async (durChoice) => {
+      let frames = 121;
+      if (durChoice === '1') frames = 81;
+      else if (durChoice === '3') frames = 241;
+      else if (durChoice === '4') frames = 441;
+      
+      await executeVideoGen(text, w, h, frames, urls[0], refs);
+    });
+  });
+}
+
+async function executeVideoGen(prompt, w, h, frames, img2vidUrl, refs) {
+  appendLine(`[VIDEO] Initializing generation sequence...`, 'info');
+  appendLine(`[VIDEO] Model: agnes-video-v2.0`, 'system');
+  appendLine(`[VIDEO] Size: ${w}x${h} | Frames: ${frames} @ 24fps (~${(frames/24).toFixed(1)}s)`, 'system');
+  if (img2vidUrl) appendLine(`[VIDEO] Mode: Image-to-Video (Ref: @${refs[0].id})`, 'system');
+  else appendLine(`[VIDEO] Mode: Text-to-Video`, 'system');
+  appendLine(`[VIDEO] Prompt: ${prompt}`, 'system');
+  
+  setStatus('busy');
+  
+  try {
+    appendLine(`[VIDEO] Creating async task...`, 'system');
+    const body = {
+      model: 'agnes-video-v2.0', prompt: prompt,
+      width: w, height: h,
+      num_frames: frames, frame_rate: 24
+    };
+    if (img2vidUrl) body.image = img2vidUrl;
+    
+    const createResponse = await fetch(`${API_BASE}/v1/videos`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    
+    if (!createResponse.ok) {
+      const errText = await createResponse.text();
+      throw new Error(`HTTP ${createResponse.status}: ${errText.substring(0, 300)}`);
+    }
+    
+    const createData = await createResponse.json();
+    const videoId = createData.video_id;
+    const taskId = createData.task_id || createData.id;
+    
+    appendLine(`[VIDEO] Task ID: ${taskId}`, 'success');
+    appendLine(`[VIDEO] Video ID: ${videoId}`, 'success');
+    appendLine(`[VIDEO] Status: ${createData.status} | Polling every 5s...`, 'system');
+    
+    const progressContainer = document.createElement('div');
+    progressContainer.className = 'progress-container';
+    progressContainer.innerHTML = `<div class="progress-bar"><div class="progress-fill" style="width: 0%"></div><div class="progress-text">0% — Queued</div></div>`;
+    output.appendChild(progressContainer);
+    scrollToBottom();
+    
+    let attempts = 0;
+    const maxAttempts = 120;
+    
+    while (attempts < maxAttempts) {
+      await new Promise(r => setTimeout(r, 5000));
+      attempts++;
+      try {
+        const statusResponse = await fetch(`${API_BASE}/agnesapi?video_id=${videoId}`, {
+          headers: { 'Authorization': `Bearer ${API_KEY}` }
+        });
+        if (!statusResponse.ok) continue;
+        const statusData = await statusResponse.json();
+        const progress = statusData.progress || 0;
+        const status = statusData.status;
+        
+        const fill = progressContainer.querySelector('.progress-fill');
+        const text = progressContainer.querySelector('.progress-text');
+        fill.style.width = `${progress}%`;
+        
+        let statusLabel = status;
+        if (status === 'queued') statusLabel = 'Queued';
+        else if (status === 'in_progress') statusLabel = 'Rendering frames';
+        else if (status === 'completed') statusLabel = 'Complete';
+        else if (status === 'failed') statusLabel = 'Failed';
+        text.textContent = `${progress}% — ${statusLabel}`;
+        
+        if (status === 'completed') {
+          const videoUrl = statusData.remixed_from_video_id;
+          progressContainer.remove();
+          const id = addAsset('video', videoUrl, prompt);
+          appendHTML(`
+            <div class="media-frame" data-type="VIDEO" data-id="${id}">
+              <video controls autoplay loop muted playsinline>
+                <source src="${videoUrl}" type="video/mp4">
+              </video>
+              <div class="media-meta">
+                <div>▸ URL: <a href="${videoUrl}" target="_blank">${videoUrl}</a></div>
+                <div>▸ Duration: ${statusData.seconds}s | Resolution: ${statusData.size}</div>
+              </div>
+            </div>`);
+          appendLine(`[VIDEO] Generation complete.`, 'success');
+          setStatus('online');
+          return;
+        }
+        if (status === 'failed') {
+          progressContainer.remove();
+          throw new Error(statusData.error || 'Video generation failed');
+        }
+      } catch (pollError) {}
+    }
+    progressContainer.remove();
+    throw new Error('Video generation timed out');
+  } catch (error) {
+    appendLine(`[ERROR] ${error.message}`, 'error');
+    setStatus('error');
+    setTimeout(() => setStatus('online'), 3000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// VISION
+// ═══════════════════════════════════════════════════════════
+async function visionChatFlow(prompt) {
+  const { urls, text, assets: refs } = resolveAssets(prompt);
+  
+  if (urls.length > 0) {
+    appendLine(`[VISION] Analyzing referenced image(s)...`, 'info');
+    refs.forEach(r => appendLine(`[VISION] Ref: @${r.id}`, 'system'));
+    appendLine(`[VISION] Question: ${text}`, 'system');
+    
+    const visionContent = [
+      { type: 'text', text: text },
+      ...urls.map(url => ({ type: 'image_url', image_url: { url } }))
+    ];
+    await chat(text, visionContent);
+  } else {
+    const urlMatch = text.match(/(https?:\/\/[^\s]+)/);
+    if (!urlMatch) {
+      appendLine('[ERROR] Usage: /look <image-url> <question>  OR  /look @1 <question>', 'error');
+      return;
+    }
+    const imgUrl = urlMatch[1];
+    const question = text.slice(urlMatch.index + urlMatch[0].length).trim() || 'Describe this image in detail.';
+    appendLine(`[VISION] Analyzing image...`, 'info');
+    appendLine(`[VISION] URL: ${imgUrl}`, 'system');
+    appendLine(`[VISION] Question: ${question}`, 'system');
+    const visionContent = [
+      { type: 'text', text: question },
+      { type: 'image_url', image_url: { url: imgUrl } }
+    ];
+    await chat(question, visionContent);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOOL CALLING (Weather)
+// ═══════════════════════════════════════════════════════════
+async function weatherCommand(location) {
+  if (!location) { appendLine('[ERROR] Usage: /weather <city>', 'error'); return; }
+  
+  appendLine(`[TOOL] Initializing tool calling sequence...`, 'info');
+  appendLine(`[TOOL] Target: get_weather("${location}")`, 'system');
+  
+  setStatus('tool');
+  const spinnerLine = document.createElement('div');
+  spinnerLine.className = 'line system';
+  spinnerLine.innerHTML = '<span class="spinner"></span> Calling model with tool definition...';
+  output.appendChild(spinnerLine);
+  scrollToBottom();
+  
+  try {
+    const messages = [
+      { role: 'system', content: 'You are a weather assistant. Use the get_weather tool to answer questions about weather.' },
+      { role: 'user', content: `What is the weather like in ${location}?` }
+    ];
+    
+    const tools = [{
+      type: 'function',
+      function: {
+        name: 'get_weather',
+        description: 'Get the current weather for a location',
+        parameters: {
+          type: 'object',
+          properties: {
+            location: { type: 'string', description: 'The city and country' }
+          },
+          required: ['location']
+        }
+      }
+    }];
+    
+    const response = await fetch(`${API_BASE}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: currentModel, messages, tools })
+    });
+    
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
+    }
+    
+    const data = await response.json();
+    spinnerLine.remove();
+    
+    const msg = data.choices[0].message;
+    
+    if (msg.tool_calls && msg.tool_calls.length > 0) {
+      const toolCall = msg.tool_calls[0];
+      const args = JSON.parse(toolCall.function.arguments);
+      appendLine(`[TOOL] Model requested function call:`, 'success');
+      appendHTML(`<div class="line system"><span class="tag tool">TOOL</span> get_weather(${escapeHtml(args.location)})</div>`);
+      
+      // Mock weather data (in a real app, you'd call a weather API here)
+      const conditions = ['Sunny', 'Cloudy', 'Rainy', 'Snowy', 'Windy', 'Foggy'];
+      const temp = Math.floor(Math.random() * 35) - 5;
+      const humidity = Math.floor(Math.random() * 60) + 30;
+      const condition = conditions[Math.floor(Math.random() * conditions.length)];
+      
+      appendLine(`[TOOL] Executing mock function...`, 'system');
+      appendHTML(`<div class="line system"><span class="tag tool">RESULT</span> { "temperature": "${temp}°C", "condition": "${condition}", "humidity": "${humidity}%" }</div>`);
+      
+      const spinnerLine2 = document.createElement('div');
+      spinnerLine2.className = 'line system';
+      spinnerLine2.innerHTML = '<span class="spinner"></span> Sending tool result back to model...';
+      output.appendChild(spinnerLine2);
+      scrollToBottom();
+      
+      // Send tool result back to model
+      messages.push(msg);
+      messages.push({
+        role: 'tool',
+        tool_call_id: toolCall.id,
+        content: JSON.stringify({ temperature: `${temp}°C`, condition, humidity: `${humidity}%` })
+      });
+      
+      const finalResponse = await fetch(`${API_BASE}/v1/chat/completions`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: currentModel, messages, stream: true })
+      });
+      
+      spinnerLine2.remove();
+      
+      const assistantDiv = document.createElement('div');
+      assistantDiv.className = 'line assistant';
+      const prefix = document.createElement('span');
+      prefix.className = 'assistant-prefix'; prefix.textContent = 'as▸';
+      assistantDiv.appendChild(prefix);
+      const contentSpan = document.createElement('span');
+      assistantDiv.appendChild(contentSpan);
+      const cursor = document.createElement('span');
+      cursor.className = 'tw-cursor';
+      assistantDiv.appendChild(cursor);
+      output.appendChild(assistantDiv);
+      scrollToBottom();
+      
+      const reader = finalResponse.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '', fullResponse = '';
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith('data:')) continue;
+          const d = trimmed.slice(5).trim();
+          if (d === '[DONE]') continue;
+          try {
+            const parsed = JSON.parse(d);
+            const delta = parsed.choices?.[0]?.delta?.content || '';
+            if (delta) {
+              fullResponse += delta;
+              contentSpan.innerHTML = renderMarkdown(fullResponse);
+              scrollToBottom();
+            }
+          } catch (e) {}
+        }
+      }
+      cursor.remove();
+      setStatus('online');
+    } else {
+      // Model didn't call the tool, just respond directly
+      appendLine('[TOOL] Model responded without tool call.', 'warn');
+      appendLine(msg.content, 'assistant');
+      setStatus('online');
+    }
+  } catch (error) {
+    spinnerLine.remove();
+    appendLine(`[ERROR] ${error.message}`, 'error');
+    setStatus('error');
+    setTimeout(() => setStatus('online'), 3000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMMANDS
+// ═══════════════════════════════════════════════════════════
+function showHelp() {
+  appendHTML(`
+    <div class="line info glow">═══ COMMAND REFERENCE ═══</div>
+    <div class="help-section">▸ AI INTERACTION</div>
+    <table class="help-table">
+      <tr><td>&lt;message&gt;</td><td>Chat with Agnes 2.0 Flash (streaming)</td></tr>
+      <tr><td>/think &lt;msg&gt;</td><td>Chat with thinking mode enabled</td></tr>
+      <tr><td>/look &lt;@id|url&gt; &lt;q&gt;</td><td>Vision: analyze image (ref or URL)</td></tr>
+      <tr><td>/ask &lt;msg&gt;</td><td>One-shot question (no context)</td></tr>
+      <tr><td>/joke</td><td>Tell a programming joke</td></tr>
+    </table>
+    <div class="help-section">▸ MEDIA GENERATION & REFERENCES</div>
+    <table class="help-table">
+      <tr><td>/image &lt;prompt&gt;</td><td>Generate image (asks for size)</td></tr>
+      <tr><td>/image2 &lt;prompt&gt;</td><td>High-density image (asks for size)</td></tr>
+      <tr><td>/image @1 &lt;p&gt;</td><td>img2img: use asset @1 as reference</td></tr>
+      <tr><td>/video &lt;prompt&gt;</td><td>Generate video (asks size & duration)</td></tr>
+      <tr><td>/video @1 &lt;p&gt;</td><td>img2vid: animate asset @1</td></tr>
+      <tr><td>/gallery</td><td>List all generated assets with thumbnails</td></tr>
+    </table>
+    <div class="help-section">▸ TOOL CALLING</div>
+    <table class="help-table">
+      <tr><td>/weather &lt;city&gt;</td><td>Get weather via function calling</td></tr>
+    </table>
+    <div class="help-section">▸ CONFIGURATION</div>
+    <table class="help-table">
+      <tr><td>/temp &lt;0-2&gt;</td><td>Set temperature (creativity)</td></tr>
+      <tr><td>/sys &lt;prompt&gt;</td><td>Set custom system prompt</td></tr>
+      <tr><td>/theme &lt;name&gt;</td><td>Change theme: green, amber, cyan, matrix</td></tr>
+      <tr><td>/model</td><td>Show current model details</td></tr>
+      <tr><td>/models</td><td>List all available models</td></tr>
+    </table>
+    <div class="help-section">▸ TERMINAL UTILITIES</div>
+    <table class="help-table">
+      <tr><td>/clear</td><td>Clear terminal output</td></tr>
+      <tr><td>/reset</td><td>Reset conversation history</td></tr>
+      <tr><td>/history</td><td>Show conversation summary</td></tr>
+      <tr><td>/tokens</td><td>Estimate token usage</td></tr>
+      <tr><td>/save</td><td>Export conversation to file</td></tr>
+      <tr><td>/cancel</td><td>Cancel interactive prompt</td></tr>
+    </table>
+    <div class="help-section">▸ FUN & INFO</div>
+    <table class="help-table">
+      <tr><td>/neofetch</td><td>System information display</td></tr>
+      <tr><td>/figlet &lt;text&gt;</td><td>Render ASCII art text</td></tr>
+      <tr><td>/banner &lt;text&gt;</td><td>Large ASCII banner</td></tr>
+      <tr><td>/cowsay &lt;text&gt;</td><td>Cow says your text</td></tr>
+      <tr><td>/fortune</td><td>Random fortune cookie</td></tr>
+      <tr><td>/motd</td><td>Message of the day</td></tr>
+      <tr><td>/echo &lt;text&gt;</td><td>Echo back your text</td></tr>
+      <tr><td>/date</td><td>Show current date and time</td></tr>
+      <tr><td>/whoami</td><td>Show current user info</td></tr>
+      <tr><td>/about</td><td>About As OS</td></tr>
+      <tr><td>/ver</td><td>Show version info</td></tr>
+      <tr><td>/reboot</td><td>Reboot the terminal</td></tr>
+      <tr><td>/exit</td><td>Exit message</td></tr>
+    </table>
+    <div class="line system">──────────────────────────────────────────</div>
+    <div class="line system">Keyboard: ↑↓ history · Tab complete · Ctrl+L clear</div>
+  `);
+}
+
+function setTemp(val) {
+  const t = parseFloat(val);
+  if (isNaN(t) || t < 0 || t > 2) { appendLine('[ERROR] Temperature must be between 0 and 2.', 'error'); return; }
+  temperature = t; updateTempDisplay();
+  appendLine(`[CONFIG] Temperature set to ${t.toFixed(1)}.`, 'success');
+}
+
+function setTheme(themeName) {
+  const themes = ['green', 'amber', 'cyan', 'matrix'];
+  if (!themes.includes(themeName)) { appendLine(`[ERROR] Unknown theme. Available: ${themes.join(', ')}`, 'error'); return; }
+  document.body.className = `theme-${themeName}`;
+  currentTheme = themeName;
+  appendLine(`[CONFIG] Theme changed to: ${themeName}`, 'success');
+}
+
+function setSystemPrompt(text) {
+  systemPrompt = text;
+  conversationHistory = conversationHistory.filter(m => m.role !== 'system');
+  appendLine('[CONFIG] System prompt updated.', 'success');
+}
+
+function showModels() {
+  appendHTML(`
+    <div class="line info glow">═══ AVAILABLE MODELS ═══</div>
+    <table class="help-table">
+      <tr><td>agnes-2.0-flash</td><td>Fast LLM · 512K ctx · chat/vision/tools · $0</td></tr>
+      <tr><td>agnes-image-2.0-flash</td><td>Image gen · txt2img/img2img · $0</td></tr>
+      <tr><td>agnes-image-2.1-flash</td><td>High-density image gen · complex scenes · $0</td></tr>
+      <tr><td>agnes-video-v2.0</td><td>Video gen · txt2vid/img2vid · $0</td></tr>
+    </table>
+  `);
+}
+
+function showHistory() {
+  const msgs = conversationHistory.filter(m => m.role !== 'system');
+  if (msgs.length === 0) { appendLine('[HISTORY] No messages yet.', 'system'); return; }
+  appendLine('═══ CONVERSATION HISTORY ═══', 'info');
+  msgs.forEach((msg, i) => {
+    const tag = msg.role === 'user' ? '<span class="tag usr">USR</span>' : '<span class="tag ai">AS</span>';
+    const preview = typeof msg.content === 'string' ? msg.content.substring(0, 150) : '[multimodal]';
+    appendHTML(`<div class="line system">${tag} #${i+1} ${escapeHtml(preview)}</div>`);
+  });
+}
+
+function showTokens() {
+  let total = 0;
+  conversationHistory.forEach(m => {
+    const text = typeof m.content === 'string' ? m.content : JSON.stringify(m.content);
+    total += Math.ceil(text.length / 4);
+  });
+  appendLine(`[TOKENS] Estimated usage: ${total} tokens (~${(total/4).toFixed(0)} words)`, 'info');
+  appendLine(`[TOKENS] Context limit: 512,000 | Usage: ${(total/512000*100).toFixed(2)}%`, 'system');
+}
+
+function saveConversation() {
+  const msgs = conversationHistory.filter(m => m.role !== 'system');
+  if (msgs.length === 0) { appendLine('[SAVE] No conversation to save.', 'warn'); return; }
+  let text = `As OS — Conversation Export\n${new Date().toISOString()}\n${'='.repeat(60)}\n\n`;
+  msgs.forEach((m, i) => {
+    const role = m.role.toUpperCase();
+    const content = typeof m.content === 'string' ? m.content : JSON.stringify(m.content);
+    text += `[${role}] #${i+1}\n${content}\n\n${'-'.repeat(40)}\n\n`;
+  });
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `as-os-conversation-${Date.now()}.txt`; a.click();
+  URL.revokeObjectURL(url);
+  appendLine('[SAVE] Conversation exported to file.', 'success');
+}
+
+function neofetch() {
+  const logo = `       █████╗  ██████╗
+      ██╔══██╗██╔════╝
+      ███████║██║  ███╗
+      ██╔══██║██║   ██║
+      ██║  ██║╚██████╔╝
+      ╚═╝  ╚═╝ ╚═════╝`;
+  const uptime = Math.floor((Date.now() - window.performance.timeOrigin) / 1000);
+  const hh = Math.floor(uptime / 3600), mm = Math.floor((uptime % 3600) / 60), ss = uptime % 60;
+  appendHTML(`
+    <div class="neofetch-box">
+      <pre class="neofetch-logo">${logo}</pre>
+      <div class="neofetch-info">
+        <div class="row"><span class="key">user@as-os</span></div>
+        <div class="row"><span class="key">─────────────</span></div>
+        <div class="row"><span class="key">OS:</span><span class="val">As OS v3.0.0</span></div>
+        <div class="row"><span class="key">Kernel:</span><span class="val">agnes-2.0-flash</span></div>
+        <div class="row"><span class="key">Uptime:</span><span class="val">${hh}h ${mm}m ${ss}s</span></div>
+        <div class="row"><span class="key">Shell:</span><span class="val">as-sh 2.0</span></div>
+        <div class="row"><span class="key">Theme:</span><span class="val">${currentTheme}</span></div>
+        <div class="row"><span class="key">Resolution:</span><span class="val">${window.screen.width}x${window.screen.height}</span></div>
+        <div class="row"><span class="key">Assets:</span><span class="val">${assets.length} generated</span></div>
+        <div class="row"><span class="key">CPU:</span><span class="val">Sapiens Neural Engine</span></div>
+        <div class="row"><span class="key">Memory:</span><span class="val">512K ctx / ${conversationHistory.filter(m=>m.role!=='system').length} msgs</span></div>
+      </div>
+    </div>
+  `);
+}
+
+const ASCII_FONTS = {
+  banner: (text) => {
+    const map = {
+      'A': ['  ▄▀█  ', ' █▀▀█  ', ' █  █  '], 'B': ['  █▀▄  ', '  █▀▄  ', '  █ ▀  '],
+      'C': ['  ▄▀▀  ', '  █    ', '  ▀▄▄  '], 'D': ['  █▀▄  ', '  █ █  ', '  █▄▀  '],
+      'E': ['  █▀▀  ', '  █▀   ', '  ▀▀▀  '], 'F': ['  █▀▀  ', '  █▀   ', '  █    '],
+      'G': ['  ▄▀▀  ', '  █ ▀█ ', '  ▀▄▄▀ '], 'H': ['  █ █  ', '  █▀█  ', '  █ █  '],
+      'I': ['  ▀█▀  ', '   █   ', '   █   '], 'J': ['   ▀█  ', '   █   ', '  ▀▄   '],
+      'K': ['  █ ▄  ', '  █▀▄  ', '  █ █  '], 'L': ['  █    ', '  █    ', '  ▀▀▀  '],
+      'M': ['  █▀▄▀█', '  █ ▀ █', '  █   █'], 'N': ['  █▀▄  ', '  █ █  ', '  █ █  '],
+      'O': ['  ▄▀▄  ', '  █ █  ', '  ▀▄▀  '], 'P': ['  █▀▄  ', '  █▀   ', '  █    '],
+      'Q': ['  ▄▀▄  ', '  █ █  ', '  ▀▄█▀ '], 'R': ['  █▀▄  ', '  █▀▄  ', '  █ █  '],
+      'S': ['  ▄▀▀  ', '   ▀▄  ', '  ▀▀   '], 'T': ['  ▀█▀  ', '   █   ', '   █   '],
+      'U': ['  █ █  ', '  █ █  ', '  ▀▄▀  '], 'V': ['  █ █  ', '  █ █  ', '   ▀   '],
+      'W': ['  █   █', '  █ ▄ █', '  ▀▀▀▀▀'], 'X': ['  █ █  ', '   █   ', '  █ █  '],
+      'Y': ['  █ █  ', '   █   ', '   █   '], 'Z': ['  ▀▀█  ', '   █   ', '  █▀▀  '],
+      ' ': ['       ', '       ', '       '],
+    };
+    const upper = text.toUpperCase();
+    const lines = ['', '', ''];
+    for (const ch of upper) {
+      const glyph = map[ch] || map[' '];
+      lines[0] += glyph[0]; lines[1] += glyph[1]; lines[2] += glyph[2];
+    }
+    return lines.join('\n');
+  }
+};
+
+function showFiglet(text) {
+  if (!text) { appendLine('[ERROR] Usage: /figlet <text>', 'error'); return; }
+  const pre = document.createElement('pre');
+  pre.className = 'ascii-figlet';
+  pre.textContent = ASCII_FONTS.banner(text.substring(0, 20));
+  output.appendChild(pre); scrollToBottom();
+}
+
+function showBanner(text) {
+  if (!text) { appendLine('[ERROR] Usage: /banner <text>', 'error'); return; }
+  const upper = text.toUpperCase().substring(0, 40);
+  const bar = '═'.repeat(upper.length + 4);
+  appendHTML(`<pre class="ascii-banner">╔${bar}╗\n║  ${upper}  ║\n╚${bar}╝</pre>`);
+}
+
+function cowsay(text) {
+  if (!text) { appendLine('[ERROR] Usage: /cowsay <text>', 'error'); return; }
+  const line = '_'.repeat(text.length + 2), bottom = '-'.repeat(text.length + 2);
+  const cow = ` ${line}\n< ${text} >\n ${bottom}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
+  const pre = document.createElement('pre');
+  pre.className = 'cowsay-box'; pre.textContent = cow;
+  output.appendChild(pre); scrollToBottom();
+}
+
+const FORTUNES = [
+  'The best way to predict the future is to invent it. — Alan Kay',
+  'Talk is cheap. Show me the code. — Linus Torvalds',
+  'Programs must be written for people to read. — Harold Abelson',
+  'Simplicity is the soul of efficiency. — Austin Freeman',
+  'First, solve the problem. Then, write the code. — John Johnson',
+  'Code is like humor. When you have to explain it, it\'s bad. — Cory House',
+  'A neural network is only as good as its training data.',
+  'It works on my machine. — Every developer ever',
+  'The best error message is the one that never shows up. — Thomas Fuchs',
+];
+function showFortune() { appendLine(`[FORTUNE] ${FORTUNES[Math.floor(Math.random() * FORTUNES.length)]}`, 'info'); }
+
+async function reboot() {
+  appendLine('[REBOOT] Initiating system reboot...', 'warn');
+  await new Promise(r => setTimeout(r, 500));
+  appendLine('[REBOOT] Clearing memory...', 'system');
+  await new Promise(r => setTimeout(r, 500));
+  output.innerHTML = '';
+  conversationHistory = []; assets = [];
+  updateCtx();
+  await bootSequence();
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROCESS INPUT
+// ═══════════════════════════════════════════════════════════
+async function processInput(text) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  commandHistory.push(trimmed);
+  historyIndex = commandHistory.length;
+  appendLine(trimmed, 'user');
+  
+  if (trimmed.startsWith('/')) {
+    const spaceIdx = trimmed.indexOf(' ');
+    const cmd = (spaceIdx === -1 ? trimmed.slice(1) : trimmed.slice(1, spaceIdx)).toLowerCase();
+    const arg = spaceIdx === -1 ? '' : trimmed.slice(spaceIdx + 1).trim();
+    
+    switch (cmd) {
+      case 'help': case 'h': case '?': showHelp(); break;
+      case 'image': case 'img':
+        if (!arg) { appendLine('[ERROR] Usage: /image [@id] <prompt>', 'error'); break; }
+        await generateImageFlow(arg, 'agnes-image-2.0-flash'); break;
+      case 'image2': case 'img2':
+        if (!arg) { appendLine('[ERROR] Usage: /image2 [@id] <prompt>', 'error'); break; }
+        await generateImageFlow(arg, 'agnes-image-2.1-flash'); break;
+      case 'video': case 'vid':
+        if (!arg) { appendLine('[ERROR] Usage: /video [@id] <prompt>', 'error'); break; }
+        await generateVideoFlow(arg); break;
+      case 'look': case 'vision': case 'see':
+        if (!arg) { appendLine('[ERROR] Usage: /look <@id|url> <question>', 'error'); break; }
+        await visionChatFlow(arg); break;
+      case 'weather':
+        await weatherCommand(arg); break;
+      case 'think':
+        if (!arg) { appendLine('[ERROR] Usage: /think <message>', 'error'); break; }
+        const oldPrompt = systemPrompt;
+        systemPrompt += ' Enable deep thinking mode: break down the problem step by step before answering.';
+        await chat(arg);
+        systemPrompt = oldPrompt;
+        break;
+      case 'ask':
+        if (!arg) { appendLine('[ERROR] Usage: /ask <question>', 'error'); break; }
+        const saved = [...conversationHistory];
+        conversationHistory = [];
+        await chat(arg);
+        conversationHistory = saved;
+        break;
+      case 'joke':
+        await chat("Tell me a short, clever programming joke."); break;
+      case 'gallery': case 'assets': showGallery(); break;
+      case 'temp': case 'temperature':
+        if (!arg) appendLine(`[CONFIG] Current temperature: ${temperature.toFixed(1)}`, 'info');
+        else setTemp(arg); break;
+      case 'theme':
+        if (!arg) appendLine(`[CONFIG] Current theme: ${currentTheme}. Available: green, amber, cyan, matrix`, 'info');
+        else setTheme(arg.toLowerCase()); break;
+      case 'sys': case 'system':
+        if (!arg) appendLine(`[CONFIG] Current system prompt: "${systemPrompt.substring(0, 120)}..."`, 'info');
+        else setSystemPrompt(arg); break;
+      case 'clear': case 'cls':
+        output.innerHTML = ''; appendLine('[SYSTEM] Terminal cleared.', 'system'); break;
+      case 'reset':
+        conversationHistory = []; updateCtx();
+        appendLine('[SYSTEM] Conversation history reset.', 'success'); break;
+      case 'history': showHistory(); break;
+      case 'tokens': showTokens(); break;
+      case 'save': case 'export': saveConversation(); break;
+      case 'model':
+        appendHTML(`<div class="line info glow">═══ MODEL DETAILS ═══</div><table class="help-table"><tr><td>Name</td><td>agnes-2.0-flash</td></tr><tr><td>Provider</td><td>Sapiens AI</td></tr><tr><td>Context</td><td>512,000 tokens</td></tr><tr><td>Features</td><td>Chat, Vision, Tools, Streaming, Thinking</td></tr></table>`);
+        break;
+      case 'models': showModels(); break;
+      case 'neofetch': neofetch(); break;
+      case 'figlet': showFiglet(arg); break;
+      case 'banner': showBanner(arg); break;
+      case 'cowsay': cowsay(arg); break;
+      case 'fortune': showFortune(); break;
+      case 'motd':
+        appendLine('═══ MESSAGE OF THE DAY ═══', 'info');
+        appendLine('As OS v3.0.0 with asset referencing and tool calling.', 'success'); break;
+      case 'echo': appendLine(arg, 'system'); break;
+      case 'date': appendLine(`[DATE] ${new Date().toString()}`, 'info'); break;
+      case 'whoami': appendLine('user: operator@as-os\nrole: administrator', 'system'); break;
+      case 'about': appendLine('As OS v3.0.0 — Terminal-based AI operating system powered by Agnes AI.', 'info'); break;
+      case 'ver': appendLine('As OS v3.0.0 (build 20251020)', 'info'); break;
+      case 'reboot': await reboot(); break;
+      case 'cancel':
+        if (interactiveCallback) {
+          interactiveCallback = null;
+          setStatus('online');
+          appendLine('[SYSTEM] Interactive prompt cancelled.', 'warn');
+        } else { appendLine('[SYSTEM] Nothing to cancel.', 'system'); }
+        break;
+      case 'exit': case 'quit':
+        appendLine('[SYSTEM] Goodbye. Connection terminated.', 'warn');
+        appendLine('[SYSTEM] (Just kidding — the terminal is still alive.)', 'system'); break;
+      default: appendLine(`[ERROR] Unknown command: /${cmd}. Type /help for available commands.`, 'error');
+    }
+  } else {
+    await chat(trimmed);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════════════════════
+input.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (!bootDone) return;
+    if (isProcessing && !interactiveCallback) return;
+    
+    const value = input.value;
+    input.value = '';
+    
+    if (interactiveCallback) {
+      appendLine(value, 'user');
+      const cb = interactiveCallback;
+      interactiveCallback = null;
+      cb(value);
+    } else {
+      isProcessing = true;
+      await processInput(value);
+      isProcessing = false;
+    }
+    input.focus();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (interactiveCallback) return;
+    if (historyIndex > 0) { historyIndex--; input.value = commandHistory[historyIndex] || ''; }
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (interactiveCallback) return;
+    if (historyIndex < commandHistory.length - 1) { historyIndex++; input.value = commandHistory[historyIndex] || ''; }
+    else { historyIndex = commandHistory.length; input.value = ''; }
+  } else if (e.key === 'Tab') {
+    e.preventDefault();
+    const value = input.value;
+    if (value.startsWith('/') && !value.includes(' ')) {
+      const commands = ['/help', '/image', '/image2', '/video', '/look', '/weather', '/think', '/ask', '/joke', '/gallery', '/temp', '/theme', '/sys', '/clear', '/reset', '/history', '/tokens', '/save', '/model', '/models', '/neofetch', '/figlet', '/banner', '/cowsay', '/fortune', '/motd', '/echo', '/date', '/whoami', '/about', '/ver', '/reboot', '/cancel', '/exit'];
+      const matches = commands.filter(c => c.startsWith(value));
+      if (matches.length === 1) input.value = matches[0] + ' ';
+      else if (matches.length > 1) appendLine(matches.join('  '), 'system');
+    }
+  } else if (e.key === 'l' && e.ctrlKey) {
+    e.preventDefault(); output.innerHTML = '';
+  } else if (e.key === 'c' && e.ctrlKey) {
+    if (interactiveCallback) {
+      e.preventDefault();
+      interactiveCallback = null;
+      setStatus('online');
+      appendLine('^C', 'error');
+      appendLine('[SYSTEM] Interactive prompt cancelled.', 'warn');
+    }
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('a') && !e.target.closest('video') && !e.target.closest('button')) {
+    input.focus();
+  }
+});
+
+updateTempDisplay();
+bootSequence();
+</script>
+</body>
+</html>
