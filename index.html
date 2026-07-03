@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>As OS // Terminal Interface v4.0</title>
+<title>As OS // Terminal Interface v5.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=VT323&display=swap" rel="stylesheet">
@@ -48,16 +48,8 @@
   .line.prompt { color: var(--warn); font-weight: 700; }
   .glow { text-shadow: 0 0 5px currentColor; }
   
-  /* Think Box */
-  .think-box {
-    border: 1px dashed var(--fg-muted); background: rgba(0,0,0,0.3);
-    padding: 8px 12px; margin: 6px 0 10px 0; border-radius: 4px;
-    font-size: 12px; color: var(--fg-muted); position: relative;
-  }
-  .think-box::before {
-    content: 'THINKING PROCESS'; position: absolute; top: -8px; left: 10px;
-    background: var(--bg); padding: 0 6px; font-size: 10px; color: var(--magenta); font-weight: 700;
-  }
+  .think-box { border: 1px dashed var(--fg-muted); background: rgba(0,0,0,0.3); padding: 8px 12px; margin: 6px 0 10px 0; border-radius: 4px; font-size: 12px; color: var(--fg-muted); position: relative; }
+  .think-box::before { content: 'THINKING PROCESS'; position: absolute; top: -8px; left: 10px; background: var(--bg); padding: 0 6px; font-size: 10px; color: var(--magenta); font-weight: 700; }
   .think-content { white-space: pre-wrap; margin-top: 4px; }
 
   .ascii-art { color: var(--fg); text-shadow: var(--glow); font-size: 11px; line-height: 1.15; white-space: pre; margin: 10px 0; }
@@ -65,29 +57,19 @@
   .code-block::before { content: attr(data-lang); position: absolute; top: -1px; right: 8px; background: var(--bg-panel); padding: 0 6px; font-size: 10px; color: var(--fg-muted); border: 1px solid var(--border); border-top: none; }
   .code-inline { background: color-mix(in srgb, var(--fg) 12%, transparent); padding: 1px 5px; border-radius: 2px; color: var(--accent); font-size: 13px; }
   
-  /* Media & Tool Cards */
   .media-frame { border: 1px solid var(--border-bright); padding: 6px; margin: 14px 0; display: inline-block; position: relative; background: var(--bg-panel); max-width: 100%; box-shadow: 0 0 20px color-mix(in srgb, var(--fg) 15%, transparent); }
   .media-frame::before { content: '[ ' attr(data-type) ' OUTPUT // ID: @' attr(data-id) ' ]'; position: absolute; top: -10px; left: 8px; background: var(--bg); padding: 0 6px; font-size: 10px; color: var(--fg); letter-spacing: 1px; }
   .media-frame img, .media-frame video { display: block; max-width: 100%; max-height: 460px; }
-  .media-meta { font-size: 11px; color: var(--fg-muted); margin-top: 6px; padding: 6px 8px; border-top: 1px dashed var(--border); word-break: break-all; display: flex; justify-content: space-between; align-items: center; }
+  .media-meta { font-size: 11px; color: var(--fg-muted); margin-top: 6px; padding: 6px 8px; border-top: 1px dashed var(--border); word-break: break-all; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   
-  .tool-card {
-    border: 1px solid var(--border-bright); padding: 14px; margin: 14px 0;
-    background: var(--bg-panel); display: flex; gap: 16px; align-items: flex-start;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  }
+  .tool-card { border: 1px solid var(--border-bright); padding: 14px; margin: 14px 0; background: var(--bg-panel); display: flex; gap: 16px; align-items: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
   .tool-card img { width: 140px; height: 140px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
   .tool-card .info { flex: 1; }
   .tool-card h3 { color: var(--fg-bright); margin-bottom: 6px; font-size: 16px; }
   .tool-card p { color: var(--fg-muted); font-size: 12px; margin-bottom: 8px; }
-  .tool-card .rating { color: var(--warn); font-weight: 700; }
   .tool-card .badge { display: inline-block; background: var(--border); padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-right: 4px; color: var(--accent); }
 
-  .btn {
-    display: inline-block; background: var(--fg); color: var(--bg); padding: 6px 12px;
-    text-decoration: none; font-weight: 700; font-size: 12px; border-radius: 2px;
-    margin-top: 8px; margin-right: 8px; transition: transform 0.1s;
-  }
+  .btn { display: inline-block; background: var(--fg); color: var(--bg); padding: 6px 12px; text-decoration: none; font-weight: 700; font-size: 12px; border-radius: 2px; margin-top: 8px; margin-right: 8px; transition: transform 0.1s; }
   .btn:hover { transform: translateY(-1px); box-shadow: 0 0 10px var(--fg); }
   .btn.secondary { background: transparent; border: 1px solid var(--fg); color: var(--fg); }
   .btn.download { background: var(--accent); color: #000; }
@@ -131,6 +113,7 @@
 </head>
 <body class="theme-green">
 <div class="crt-overlay"></div><div class="crt-vignette"></div><div class="crt-flicker"></div>
+<input type="file" id="fileInput" style="display:none;">
 
 <div id="terminal">
   <header class="header">
@@ -150,11 +133,11 @@
     <div class="autocomplete-box" id="autocompleteBox"></div>
     <div class="input-hint">
       <span><span class="cmd">/help</span> cmds</span>
-      <span><span class="cmd">@id</span> ref media</span>
+      <span><span class="cmd">/brew</span> host html</span>
+      <span><span class="cmd">/github</span> chart</span>
+      <span><span class="cmd">/nasa</span> images</span>
+      <span><span class="cmd">/mbti</span> test</span>
       <span><span class="cmd">/yt</span> download</span>
-      <span><span class="cmd">/movie</span> database</span>
-      <span><span class="cmd">/search</span> web</span>
-      <span><span class="cmd">/mail</span> temp mail</span>
     </div>
     <div class="input-area">
       <span class="prompt-symbol" id="promptSymbol">▸</span>
@@ -173,7 +156,7 @@ const API_BASE = 'https://apihub.agnes-ai.com';
 let conversationHistory = [];
 let currentModel = 'agnes-2.0-flash';
 let temperature = 0.7;
-let systemPrompt = 'You are AS, an AI assistant operating in a retro terminal interface called "As OS". Be concise, technical, and helpful. Use markdown: fenced code blocks with language tags, inline code with backticks, bold with **. Keep responses focused unless detail is requested. If you need real-time info, use tools.';
+let systemPrompt = 'You are AS, an AI assistant operating in a retro terminal interface called "As OS". Be concise, technical, and helpful. You have powerful tools. If a user asks a question that is better explained visually, use `generate_visual_aid`. If they ask about space, use `search_nasa_images`. If you generate a long report or code, use `publish_to_brewpage` to give them a link.';
 let isProcessing = false;
 let commandHistory = [];
 let historyIndex = -1;
@@ -182,71 +165,36 @@ let currentTheme = 'green';
 let assets = []; 
 let interactiveCallback = null;
 let acState = { type: null, items: [], activeIndex: 0 };
+let mbtiState = { items: [], answers: [], index: 0 };
 
 const AVAILABLE_TOOLS = [
-  {
-    type: "function",
-    function: {
-      name: "get_current_datetime",
-      description: "Get the current exact date and time.",
-      parameters: { type: "object", properties: {} }
-    }
-  },
-  {
-    type: "function",
-    function: {
-      name: "web_search",
-      description: "Search the web for real-time information using Jina AI.",
-      parameters: { type: "object", properties: { query: { type: "string", description: "The search query" } }, required: ["query"] }
-    }
-  },
-  {
-    type: "function",
-    function: {
-      name: "read_url",
-      description: "Read the content of a specific URL using Jina AI Reader.",
-      parameters: { type: "object", properties: { url: { type: "string", description: "The URL to read" } }, required: ["url"] }
-    }
-  },
-  {
-    type: "function",
-    function: {
-      name: "shorten_url",
-      description: "Shorten a long URL.",
-      parameters: { type: "object", properties: { url: { type: "string", description: "The long URL to shorten" } }, required: ["url"] }
-    }
-  },
-  {
-    type: "function",
-    function: {
-      name: "create_temp_email",
-      description: "Generate a temporary email address.",
-      parameters: { type: "object", properties: {} }
-    }
-  }
+  { type: "function", function: { name: "get_current_datetime", description: "Get the current exact date and time.", parameters: { type: "object", properties: {} } } },
+  { type: "function", function: { name: "web_search", description: "Search the web via Jina AI.", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"] } } },
+  { type: "function", function: { name: "read_url", description: "Read URL content via Jina AI.", parameters: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } } },
+  { type: "function", function: { name: "shorten_url", description: "Shorten a URL.", parameters: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } } },
+  { type: "function", function: { name: "create_temp_email", description: "Generate a temp email.", parameters: { type: "object", properties: {} } } },
+  { type: "function", function: { name: "publish_to_brewpage", description: "Publish HTML or Markdown to BrewPage to get a shareable link.", parameters: { type: "object", properties: { content: { type: "string" }, format: { type: "string", enum: ["html", "markdown"] } }, required: ["content", "format"] } } },
+  { type: "function", function: { name: "generate_visual_aid", description: "Generate an image to help explain a concept visually.", parameters: { type: "object", properties: { prompt: { type: "string" } }, required: ["prompt"] } } },
+  { type: "function", function: { name: "search_nasa_images", description: "Search NASA image database for real space photos.", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"] } } }
 ];
 
 const COMMANDS_LIST = [
   { cmd: '/help', desc: 'Show all commands' },
-  { cmd: '/image', desc: 'Generate image (asks for size)' },
-  { cmd: '/image2', desc: 'High-density image gen' },
-  { cmd: '/video', desc: 'Generate video (asks size & duration)' },
-  { cmd: '/look', desc: 'Vision: analyze image (@id or URL)' },
-  { cmd: '/think', desc: 'Chat with visible thinking process' },
-  { cmd: '/search', desc: 'Search web via Jina AI' },
-  { cmd: '/read', desc: 'Read URL content via Jina AI' },
-  { cmd: '/yt', desc: 'YouTube video downloader' },
-  { cmd: '/movie', desc: 'Movie database (IMDb)' },
-  { cmd: '/mail', desc: 'Generate temp email address' },
-  { cmd: '/shorten', desc: 'Shorten a URL' },
-  { cmd: '/weather', desc: 'Get weather via tool calling' },
-  { cmd: '/gallery', desc: 'List all generated assets' },
-  { cmd: '/temp', desc: 'Set temperature (0-2)' },
-  { cmd: '/theme', desc: 'Change theme: green, amber, cyan, matrix' },
-  { cmd: '/clear', desc: 'Clear terminal output' },
-  { cmd: '/reset', desc: 'Reset conversation history' },
-  { cmd: '/neofetch', desc: 'System information display' },
-  { cmd: '/reboot', desc: 'Reboot the terminal' }
+  { cmd: '/image', desc: 'Generate image' },
+  { cmd: '/video', desc: 'Generate video' },
+  { cmd: '/look', desc: 'Vision: analyze image' },
+  { cmd: '/think', desc: 'Chat with visible thinking' },
+  { cmd: '/brew', desc: 'Host HTML/MD to BrewPage' },
+  { cmd: '/upload', desc: 'Upload file to BrewPage' },
+  { cmd: '/github', desc: 'GitHub contributions chart' },
+  { cmd: '/nasa', desc: 'Search NASA images' },
+  { cmd: '/mbti', desc: 'MBTI personality test' },
+  { cmd: '/yt', desc: 'YouTube downloader' },
+  { cmd: '/movie', desc: 'Movie database' },
+  { cmd: '/search', desc: 'Web search (Jina)' },
+  { cmd: '/mail', desc: 'Temp email' },
+  { cmd: '/clear', desc: 'Clear terminal' },
+  { cmd: '/theme', desc: 'Change colors' }
 ];
 
 // ═══════════════════════════════════════════════════════════
@@ -261,50 +209,30 @@ const clock = document.getElementById('clock');
 const promptSymbol = document.getElementById('promptSymbol');
 const tempText = document.getElementById('tempText');
 const acBox = document.getElementById('autocompleteBox');
+const fileInput = document.getElementById('fileInput');
 
 // ═══════════════════════════════════════════════════════════
 // UTILITIES
 // ═══════════════════════════════════════════════════════════
-function updateClock() {
-  const n = new Date();
-  clock.textContent = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
-}
+function updateClock() { const n = new Date(); clock.textContent = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`; }
 setInterval(updateClock, 1000); updateClock();
 
-function appendLine(text, type = '') {
-  const line = document.createElement('div');
-  line.className = `line ${type}`;
-  line.textContent = text;
-  output.appendChild(line); output.scrollTop = output.scrollHeight; return line;
-}
-function appendHTML(html, className = '') {
-  const div = document.createElement('div');
-  div.className = className; div.innerHTML = html;
-  output.appendChild(div); output.scrollTop = output.scrollHeight; return div;
-}
+function appendLine(text, type = '') { const l = document.createElement('div'); l.className = `line ${type}`; l.textContent = text; output.appendChild(l); output.scrollTop = output.scrollHeight; return l; }
+function appendHTML(html, className = '') { const d = document.createElement('div'); d.className = className; d.innerHTML = html; output.appendChild(d); output.scrollTop = output.scrollHeight; return d; }
 
 function setStatus(status) {
-  statusDot.className = 'status-dot';
-  promptSymbol.classList.remove('busy', 'prompt');
-  if (status === 'busy') {
-    statusDot.classList.add('busy'); statusText.textContent = 'PROCESSING';
-    promptSymbol.classList.add('busy'); input.disabled = true;
-  } else if (status === 'error') {
-    statusDot.classList.add('error'); statusText.textContent = 'ERROR'; input.disabled = false;
-  } else if (status === 'tool') {
-    statusDot.classList.add('tool'); statusText.textContent = 'TOOL CALL'; promptSymbol.classList.add('prompt'); input.disabled = false;
-  } else if (status === 'prompt') {
-    statusDot.classList.add('busy'); statusText.textContent = 'AWAITING INPUT'; promptSymbol.classList.add('prompt'); input.disabled = false;
-  } else {
-    statusText.textContent = 'ONLINE'; input.disabled = false;
-  }
+  statusDot.className = 'status-dot'; promptSymbol.classList.remove('busy', 'prompt');
+  if (status === 'busy') { statusDot.classList.add('busy'); statusText.textContent = 'PROCESSING'; promptSymbol.classList.add('busy'); input.disabled = true; }
+  else if (status === 'error') { statusDot.classList.add('error'); statusText.textContent = 'ERROR'; input.disabled = false; }
+  else if (status === 'tool') { statusDot.classList.add('tool'); statusText.textContent = 'TOOL CALL'; promptSymbol.classList.add('prompt'); input.disabled = false; }
+  else if (status === 'prompt') { statusDot.classList.add('busy'); statusText.textContent = 'AWAITING INPUT'; promptSymbol.classList.add('prompt'); input.disabled = false; }
+  else { statusText.textContent = 'ONLINE'; input.disabled = false; }
 }
 
 function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-
 function renderMarkdown(text) {
   let html = escapeHtml(text);
-  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, lang, code) => `<div class="code-block" data-lang="${lang || 'code'}">${code.trim()}</div>`);
+  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, l, c) => `<div class="code-block" data-lang="${l||'code'}">${c.trim()}</div>`);
   html = html.replace(/`([^`\n]+)`/g, '<span class="code-inline">$1</span>');
   html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/^### (.+)$/gm, '<div style="color:var(--accent);font-weight:700;margin:8px 0 4px">$1</div>');
@@ -317,120 +245,87 @@ function renderMarkdown(text) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// AUTOCOMPLETE LOGIC
+// AUTOCOMPLETE
 // ═══════════════════════════════════════════════════════════
 function checkAutocomplete() {
-  const val = input.value;
-  const cursorPos = input.selectionStart;
-  const textBeforeCursor = val.substring(0, cursorPos);
-  const match = textBeforeCursor.match(/(?:^|\s)(\/|@)([^\s]*)$/);
-  
-  if (match) {
-    const prefix = match[1];
-    const query = match[2];
-    if (prefix === '/') {
-      acState.type = 'command';
-      acState.items = COMMANDS_LIST.filter(c => c.cmd.startsWith('/' + query));
-    } else if (prefix === '@') {
-      acState.type = 'asset';
-      acState.items = assets.filter(a => a.id.toString().startsWith(query));
-    }
-    if (acState.items.length > 0) {
-      acState.activeIndex = 0;
-      renderAutocomplete();
-      return;
-    }
+  const val = input.value; const cp = input.selectionStart; const t = val.substring(0, cp);
+  const m = t.match(/(?:^|\s)(\/|@)([^\s]*)$/);
+  if (m) {
+    const p = m[1], q = m[2];
+    if (p === '/') { acState.type = 'command'; acState.items = COMMANDS_LIST.filter(c => c.cmd.startsWith('/' + q)); }
+    else if (p === '@') { acState.type = 'asset'; acState.items = assets.filter(a => a.id.toString().startsWith(q)); }
+    if (acState.items.length > 0) { acState.activeIndex = 0; renderAutocomplete(); return; }
   }
   hideAutocomplete();
 }
-
 function renderAutocomplete() {
   acBox.innerHTML = '';
   acState.items.forEach((item, idx) => {
     const div = document.createElement('div');
     div.className = 'ac-item' + (idx === acState.activeIndex ? ' active' : '');
-    if (acState.type === 'command') {
-      div.innerHTML = `<div class="ac-icon">▸</div><div class="ac-content"><div class="ac-title">${item.cmd}</div><div class="ac-desc">${item.desc}</div></div>`;
-    } else {
-      const thumb = item.type === 'image' ? `<img src="${item.url}" class="ac-thumb" alt="">` : `<div class="ac-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--magenta);font-size:10px;">VID</div>`;
-      div.innerHTML = `${thumb}<div class="ac-content"><div class="ac-title">@${item.id} [${item.type.toUpperCase()}]</div><div class="ac-desc">${escapeHtml(item.prompt.substring(0, 60))}</div></div>`;
-    }
+    if (acState.type === 'command') div.innerHTML = `<div class="ac-icon">▸</div><div class="ac-content"><div class="ac-title">${item.cmd}</div><div class="ac-desc">${item.desc}</div></div>`;
+    else { const t = item.type === 'image' ? `<img src="${item.url}" class="ac-thumb">` : `<div class="ac-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--magenta);font-size:10px;">VID</div>`; div.innerHTML = `${t}<div class="ac-content"><div class="ac-title">@${item.id} [${item.type.toUpperCase()}]</div><div class="ac-desc">${escapeHtml(item.prompt.substring(0, 60))}</div></div>`; }
     div.addEventListener('click', () => applyAutocomplete(idx));
     acBox.appendChild(div);
   });
   acBox.style.display = 'flex';
 }
-
 function applyAutocomplete(idx) {
   if (idx === undefined) idx = acState.activeIndex;
-  const item = acState.items[idx];
-  if (!item) return;
-  const val = input.value;
-  const cursorPos = input.selectionStart;
-  const textBeforeCursor = val.substring(0, cursorPos);
-  const insertText = acState.type === 'command' ? item.cmd + ' ' : '@' + item.id + ' ';
-  const match = textBeforeCursor.match(/(?:^|\s)(\/|@)([^\s]*)$/);
-  const wordStart = match.index + (match[0].length - match[1].length - match[2].length);
-  input.value = val.substring(0, wordStart) + insertText + val.substring(cursorPos);
-  input.focus();
-  const newCursorPos = wordStart + insertText.length;
-  input.setSelectionRange(newCursorPos, newCursorPos);
+  const item = acState.items[idx]; if (!item) return;
+  const val = input.value; const cp = input.selectionStart; const t = val.substring(0, cp);
+  const ins = acState.type === 'command' ? item.cmd + ' ' : '@' + item.id + ' ';
+  const m = t.match(/(?:^|\s)(\/|@)([^\s]*)$/);
+  const ws = m.index + (m[0].length - m[1].length - m[2].length);
+  input.value = val.substring(0, ws) + ins + val.substring(cp);
+  input.focus(); input.setSelectionRange(ws + ins.length, ws + ins.length);
   hideAutocomplete();
 }
-
 function hideAutocomplete() { acBox.style.display = 'none'; acState.type = null; acState.items = []; }
 
 // ═══════════════════════════════════════════════════════════
-// ASSET & URL RESOLUTION
+// ASSET & TOOL EXECUTION
 // ═══════════════════════════════════════════════════════════
-function addAsset(type, url, prompt) {
-  const id = assets.length + 1;
-  assets.push({ id, type, url, prompt });
-  appendLine(`[SYSTEM] Saved as asset @${id}`, 'success');
-  return id;
-}
-
+function addAsset(type, url, prompt) { const id = assets.length + 1; assets.push({ id, type, url, prompt }); appendLine(`[SYSTEM] Saved as asset @${id}`, 'success'); return id; }
 function resolveReferences(text) {
-  const idMatches = [...text.matchAll(/@(\d+)/g)];
-  const urlMatches = [...text.matchAll(/(https?:\/\/[^\s]+)/g)];
-  const urls = []; const refs = []; let cleanText = text;
-  idMatches.forEach(m => {
-    const id = parseInt(m[1]);
-    const asset = assets.find(a => a.id === id);
-    if (asset) { urls.push(asset.url); refs.push(asset); cleanText = cleanText.replace(m[0], `[Reference @${id}]`); }
-  });
-  urlMatches.forEach(m => {
-    if (!urls.includes(m[0])) { urls.push(m[0]); refs.push({ type: 'url', url: m[0], id: 'URL' }); cleanText = cleanText.replace(m[0], `[Reference URL]`); }
-  });
-  return { urls, text: cleanText, refs };
+  const idM = [...text.matchAll(/@(\d+)/g)]; const urlM = [...text.matchAll(/(https?:\/\/[^\s]+)/g)];
+  const urls = [], refs = []; let cT = text;
+  idM.forEach(m => { const id = parseInt(m[1]); const a = assets.find(x => x.id === id); if (a) { urls.push(a.url); refs.push(a); cT = cT.replace(m[0], `[Ref @${id}]`); } });
+  urlM.forEach(m => { if (!urls.includes(m[0])) { urls.push(m[0]); refs.push({ type: 'url', url: m[0], id: 'URL' }); cT = cT.replace(m[0], `[Ref URL]`); } });
+  return { urls, text: cT, refs };
 }
 
-// ═══════════════════════════════════════════════════════════
-// TOOL EXECUTION
-// ═══════════════════════════════════════════════════════════
 async function executeToolCall(name, args) {
   appendLine(`[TOOL] Executing: ${name}(${JSON.stringify(args)})`, 'info');
   try {
     if (name === 'get_current_datetime') return new Date().toString();
-    if (name === 'web_search') {
-      const res = await fetch(`https://s.jina.ai/${encodeURIComponent(args.query)}`);
-      return await res.text();
+    if (name === 'web_search') return await (await fetch(`https://s.jina.ai/${encodeURIComponent(args.query)}`)).text();
+    if (name === 'read_url') return await (await fetch(`https://r.jina.ai/${args.url}`)).text();
+    if (name === 'shorten_url') { const r = await (await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(args.url)}`)).json(); return r.shorturl || 'Failed'; }
+    if (name === 'create_temp_email') { const r = await (await fetch('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1')).json(); return r[0] || 'Failed'; }
+    if (name === 'publish_to_brewpage') {
+      const r = await fetch(`https://brewpage.app/api/html?format=${args.format}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: args.content }) });
+      const d = await r.json();
+      if (d.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>Content Hosted</h3><p>URL: <a href="${d.link}" target="_blank">${d.link}</a></p></div></div>`); return `Published successfully! URL: ${d.link}`; }
+      return 'Failed to publish';
     }
-    if (name === 'read_url') {
-      const res = await fetch(`https://r.jina.ai/${args.url}`);
-      return await res.text();
+    if (name === 'generate_visual_aid') {
+      const r = await fetch(`${API_BASE}/v1/images/generations`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'agnes-image-2.0-flash', prompt: args.prompt, size: '1024x1024', extra_body: { response_format: 'url' } }) });
+      const d = await r.json(); const url = d.data?.[0]?.url;
+      if (url) { const id = addAsset('image', url, args.prompt); appendHTML(`<div class="media-frame" data-type="AI_IMAGE" data-id="${id}"><img src="${url}"><div class="media-meta"><span>AI Visual Aid</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); return `Image generated and displayed as @${id}. URL: ${url}`; }
+      return 'Failed to generate image';
     }
-    if (name === 'shorten_url') {
-      const res = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(args.url)}`);
-      const data = await res.json();
-      return data.shorturl || 'Failed to shorten URL';
+    if (name === 'search_nasa_images') {
+      const r = await fetch(`https://images-api.nasa.gov/search?q=${encodeURIComponent(args.query)}`); const d = await r.json();
+      const items = d.collection?.items || [];
+      if (items.length > 0 && items[0].links && items[0].links[0].href) {
+        const url = items[0].links[0].href;
+        appendHTML(`<div class="media-frame" data-type="NASA_IMG"><img src="${url}"><div class="media-meta"><span>NASA Image: ${args.query}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`);
+        return `Found and displayed NASA image for "${args.query}". URL: ${url}`;
+      }
+      return `No images found for "${args.query}"`;
     }
-    if (name === 'create_temp_email') {
-      const res = await fetch('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1');
-      const data = await res.json();
-      return data[0] || 'Failed to generate email';
-    }
-  } catch (e) { return `Tool execution failed: ${e.message}`; }
+  } catch (e) { return `Tool failed: ${e.message}`; }
   return "Tool not found";
 }
 
@@ -440,586 +335,346 @@ async function executeToolCall(name, args) {
 async function chat(userMessage, visionContent = null, enableThinking = false) {
   conversationHistory = conversationHistory.filter(m => m.role !== 'system');
   conversationHistory.unshift({ role: 'system', content: systemPrompt });
-  
   if (visionContent) conversationHistory.push({ role: 'user', content: visionContent });
   else conversationHistory.push({ role: 'user', content: userMessage });
-  
   ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length;
   
-  const assistantDiv = document.createElement('div');
-  assistantDiv.className = 'line assistant';
-  const prefix = document.createElement('span');
-  prefix.className = 'assistant-prefix'; prefix.textContent = 'as▸';
-  assistantDiv.appendChild(prefix);
-  const contentSpan = document.createElement('span');
-  assistantDiv.appendChild(contentSpan);
-  const cursor = document.createElement('span');
-  cursor.className = 'tw-cursor';
-  assistantDiv.appendChild(cursor);
-  output.appendChild(assistantDiv);
-  output.scrollTop = output.scrollHeight;
-  
-  contentSpan.innerHTML = '<span class="thinking-dots"></span>';
-  setStatus('busy');
+  const aDiv = document.createElement('div'); aDiv.className = 'line assistant';
+  const pfx = document.createElement('span'); pfx.className = 'assistant-prefix'; pfx.textContent = 'as▸'; aDiv.appendChild(pfx);
+  const cSpan = document.createElement('span'); aDiv.appendChild(cSpan);
+  const cur = document.createElement('span'); cur.className = 'tw-cursor'; aDiv.appendChild(cur);
+  output.appendChild(aDiv); output.scrollTop = output.scrollHeight;
+  cSpan.innerHTML = '<span class="thinking-dots"></span>'; setStatus('busy');
 
   try {
-    // Step 1: Non-streaming request to check for tool calls
     let payload = { model: currentModel, messages: conversationHistory, stream: false, temperature };
     if (enableThinking) payload.chat_template_kwargs = { enable_thinking: true };
     if (!visionContent) payload.tools = AVAILABLE_TOOLS;
 
-    let res = await fetch(`${API_BASE}/v1/chat/completions`, {
-      method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    let res = await fetch(`${API_BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-    let data = await res.json();
-    let msg = data.choices[0].message;
+    let data = await res.json(); let msg = data.choices[0].message;
 
-    // Step 2: Execute tools if any
     if (msg.tool_calls && msg.tool_calls.length > 0) {
-      cursor.remove();
-      contentSpan.innerHTML = '<span style="color:var(--magenta)">[Initiating Tool Call...]</span>';
-      setStatus('tool');
-      conversationHistory.push(msg); // Save assistant tool call request
-      
-      for (let toolCall of msg.tool_calls) {
-        const args = JSON.parse(toolCall.function.arguments);
-        const result = await executeToolCall(toolCall.function.name, args);
+      cur.remove(); cSpan.innerHTML = '<span style="color:var(--magenta)">[Initiating Tool Call...]</span>'; setStatus('tool');
+      conversationHistory.push(msg);
+      for (let tc of msg.tool_calls) {
+        const args = JSON.parse(tc.function.arguments);
+        const result = await executeToolCall(tc.function.name, args);
         appendLine(`[TOOL] Result received.`, 'success');
-        conversationHistory.push({ role: "tool", tool_call_id: toolCall.id, name: toolCall.function.name, content: result });
+        conversationHistory.push({ role: "tool", tool_call_id: tc.id, name: tc.function.name, content: result });
       }
-      
-      // Step 3: Final streaming request with tool results
-      contentSpan.innerHTML = '';
-      assistantDiv.appendChild(cursor);
-      setStatus('busy');
-      
+      cSpan.innerHTML = ''; aDiv.appendChild(cur); setStatus('busy');
       payload = { model: currentModel, messages: conversationHistory, stream: true, temperature };
       if (enableThinking) payload.chat_template_kwargs = { enable_thinking: true };
-      
-      res = await fetch(`${API_BASE}/v1/chat/completions`, {
-        method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      res = await fetch(`${API_BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     } else {
-      // No tool calls, just simulate streaming the content we already got
-      // To make it feel live, we'll fake a stream by chunking the text
-      const textToStream = msg.content || "";
-      msg.content = ""; // Reset for streaming parser
-      const fakeStream = async () => {
-        const chunks = textToStream.match(/.{1,5}/g) || [];
-        const encoder = new TextEncoder();
-        const stream = new ReadableStream({
-          start(controller) {
-            chunks.forEach(c => controller.enqueue(encoder.encode(`data: ${JSON.stringify({choices:[{delta:{content:c}}]})}\n\n`)));
-            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-            controller.close();
-          }
-        });
-        return new Response(stream);
-      };
+      const txt = msg.content || ""; msg.content = "";
+      const fakeStream = async () => { const ch = txt.match(/.{1,5}/g) || []; const enc = new TextEncoder(); const s = new ReadableStream({ start(c) { ch.forEach(x => c.enqueue(enc.encode(`data: ${JSON.stringify({choices:[{delta:{content:x}}]})}\n\n`))); c.enqueue(enc.encode('data: [DONE]\n\n')); c.close(); } }); return new Response(s); };
       res = await fakeStream();
     }
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '', fullResponse = '', firstToken = true;
-    let thinkBox = null, thinkContent = null;
-    let isThinking = false;
-
+    const reader = res.body.getReader(); const decoder = new TextDecoder();
+    let buffer = '', fullResp = '', firstTok = true, tBox = null, tCont = null;
     while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-      
+      const { done, value } = await reader.read(); if (done) break;
+      buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop() || '';
       for (let line of lines) {
-        const t = line.trim();
-        if (!t || !t.startsWith('data:')) continue;
-        const d = t.slice(5).trim();
-        if (d === '[DONE]') continue;
+        const t = line.trim(); if (!t || !t.startsWith('data:')) continue; const d = t.slice(5).trim(); if (d === '[DONE]') continue;
         try {
-          const parsed = JSON.parse(d);
-          const delta = parsed.choices?.[0]?.delta?.content || '';
+          const p = JSON.parse(d); const delta = p.choices?.[0]?.delta?.content || '';
           if (delta) {
-            if (firstToken) { contentSpan.innerHTML = ''; firstToken = false; }
-            fullResponse += delta;
-            
-            // Parse <think tags
-            if (fullResponse.includes("<think") && !fullResponse.includes("</think")) {
-              if (!thinkBox) {
-                thinkBox = document.createElement('div');
-                thinkBox.className = 'think-box';
-                thinkContent = document.createElement('div');
-                thinkContent.className = 'think-content';
-                thinkBox.appendChild(thinkContent);
-                contentSpan.appendChild(thinkBox);
-              }
-              const currentThink = fullResponse.split("<think")[1].replace(/^[^>]*>/, '');
-              thinkContent.textContent = currentThink;
-            } else if (fullResponse.includes("</think")) {
-              // Done thinking, render main text
-              const parts = fullResponse.split("</think");
-              if (thinkContent && parts[0]) {
-                thinkContent.textContent = parts[0].split("<think")[1].replace(/^[^>]*>/, '');
-              }
-              const mainText = parts[1] || "";
-              // Remove old main content and set new
-              let existingMain = contentSpan.querySelector('.main-output');
-              if (!existingMain) {
-                existingMain = document.createElement('div');
-                existingMain.className = 'main-output';
-                contentSpan.appendChild(existingMain);
-              }
-              existingMain.innerHTML = renderMarkdown(mainText);
+            if (firstTok) { cSpan.innerHTML = ''; firstTok = false; }
+            fullResp += delta;
+            if (fullResp.includes("<think") && !fullResp.includes("</think")) {
+              if (!tBox) { tBox = document.createElement('div'); tBox.className = 'think-box'; tCont = document.createElement('div'); tCont.className = 'think-content'; tBox.appendChild(tCont); cSpan.appendChild(tBox); }
+              tCont.textContent = fullResp.split("<think")[1].replace(/^[^>]*>/, '');
+            } else if (fullResp.includes("</think")) {
+              const parts = fullResp.split("</think");
+              if (tCont && parts[0]) tCont.textContent = parts[0].split("<think")[1].replace(/^[^>]*>/, '');
+              let main = cSpan.querySelector('.main-output'); if (!main) { main = document.createElement('div'); main.className = 'main-output'; cSpan.appendChild(main); }
+              main.innerHTML = renderMarkdown(parts[1] || "");
             } else {
-              let existingMain = contentSpan.querySelector('.main-output');
-              if (!existingMain) {
-                existingMain = document.createElement('div');
-                existingMain.className = 'main-output';
-                contentSpan.appendChild(existingMain);
-              }
-              existingMain.innerHTML = renderMarkdown(fullResponse);
+              let main = cSpan.querySelector('.main-output'); if (!main) { main = document.createElement('div'); main.className = 'main-output'; cSpan.appendChild(main); }
+              main.innerHTML = renderMarkdown(fullResp);
             }
             output.scrollTop = output.scrollHeight;
           }
         } catch (e) {}
       }
     }
-    
-    cursor.remove();
-    if (!fullResponse) contentSpan.innerHTML = '<span style="color:var(--warn)">(empty response)</span>';
-    
-    // Clean up tags before saving to history
-    const cleanResponse = fullResponse.replace(/<think[\s\S]*?<\/think>/g, '').trim();
-    conversationHistory.push({ role: 'assistant', content: cleanResponse });
-    ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length;
-    setStatus('online');
-    
-  } catch (error) {
-    cursor.remove();
-    contentSpan.innerHTML = `<span style="color:var(--err)">[ERROR] ${escapeHtml(error.message)}</span>`;
-    setStatus('error');
-    setTimeout(() => setStatus('online'), 3000);
-    conversationHistory.pop();
-    ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length;
-  }
+    cur.remove(); if (!fullResp) cSpan.innerHTML = '<span style="color:var(--warn)">(empty response)</span>';
+    const clean = fullResp.replace(/<think[\s\S]*?<\/think>/g, '').trim();
+    conversationHistory.push({ role: 'assistant', content: clean });
+    ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length; setStatus('online');
+  } catch (e) { cur.remove(); cSpan.innerHTML = `<span style="color:var(--err)">[ERROR] ${escapeHtml(e.message)}</span>`; setStatus('error'); setTimeout(() => setStatus('online'), 3000); conversationHistory.pop(); ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length; }
 }
 
 // ═══════════════════════════════════════════════════════════
-// MEDIA GENERATION
+// MEDIA GEN
 // ═══════════════════════════════════════════════════════════
 async function generateImageFlow(prompt, model) {
   const { urls, text, refs } = resolveReferences(prompt);
-  appendLine('[IMAGE] Select output size:', 'prompt');
-  ['1. 1024x1024', '2. 1280x720', '3. 720x1280', '4. 1024x768', '5. 768x1024'].forEach(o => appendLine(`  ${o}`, 'system'));
+  appendLine('[IMAGE] Select size:', 'prompt'); ['1. 1024x1024', '2. 1280x720', '3. 720x1280', '4. 1024x768', '5. 768x1024'].forEach(o => appendLine(`  ${o}`, 'system'));
   setStatus('prompt');
   interactiveCallback = async (choice) => {
-    setStatus('online');
-    let size = '1024x1024';
-    if (choice === '2') size = '1280x720'; else if (choice === '3') size = '720x1280';
-    else if (choice === '4') size = '1024x768'; else if (choice === '5') size = '768x1024';
-    else if (/^\d+x\d+$/.test(choice)) size = choice;
-    
+    setStatus('online'); let size = '1024x1024';
+    if (choice === '2') size = '1280x720'; else if (choice === '3') size = '720x1280'; else if (choice === '4') size = '1024x768'; else if (choice === '5') size = '768x1024'; else if (/^\d+x\d+$/.test(choice)) size = choice;
     appendLine(`[IMAGE] Gen init... Model: ${model}, Size: ${size}`, 'info');
-    const spin = appendHTML('<span class="spinner"></span> Rendering...');
-    setStatus('busy');
+    const spin = appendHTML('<span class="spinner"></span> Rendering...'); setStatus('busy');
     try {
       const body = { model, prompt: text, size, extra_body: { response_format: 'url' } };
       if (urls.length > 0) body.extra_body.image = urls;
-      const res = await fetch(`${API_BASE}/v1/images/generations`, {
-        method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      spin.remove();
-      if (data.data?.[0]?.url) {
-        const url = data.data[0].url;
-        const id = addAsset('image', url, text);
-        appendHTML(`<div class="media-frame" data-type="IMAGE" data-id="${id}"><img src="${url}" alt="Generated image"><div class="media-meta"><span>Model: ${model} | Size: ${size}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`);
-        appendLine(`[IMAGE] Complete.`, 'success');
-      } else throw new Error('No image URL');
+      const res = await fetch(`${API_BASE}/v1/images/generations`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`); const data = await res.json(); spin.remove();
+      if (data.data?.[0]?.url) { const url = data.data[0].url; const id = addAsset('image', url, text); appendHTML(`<div class="media-frame" data-type="IMAGE" data-id="${id}"><img src="${url}"><div class="media-meta"><span>Model: ${model} | Size: ${size}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); appendLine(`[IMAGE] Complete.`, 'success'); }
+      else throw new Error('No URL');
     } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('error'); setTimeout(() => setStatus('online'), 3000); }
   };
 }
 
 async function generateVideoFlow(prompt) {
   const { urls, text, refs } = resolveReferences(prompt);
-  appendLine('[VIDEO] Select resolution:', 'prompt');
-  ['1. 1152x768 (16:9)', '2. 768x1152 (9:16)', '3. 768x768 (1:1)'].forEach(o => appendLine(`  ${o}`, 'system'));
+  appendLine('[VIDEO] Select resolution:', 'prompt'); ['1. 1152x768 (16:9)', '2. 768x1152 (9:16)', '3. 768x768 (1:1)'].forEach(o => appendLine(`  ${o}`, 'system'));
   setStatus('prompt');
   interactiveCallback = (resChoice) => {
-    let w = 1152, h = 768;
-    if (resChoice === '2') { w = 768; h = 1152; } else if (resChoice === '3') { w = 768; h = 768; }
-    appendLine('[VIDEO] Select duration:', 'prompt');
-    ['1. ~3s (81 frames)', '2. ~5s (121 frames)', '3. ~10s (241 frames)'].forEach(o => appendLine(`  ${o}`, 'system'));
-    setStatus('prompt');
+    let w = 1152, h = 768; if (resChoice === '2') { w = 768; h = 1152; } else if (resChoice === '3') { w = 768; h = 768; }
+    appendLine('[VIDEO] Select duration:', 'prompt'); ['1. ~3s', '2. ~5s', '3. ~10s'].forEach(o => appendLine(`  ${o}`, 'system')); setStatus('prompt');
     interactiveCallback = async (durChoice) => {
-      setStatus('online');
-      let frames = 121;
-      if (durChoice === '1') frames = 81; else if (durChoice === '3') frames = 241;
-      
-      appendLine(`[VIDEO] Gen init... Size: ${w}x${h}, Frames: ${frames}`, 'info');
-      const spin = appendHTML('<span class="spinner"></span> Creating task...');
-      setStatus('busy');
+      setStatus('online'); let frames = 121; if (durChoice === '1') frames = 81; else if (durChoice === '3') frames = 241;
+      appendLine(`[VIDEO] Gen init... Size: ${w}x${h}, Frames: ${frames}`, 'info'); const spin = appendHTML('<span class="spinner"></span> Creating task...'); setStatus('busy');
       try {
-        const body = { model: 'agnes-video-v2.0', prompt: text, width: w, height: h, num_frames: frames, frame_rate: 24 };
-        if (urls[0]) body.image = urls[0];
-        let res = await fetch(`${API_BASE}/v1/videos`, {
-          method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        let data = await res.json();
-        spin.remove();
-        const videoId = data.video_id;
-        appendLine(`[VIDEO] Task ID: ${videoId}`, 'success');
-        
+        const body = { model: 'agnes-video-v2.0', prompt: text, width: w, height: h, num_frames: frames, frame_rate: 24 }; if (urls[0]) body.image = urls[0];
+        let res = await fetch(`${API_BASE}/v1/videos`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`); let data = await res.json(); spin.remove(); const vid = data.video_id; appendLine(`[VIDEO] Task ID: ${vid}`, 'success');
         const prog = appendHTML(`<div class="progress-container"><div class="progress-bar"><div class="progress-fill" style="width:0%"></div><div class="progress-text">0% - Queued</div></div></div>`);
-        
-        let attempts = 0;
-        while (attempts < 120) {
-          await new Promise(r => setTimeout(r, 5000)); attempts++;
+        let att = 0;
+        while (att < 120) {
+          await new Promise(r => setTimeout(r, 5000)); att++;
           try {
-            const sRes = await fetch(`${API_BASE}/agnesapi?video_id=${videoId}`, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
-            if (!sRes.ok) continue;
-            const sData = await sRes.json();
-            const p = sData.progress || 0;
-            prog.querySelector('.progress-fill').style.width = `${p}%`;
-            prog.querySelector('.progress-text').textContent = `${p}% - ${sData.status}`;
-            if (sData.status === 'completed') {
-              const vUrl = sData.remixed_from_video_id;
-              prog.remove();
-              const id = addAsset('video', vUrl, text);
-              appendHTML(`<div class="media-frame" data-type="VIDEO" data-id="${id}"><video src="${vUrl}" controls autoplay loop muted playsinline></video><div class="media-meta"><span>Duration: ${sData.seconds}s</span><a href="${vUrl}" download class="btn download">Download MP4</a></div></div>`);
-              appendLine(`[VIDEO] Complete.`, 'success');
-              setStatus('online');
-              return;
-            }
-            if (sData.status === 'failed') throw new Error('Generation failed');
+            const sRes = await fetch(`${API_BASE}/agnesapi?video_id=${vid}`, { headers: { 'Authorization': `Bearer ${API_KEY}` } }); if (!sRes.ok) continue;
+            const sData = await sRes.json(); const p = sData.progress || 0; prog.querySelector('.progress-fill').style.width = `${p}%`; prog.querySelector('.progress-text').textContent = `${p}% - ${sData.status}`;
+            if (sData.status === 'completed') { const vUrl = sData.remixed_from_video_id; prog.remove(); const id = addAsset('video', vUrl, text); appendHTML(`<div class="media-frame" data-type="VIDEO" data-id="${id}"><video src="${vUrl}" controls autoplay loop muted playsinline></video><div class="media-meta"><span>Duration: ${sData.seconds}s</span><a href="${vUrl}" download class="btn download">Download MP4</a></div></div>`); appendLine(`[VIDEO] Complete.`, 'success'); setStatus('online'); return; }
+            if (sData.status === 'failed') throw new Error('Failed');
           } catch (e) {}
-        }
-        throw new Error('Timeout');
+        } throw new Error('Timeout');
       } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('error'); setTimeout(() => setStatus('online'), 3000); }
     };
   };
 }
 
 // ═══════════════════════════════════════════════════════════
-// NEW COMMANDS (YT, Movie, Mail, Search, Read, Shorten)
+// NEW COMMANDS
 // ═══════════════════════════════════════════════════════════
+async function brewCommand(text) {
+  if (!text) { appendLine('[ERROR] Usage: /brew <text or html>', 'error'); return; }
+  appendLine('[BREW] Publishing to BrewPage...', 'info'); const spin = appendHTML('<span class="spinner"></span> Uploading...');
+  try {
+    const fmt = text.startsWith('<') || text.includes('<html') ? 'html' : 'markdown';
+    const res = await fetch(`https://brewpage.app/api/html?format=${fmt}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: text }) });
+    const data = await res.json(); spin.remove();
+    if (data.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>Content Hosted!</h3><p>Format: ${fmt.toUpperCase()}</p><p>URL: <a href="${data.link}" target="_blank">${data.link}</a></p><p style="font-size:10px;color:var(--fg-dim);">Token: ${data.ownerToken}</p></div></div>`); appendLine('[BREW] Success.', 'success'); }
+    else throw new Error('Failed to publish');
+  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
+}
+
+async function uploadFile() {
+  fileInput.click();
+  fileInput.onchange = async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { appendLine('[ERROR] File exceeds 5MB limit.', 'error'); return; }
+    appendLine(`[UPLOAD] Uploading ${file.name} (${(file.size/1024/1024).toFixed(2)}MB)...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Uploading...');
+    const fd = new FormData(); fd.append('file', file);
+    try {
+      const res = await fetch('https://brewpage.app/api/files?ns=public', { method: 'POST', body: fd });
+      const data = await res.json(); spin.remove();
+      if (data.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>File Uploaded!</h3><p>Name: ${file.name}</p><p>URL: <a href="${data.link}" target="_blank">${data.link}</a></p><a href="${data.link}" target="_blank" class="btn download">Open File</a></div></div>`); appendLine('[UPLOAD] Success.', 'success'); }
+      else throw new Error('Upload failed');
+    } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
+    fileInput.value = '';
+  };
+}
+
+async function githubCommand(user) {
+  if (!user) { appendLine('[ERROR] Usage: /github <username>', 'error'); return; }
+  appendLine(`[GITHUB] Generating chart for ${user}...`, 'info');
+  const url = `https://github-contributions.vercel.app/api/v1/${user}`;
+  appendHTML(`<div class="media-frame" data-type="GITHUB_CHART"><img src="${url}" alt="GitHub Contributions"><div class="media-meta"><span>User: ${user}</span><a href="${url}" download class="btn secondary">Download PNG</a></div></div>`);
+  appendLine('[GITHUB] Chart generated.', 'success');
+}
+
+async function nasaCommand(query) {
+  if (!query) { appendLine('[ERROR] Usage: /nasa <query>', 'error'); return; }
+  appendLine(`[NASA] Searching images for "${query}"...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Searching...');
+  try {
+    const res = await fetch(`https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}`); const data = await res.json(); spin.remove();
+    const items = data.collection?.items || [];
+    if (items.length > 0 && items[0].links && items[0].links[0].href) {
+      const url = items[0].links[0].href;
+      appendHTML(`<div class="media-frame" data-type="NASA_IMG"><img src="${url}"><div class="media-meta"><span>Query: ${query}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`);
+      appendLine('[NASA] Image displayed.', 'success');
+    } else { appendLine('[NASA] No images found.', 'warn'); }
+  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
+}
+
+// MBTI Logic
+async function mbtiCommand(arg) {
+  if (!arg || arg === 'test') {
+    appendLine('[MBTI] Starting test... Fetching questions...', 'info');
+    try {
+      const res = await fetch('https://personality.fyi/api/v1/test/items'); const data = await res.json();
+      mbtiState.items = data.items; mbtiState.answers = []; mbtiState.index = 0;
+      appendLine('═══ MBTI PERSONALITY TEST ═══', 'info');
+      appendLine('Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree).', 'system');
+      askMbtiQuestion();
+    } catch (e) { appendLine(`[ERROR] ${e.message}`, 'error'); }
+  } else {
+    appendLine(`[MBTI] Fetching profile for ${arg.toUpperCase()}...`, 'info');
+    try {
+      const res = await fetch(`https://personality.fyi/api/v1/types/${arg.toUpperCase()}`); const data = await res.json();
+      appendHTML(`<div class="tool-card"><div class="info"><h3>${data.code} - ${data.name}</h3><p style="color:var(--accent)">${data.title}</p><p><strong>Cognitive:</strong> ${data.cognitive}</p><p><strong>Strengths:</strong> ${data.strengths.join(', ')}</p><p><strong>Shadow:</strong> ${data.shadow.join(', ')}</p><a href="${data.url}" target="_blank" class="btn">Full Profile</a></div></div>`);
+    } catch (e) { appendLine('[ERROR] Invalid MBTI code.', 'error'); }
+  }
+}
+
+function askMbtiQuestion() {
+  if (mbtiState.index < mbtiState.items.length) {
+    const item = mbtiState.items[mbtiState.index];
+    appendLine(`Q${mbtiState.index + 1}/${mbtiState.items.length}: ${item.statement}`, 'prompt');
+    appendLine(`(1=Strongly Disagree [${item.disagreePole}], 3=Neutral, 5=Strongly Agree [${item.agreePole}])`, 'system');
+    setStatus('prompt');
+    interactiveCallback = (ans) => {
+      const val = parseInt(ans);
+      if (isNaN(val) || val < 1 || val > 5) { appendLine('[ERROR] Please enter a number 1-5.', 'error'); askMbtiQuestion(); return; }
+      mbtiState.answers.push(val); mbtiState.index++; askMbtiQuestion();
+    };
+  } else {
+    finishMbtiTest();
+  }
+}
+
+async function finishMbtiTest() {
+  setStatus('busy'); appendLine('[MBTI] Calculating results...', 'info'); const spin = appendHTML('<span class="spinner"></span> Scoring...');
+  try {
+    const res = await fetch('https://personality.fyi/api/v1/test/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers: mbtiState.answers }) });
+    const score = await res.json(); spin.remove();
+    const profRes = await fetch(`https://personality.fyi/api/v1/types/${score.type}`); const prof = await profRes.json();
+    appendHTML(`<div class="tool-card"><div class="info"><h3>Your Type: ${score.type} - ${prof.name}</h3><p style="color:var(--accent)">${prof.title}</p>
+    <p><strong>Confidence:</strong> I:${score.confidence.I}% N:${score.confidence.N}% T:${score.confidence.T}% J:${score.confidence.J}%</p>
+    <p><strong>Cognitive:</strong> ${prof.cognitive}</p>
+    <a href="${prof.url}" target="_blank" class="btn">Read Full Profile</a></div></div>`);
+    appendLine('[MBTI] Test complete.', 'success'); setStatus('online');
+  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('online'); }
+}
+
+// YT, Movie, Mail, Search, Read, Shorten
 async function ytCommand(url) {
   if (!url) { appendLine('[ERROR] Usage: /yt <url>', 'error'); return; }
-  appendLine(`[YT] Fetching video info...`, 'info');
-  const spin = appendHTML('<span class="spinner"></span> Loading...');
+  appendLine(`[YT] Fetching info...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Loading...');
   try {
-    const res = await fetch(`https://www.youtube.com/oembed?url=${url}&format=json`);
-    if (!res.ok) throw new Error('Invalid URL or video not found');
-    const data = await res.json();
-    spin.remove();
-    
-    // Extract video ID for thumbnail and download link
-    const vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
-    const vidId = vidMatch ? vidMatch[1] : null;
-    const thumbUrl = vidId ? `https://img.youtube.com/vi/${vidId}/hqdefault.jpg` : '';
-    const dlUrl = `https://cobalt.tools/?u=${encodeURIComponent(url)}`;
-    
-    appendHTML(`
-      <div class="tool-card">
-        <img src="${thumbUrl}" alt="Thumbnail">
-        <div class="info">
-          <h3>${escapeHtml(data.title)}</h3>
-          <p>Author: ${escapeHtml(data.author_name)}</p>
-          <a href="${dlUrl}" target="_blank" class="btn download">Download Video / MP3</a>
-          <a href="${url}" target="_blank" class="btn secondary">Watch on YouTube</a>
-        </div>
-      </div>
-    `);
-    appendLine(`[YT] Ready for download.`, 'success');
+    const res = await fetch(`https://www.youtube.com/oembed?url=${url}&format=json`); if (!res.ok) throw new Error('Invalid URL'); const data = await res.json(); spin.remove();
+    const vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/); const vidId = vidMatch ? vidMatch[1] : null;
+    appendHTML(`<div class="tool-card"><img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg"><div class="info"><h3>${escapeHtml(data.title)}</h3><p>Author: ${escapeHtml(data.author_name)}</p><a href="https://cobalt.tools/?u=${encodeURIComponent(url)}" target="_blank" class="btn download">Download MP4/MP3</a><a href="${url}" target="_blank" class="btn secondary">Watch</a></div></div>`);
   } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
 }
-
-async function movieCommand(title) {
-  if (!title) { appendLine('[ERROR] Usage: /movie <title>', 'error'); return; }
-  appendLine(`[MOVIE] Searching database for "${title}"...`, 'info');
-  const spin = appendHTML('<span class="spinner"></span> Searching Jina AI...');
-  try {
-    // Use Jina AI to search for movie info
-    const query = `${title} movie imdb rating poster plot release date`;
-    const res = await fetch(`https://s.jina.ai/${encodeURIComponent(query)}`);
-    if (!res.ok) throw new Error('Search failed');
-    const text = await res.text();
-    spin.remove();
-    
-    // Try to extract image URL from markdown
-    const imgMatch = text.match(/(https?:\/\/[^\s]+\.(?:jpg|jpeg|png))/i);
-    const imgUrl = imgMatch ? imgMatch[0] : '';
-    
-    appendHTML(`
-      <div class="tool-card">
-        ${imgUrl ? `<img src="${imgUrl}" alt="Poster">` : ''}
-        <div class="info">
-          <h3>${title}</h3>
-          <div style="color: var(--fg-muted); font-size: 12px; margin-bottom: 8px;">Database Search Results (Jina AI):</div>
-          <div style="color: var(--fg); font-size: 13px;">${renderMarkdown(text.substring(0, 500) + '...')}</div>
-          <a href="https://www.imdb.com/find?q=${encodeURIComponent(title)}" target="_blank" class="btn secondary">View on IMDb</a>
-        </div>
-      </div>
-    `);
-    appendLine(`[MOVIE] Info retrieved.`, 'success');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-
-async function mailCommand() {
-  appendLine(`[MAIL] Generating temp email...`, 'info');
-  try {
-    const res = await fetch('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1');
-    const data = await res.json();
-    const email = data[0];
-    const [user, domain] = email.split('@');
-    
-    appendHTML(`
-      <div class="tool-card">
-        <div class="info">
-          <h3>Temporary Email Address</h3>
-          <p style="font-size: 16px; color: var(--fg-bright); word-break: break-all;">${email}</p>
-          <p>Use this email for signups. To check inbox, use:</p>
-          <div class="code-block" data-lang="bash">/read https://www.1secmail.com/api/v1/?action=getMessages&username=${user}&domain=${domain}</div>
-          <a href="https://www.1secmail.com/?login=${user}&domain=${domain}" target="_blank" class="btn">Open Webmail</a>
-        </div>
-      </div>
-    `);
-    appendLine(`[MAIL] Generated successfully.`, 'success');
-  } catch (e) { appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-
-async function searchCommand(query) {
-  if (!query) { appendLine('[ERROR] Usage: /search <query>', 'error'); return; }
-  appendLine(`[SEARCH] Querying Jina AI: "${query}"`, 'info');
-  const spin = appendHTML('<span class="spinner"></span> Searching...');
-  try {
-    const res = await fetch(`https://s.jina.ai/${encodeURIComponent(query)}`);
-    if (!res.ok) throw new Error('Search failed');
-    const text = await res.text();
-    spin.remove();
-    appendLine('═══ SEARCH RESULTS ═══', 'info');
-    appendHTML(`<div class="code-block" data-lang="markdown">${escapeHtml(text)}</div>`);
-    appendLine(`[SEARCH] Complete.`, 'success');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-
-async function readCommand(url) {
-  if (!url) { appendLine('[ERROR] Usage: /read <url>', 'error'); return; }
-  appendLine(`[READ] Fetching URL via Jina AI: ${url}`, 'info');
-  const spin = appendHTML('<span class="spinner"></span> Reading...');
-  try {
-    const res = await fetch(`https://r.jina.ai/${url}`);
-    if (!res.ok) throw new Error('Read failed');
-    const text = await res.text();
-    spin.remove();
-    appendLine('═══ URL CONTENT ═══', 'info');
-    appendHTML(`<div class="code-block" data-lang="markdown">${escapeHtml(text.substring(0, 2000))}${text.length > 2000 ? '\n\n... (truncated)' : ''}</div>`);
-    appendLine(`[READ] Complete.`, 'success');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-
-async function shortenCommand(url) {
-  if (!url) { appendLine('[ERROR] Usage: /shorten <url>', 'error'); return; }
-  appendLine(`[URL] Shortening ${url}...`, 'info');
-  try {
-    const res = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(url)}`);
-    const data = await res.json();
-    if (data.shorturl) {
-      appendHTML(`<div class="tool-card"><div class="info"><h3>URL Shortened</h3><p>Original: ${escapeHtml(url)}</p><p>Short: <a href="${data.shorturl}" target="_blank">${data.shorturl}</a></p></div></div>`);
-      appendLine(`[URL] Complete.`, 'success');
-    } else throw new Error(data.errormessage || 'Failed');
-  } catch (e) { appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
+async function movieCommand(t) { if (!t) return; appendLine(`[MOVIE] Searching "${t}"...`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching...'); try { const r = await fetch(`https://s.jina.ai/${encodeURIComponent(t+' movie imdb rating poster plot')}`); const tx = await r.text(); s.remove(); const im = tx.match(/(https?:\/\/[^\s]+\.(?:jpg|jpeg|png))/i); appendHTML(`<div class="tool-card">${im?`<img src="${im[0]}">`:''}<div class="info"><h3>${t}</h3><div style="color:var(--fg);font-size:13px;">${renderMarkdown(tx.substring(0,400)+'...')}</div><a href="https://www.imdb.com/find?q=${encodeURIComponent(t)}" target="_blank" class="btn secondary">IMDb</a></div></div>`); } catch(e){s.remove();appendLine(`[ERROR] ${e.message}`,'error');} }
+async function mailCommand() { try { const r = await fetch('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1'); const d = await r.json(); const em = d[0]; const [u,dom]=em.split('@'); appendHTML(`<div class="tool-card"><div class="info"><h3>Temp Email</h3><p style="font-size:16px;color:var(--fg-bright);">${em}</p><a href="https://www.1secmail.com/?login=${u}&domain=${dom}" target="_blank" class="btn">Open Inbox</a></div></div>`); } catch(e){appendLine(`[ERROR] ${e.message}`,'error');} }
+async function searchCommand(q) { if(!q) return; appendLine(`[SEARCH] "${q}"`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching...'); try { const r = await fetch(`https://s.jina.ai/${encodeURIComponent(q)}`); const t = await r.text(); s.remove(); appendHTML(`<div class="code-block" data-lang="markdown">${escapeHtml(t)}</div>`); } catch(e){s.remove();appendLine(`[ERROR] ${e.message}`,'error');} }
+async function readCommand(u) { if(!u) return; appendLine(`[READ] ${u}`, 'info'); const s = appendHTML('<span class="spinner"></span> Reading...'); try { const r = await fetch(`https://r.jina.ai/${u}`); const t = await r.text(); s.remove(); appendHTML(`<div class="code-block" data-lang="markdown">${escapeHtml(t.substring(0,2000))}${t.length>2000?'...(truncated)':''}</div>`); } catch(e){s.remove();appendLine(`[ERROR] ${e.message}`,'error');} }
+async function shortenCommand(u) { if(!u) return; try { const r = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(u)}`); const d = await r.json(); if(d.shorturl) appendHTML(`<div class="tool-card"><div class="info"><h3>Shortened</h3><p><a href="${d.shorturl}" target="_blank">${d.shorturl}</a></p></div></div>`); } catch(e){appendLine(`[ERROR] ${e.message}`,'error');} }
 
 // ═══════════════════════════════════════════════════════════
 // BOOT & HELP
 // ═══════════════════════════════════════════════════════════
 async function bootSequence() {
-  const logo = `
-   █████╗  ██████╗ ███████╗███████╗
-  ██╔══██╗██╔════╝ ██╔════╝██╔════╝
-  ███████║██║  ███╗███████╗█████╗  
-  ██╔══██║██║   ██║╚════██║██╔══╝  
-  ██║  ██║╚██████╔╝███████║███████╗
-  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝`;
-  const logoDiv = document.createElement('pre');
-  logoDiv.className = 'ascii-art';
-  logoDiv.textContent = logo;
-  output.appendChild(logoDiv);
-  
-  appendLine('As OS — Terminal Interface v4.0.0', 'system');
-  appendLine('© Sapiens AI // Powered by Agnes neural networks', 'system');
-  appendLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system');
-  
-  const bootLines = [
-    '[BOOT] Initializing As OS kernel...',
-    '[BOOT] Loading neural network modules...',
-    '[ OK ] TLS handshake complete. Connection encrypted.',
-    '[ OK ] Authentication successful. Token verified.',
-    '[BOOT] Loading model: agnes-2.0-flash',
-    '[BOOT] Initializing tool calling engine (DateTime, Search, URL, Mail)...',
-    '[ OK ] All systems operational.'
-  ];
-  
-  for (const t of bootLines) {
-    const el = document.createElement('div');
-    el.className = 'line ' + (t.includes('[ OK ]') ? 'success' : 'system');
-    output.appendChild(el);
-    for (let i = 0; i < t.length; i++) { el.textContent += t[i]; if (i % 3 === 0) output.scrollTop = output.scrollHeight; await new Promise(r => setTimeout(r, 4)); }
-    await new Promise(r => setTimeout(r, 30));
-  }
-  
-  appendLine('Welcome to As OS v4.0. Type /help to see commands.', 'info');
-  appendLine('Features: Tool Calling, Visible Thinking, Media Gen, Web Search, YT Download.', 'info');
-  appendLine('', 'system');
-  bootDone = true;
-  input.focus();
+  const logo = `\n   █████╗  ██████╗ ███████╗███████╗\n  ██╔══██╗██╔════╝ ██╔════╝██╔════╝\n  ███████║██║  ███╗███████╗█████╗  \n  ██╔══██║██║   ██║╚════██║██╔══╝  \n  ██║  ██║╚██████╔╝███████║███████╗\n  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝`;
+  const lD = document.createElement('pre'); lD.className = 'ascii-art'; lD.textContent = logo; output.appendChild(lD);
+  appendLine('As OS — Terminal Interface v5.0.0', 'system'); appendLine('© Sapiens AI // Powered by Agnes neural networks', 'system'); appendLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system');
+  const bl = ['[BOOT] Initializing As OS kernel...','[ OK ] TLS handshake complete.','[ OK ] Auth token verified.','[BOOT] Loading model: agnes-2.0-flash','[BOOT] Initializing tools (BrewPage, NASA, GitHub, MBTI, YT)...','[ OK ] All systems operational.'];
+  for (const t of bl) { const el = document.createElement('div'); el.className = 'line ' + (t.includes('[ OK ]') ? 'success' : 'system'); output.appendChild(el); for (let i=0; i<t.length; i++) { el.textContent += t[i]; if(i%3===0) output.scrollTop = output.scrollHeight; await new Promise(r=>setTimeout(r,4)); } await new Promise(r=>setTimeout(r,30)); }
+  appendLine('Welcome to As OS v5.0. Type /help to see commands.', 'info'); appendLine('Features: Tool Calling, Visible Thinking, Media Gen, BrewPage, NASA, MBTI.', 'info'); appendLine('', 'system'); bootDone = true; input.focus();
 }
-
 function showHelp() {
-  appendHTML(`
-    <div class="line info glow">═══ COMMAND REFERENCE v4.0 ═══</div>
-    <div class="help-section">▸ AI INTERACTION</div>
-    <table class="help-table">
-      <tr><td>&lt;message&gt;</td><td>Chat with Agnes 2.0 Flash (Autonomous Tool Calling)</td></tr>
-      <tr><td>/think &lt;msg&gt;</td><td>Chat with visible thinking process (&lt;think&gt; tags)</td></tr>
-      <tr><td>/look &lt;@id|url&gt; &lt;q&gt;</td><td>Vision: analyze image</td></tr>
-      <tr><td>/ask &lt;msg&gt;</td><td>One-shot question (no context)</td></tr>
-    </table>
-    <div class="help-section">▸ WEB & DATA TOOLS</div>
-    <table class="help-table">
-      <tr><td>/search &lt;query&gt;</td><td>Search web via Jina AI</td></tr>
-      <tr><td>/read &lt;url&gt;</td><td>Read URL content via Jina AI Reader</td></tr>
-      <tr><td>/shorten &lt;url&gt;</td><td>Shorten a URL via is.gd</td></tr>
-      <tr><td>/mail</td><td>Generate temporary email address</td></tr>
-      <tr><td>/weather &lt;city&gt;</td><td>Get weather (AI Tool Call)</td></tr>
-    </table>
-    <div class="help-section">▸ MEDIA TOOLS</div>
-    <table class="help-table">
-      <tr><td>/yt &lt;url&gt;</td><td>YouTube video info + download link</td></tr>
-      <tr><td>/movie &lt;title&gt;</td><td>Movie database search (IMDb, Poster, Rating)</td></tr>
-      <tr><td>/image &lt;prompt&gt;</td><td>Generate image (asks for size)</td></tr>
-      <tr><td>/image @1 &lt;p&gt;</td><td>img2img: use asset @1 or URL as reference</td></tr>
-      <tr><td>/video &lt;prompt&gt;</td><td>Generate video (asks size & duration)</td></tr>
-      <tr><td>/video @1 &lt;p&gt;</td><td>img2vid: animate asset @1 or URL</td></tr>
-      <tr><td>/gallery</td><td>List all generated assets</td></tr>
-    </table>
-    <div class="help-section">▸ SYSTEM</div>
-    <table class="help-table">
-      <tr><td>/temp &lt;0-2&gt;</td><td>Set temperature</td></tr>
-      <tr><td>/theme &lt;name&gt;</td><td>green, amber, cyan, matrix</td></tr>
-      <tr><td>/clear</td><td>Clear terminal output</td></tr>
-      <tr><td>/reset</td><td>Reset conversation history</td></tr>
-      <tr><td>/neofetch</td><td>System information display</td></tr>
-      <tr><td>/reboot</td><td>Reboot the terminal</td></tr>
-    </table>
-  `);
+  appendHTML(`<div class="line info glow">═══ COMMAND REFERENCE v5.0 ═══</div>
+  <div class="help-section">▸ AI INTERACTION</div><table class="help-table">
+    <tr><td>&lt;message&gt;</td><td>Chat with AI (Autonomous Tools Enabled)</td></tr>
+    <tr><td>/think &lt;msg&gt;</td><td>Chat with visible &lt;think&gt; process</td></tr>
+    <tr><td>/look &lt;@id|url&gt; &lt;q&gt;</td><td>Vision: analyze image</td></tr>
+  </table>
+  <div class="help-section">▸ HOSTING & DATA (BrewPage)</div><table class="help-table">
+    <tr><td>/brew &lt;text|html&gt;</td><td>Host content & get short URL</td></tr>
+    <tr><td>/upload</td><td>Upload local file (max 5MB)</td></tr>
+  </table>
+  <div class="help-section">▸ MEDIA & VISUAL TOOLS</div><table class="help-table">
+    <tr><td>/image &lt;prompt&gt;</td><td>Generate image (asks size)</td></tr>
+    <tr><td>/video &lt;prompt&gt;</td><td>Generate video (asks config)</td></tr>
+    <tr><td>/yt &lt;url&gt;</td><td>YouTube info + download link</td></tr>
+    <tr><td>/movie &lt;title&gt;</td><td>Movie database (IMDb)</td></tr>
+    <tr><td>/nasa &lt;query&gt;</td><td>Search NASA images</td></tr>
+    <tr><td>/github &lt;user&gt;</td><td>GitHub contributions chart</td></tr>
+  </table>
+  <div class="help-section">▸ UTILITY & FUN</div><table class="help-table">
+    <tr><td>/mbti test</td><td>Take the MBTI personality test</td></tr>
+    <tr><td>/mbti &lt;CODE&gt;</td><td>Get MBTI type profile</td></tr>
+    <tr><td>/search &lt;query&gt;</td><td>Web search (Jina)</td></tr>
+    <tr><td>/read &lt;url&gt;</td><td>Read URL content (Jina)</td></tr>
+    <tr><td>/shorten &lt;url&gt;</td><td>Shorten URL</td></tr>
+    <tr><td>/mail</td><td>Generate temp email</td></tr>
+  </table>
+  <div class="help-section">▸ SYSTEM</div><table class="help-table">
+    <tr><td>/temp &lt;0-2&gt;</td><td>Set temperature</td></tr>
+    <tr><td>/theme &lt;name&gt;</td><td>green, amber, cyan, matrix</td></tr>
+    <tr><td>/clear</td><td>Clear terminal</td></tr>
+    <tr><td>/reboot</td><td>Reboot system</td></tr>
+  </table>`);
 }
 
 // ═══════════════════════════════════════════════════════════
 // PROCESS INPUT
 // ═══════════════════════════════════════════════════════════
 async function processInput(text) {
-  const trimmed = text.trim();
-  if (!trimmed) return;
-  commandHistory.push(trimmed);
-  historyIndex = commandHistory.length;
-  appendLine(trimmed, 'user');
-  
-  if (trimmed.startsWith('/')) {
-    const spaceIdx = trimmed.indexOf(' ');
-    const cmd = (spaceIdx === -1 ? trimmed.slice(1) : trimmed.slice(1, spaceIdx)).toLowerCase();
-    const arg = spaceIdx === -1 ? '' : trimmed.slice(spaceIdx + 1).trim();
-    
-    switch (cmd) {
+  const tr = text.trim(); if (!tr) return; commandHistory.push(tr); historyIndex = commandHistory.length; appendLine(tr, 'user');
+  if (tr.startsWith('/')) {
+    const si = tr.indexOf(' '); const c = (si===-1?tr.slice(1):tr.slice(1,si)).toLowerCase(); const a = si===-1?'':tr.slice(si+1).trim();
+    switch (c) {
       case 'help': case 'h': case '?': showHelp(); break;
-      case 'image': case 'img':
-        if (!arg) { appendLine('[ERROR] Usage: /image [@id|url] <prompt>', 'error'); break; }
-        await generateImageFlow(arg, 'agnes-image-2.0-flash'); break;
-      case 'image2': case 'img2':
-        if (!arg) { appendLine('[ERROR] Usage: /image2 [@id|url] <prompt>', 'error'); break; }
-        await generateImageFlow(arg, 'agnes-image-2.1-flash'); break;
-      case 'video': case 'vid':
-        if (!arg) { appendLine('[ERROR] Usage: /video [@id|url] <prompt>', 'error'); break; }
-        await generateVideoFlow(arg); break;
-      case 'look': case 'vision': case 'see':
-        if (!arg) { appendLine('[ERROR] Usage: /look <@id|url> <question>', 'error'); break; }
-        const { urls, text: cleanText } = resolveReferences(arg);
-        if (urls.length > 0) {
-          await chat(cleanText, [{ type: 'text', text: cleanText }, ...urls.map(url => ({ type: 'image_url', image_url: { url } }))]);
-        } else { appendLine('[ERROR] No image reference found.', 'error'); }
-        break;
-      case 'think':
-        if (!arg) { appendLine('[ERROR] Usage: /think <message>', 'error'); break; }
-        await chat(arg, null, true); break;
-      case 'search': await searchCommand(arg); break;
-      case 'read': await readCommand(arg); break;
-      case 'yt': await ytCommand(arg); break;
-      case 'movie': await movieCommand(arg); break;
+      case 'image': case 'img': if(a) await generateImageFlow(a, 'agnes-image-2.0-flash'); else appendLine('[ERROR] Usage: /image <prompt>', 'error'); break;
+      case 'image2': case 'img2': if(a) await generateImageFlow(a, 'agnes-image-2.1-flash'); else appendLine('[ERROR] Usage: /image2 <prompt>', 'error'); break;
+      case 'video': case 'vid': if(a) await generateVideoFlow(a); else appendLine('[ERROR] Usage: /video <prompt>', 'error'); break;
+      case 'look': case 'vision': { if(!a) { appendLine('[ERROR] Usage: /look <@id|url> <q>', 'error'); break; } const {urls, text:ct} = resolveReferences(a); if(urls.length>0) await chat(ct, [{type:'text',text:ct}, ...urls.map(u=>({type:'image_url',image_url:{url:u}}))]); else appendLine('[ERROR] No image ref.', 'error'); break; }
+      case 'think': if(a) await chat(a, null, true); else appendLine('[ERROR] Usage: /think <msg>', 'error'); break;
+      case 'brew': await brewCommand(a); break;
+      case 'upload': await uploadFile(); break;
+      case 'github': case 'gh': await githubCommand(a); break;
+      case 'nasa': await nasaCommand(a); break;
+      case 'mbti': await mbtiCommand(a); break;
+      case 'yt': await ytCommand(a); break;
+      case 'movie': await movieCommand(a); break;
+      case 'search': await searchCommand(a); break;
+      case 'read': await readCommand(a); break;
+      case 'shorten': await shortenCommand(a); break;
       case 'mail': await mailCommand(); break;
-      case 'shorten': await shortenCommand(arg); break;
-      case 'weather':
-        await chat(`What is the weather like in ${arg}?`); break;
-      case 'ask':
-        if (!arg) { appendLine('[ERROR] Usage: /ask <question>', 'error'); break; }
-        const saved = [...conversationHistory];
-        conversationHistory = [];
-        await chat(arg);
-        conversationHistory = saved;
-        break;
-      case 'joke': await chat("Tell me a short, clever programming joke."); break;
-      case 'gallery': case 'assets':
-        if (assets.length === 0) { appendLine('[GALLERY] No assets generated yet.', 'system'); break; }
-        appendLine('═══ GENERATED ASSETS ═══', 'info');
-        assets.forEach(a => {
-          const thumb = a.type === 'image' ? `<img src="${a.url}" style="width:60px;height:60px;object-fit:cover;">` : `<video src="${a.url}" muted style="width:60px;height:60px;object-fit:cover;"></video>`;
-          appendHTML(`<div class="asset-card">${thumb}<div class="info"><div class="id">@${a.id} [${a.type.toUpperCase()}]</div><div class="prompt">${escapeHtml(a.prompt.substring(0, 100))}</div></div></div>`);
-        });
-        break;
-      case 'temp': case 'temperature':
-        if (!arg) appendLine(`[CONFIG] Current temperature: ${temperature.toFixed(1)}`, 'info');
-        else { const t = parseFloat(arg); if (isNaN(t) || t < 0 || t > 2) { appendLine('[ERROR] Must be 0-2.', 'error'); } else { temperature = t; tempText.textContent = t.toFixed(1); appendLine(`[CONFIG] Temp set to ${t.toFixed(1)}.`, 'success'); } }
-        break;
-      case 'theme':
-        if (!arg) appendLine(`[CONFIG] Theme: ${currentTheme}. Options: green, amber, cyan, matrix`, 'info');
-        else { const themes = ['green', 'amber', 'cyan', 'matrix']; if (themes.includes(arg.toLowerCase())) { document.body.className = `theme-${arg.toLowerCase()}`; currentTheme = arg.toLowerCase(); appendLine(`[CONFIG] Theme: ${arg}`, 'success'); } else { appendLine('[ERROR] Invalid theme.', 'error'); } }
-        break;
-      case 'clear': case 'cls': output.innerHTML = ''; appendLine('[SYSTEM] Terminal cleared.', 'system'); break;
-      case 'reset': conversationHistory = []; ctxCount.textContent = '0'; appendLine('[SYSTEM] History reset.', 'success'); break;
-      case 'neofetch':
-        const uptime = Math.floor((Date.now() - window.performance.timeOrigin) / 1000);
-        appendHTML(`<div class="neofetch-box" style="display:flex;gap:20px;"><pre class="ascii-art" style="font-size:10px;">       █████╗  ██████╗
-      ██╔══██╗██╔════╝
-      ███████║██║  ███╗
-      ██╔══██║██║   ██║
-      ██║  ██║╚██████╔╝
-      ╚═╝  ╚═╝ ╚═════╝</pre><div><div>user@as-os</div><div>─────────────</div><div>OS: As OS v4.0.0</div><div>Kernel: agnes-2.0-flash</div><div>Uptime: ${Math.floor(uptime/3600)}h ${Math.floor((uptime%3600)/60)}m</div><div>Theme: ${currentTheme}</div><div>Assets: ${assets.length}</div></div></div>`);
-        break;
-      case 'reboot': output.innerHTML = ''; conversationHistory = []; assets = []; ctxCount.textContent = '0'; await bootSequence(); break;
-      case 'cancel': if (interactiveCallback) { interactiveCallback = null; setStatus('online'); appendLine('[SYSTEM] Cancelled.', 'warn'); } else { appendLine('[SYSTEM] Nothing to cancel.', 'system'); } break;
+      case 'weather': await chat(`What is the weather like in ${a}?`); break;
+      case 'ask': { if(!a) break; const sv=[...conversationHistory]; conversationHistory=[]; await chat(a); conversationHistory=sv; break; }
+      case 'joke': await chat("Tell me a short programming joke."); break;
+      case 'gallery': case 'assets': if(assets.length===0){appendLine('[GALLERY] No assets.','system');break;} appendLine('═══ ASSETS ═══','info'); assets.forEach(a=>appendHTML(`<div class="tool-card">${a.type==='image'?`<img src="${a.url}">`:`<video src="${a.url}"></video>`}<div class="info"><div class="id">@${a.id} [${a.type.toUpperCase()}]</div><p>${escapeHtml(a.prompt.substring(0,100))}</p></div></div>`)); break;
+      case 'temp': case 'temperature': if(!a) appendLine(`[CONFIG] Temp: ${temperature.toFixed(1)}`, 'info'); else { const t=parseFloat(a); if(!isNaN(t)&&t>=0&&t<=2){temperature=t;tempText.textContent=t.toFixed(1);appendLine(`[CONFIG] Temp set to ${t}.`, 'success');} else appendLine('[ERROR] 0-2 only.', 'error'); } break;
+      case 'theme': if(!a) appendLine(`[CONFIG] Theme: ${currentTheme}`, 'info'); else { const th=['green','amber','cyan','matrix']; if(th.includes(a.toLowerCase())){document.body.className=`theme-${a.toLowerCase()}`;currentTheme=a.toLowerCase();appendLine(`[CONFIG] Theme: ${a}`, 'success');} else appendLine('[ERROR] Invalid theme.', 'error'); } break;
+      case 'clear': case 'cls': output.innerHTML=''; appendLine('[SYSTEM] Cleared.', 'system'); break;
+      case 'reset': conversationHistory=[]; ctxCount.textContent='0'; appendLine('[SYSTEM] History reset.', 'success'); break;
+      case 'neofetch': const up=Math.floor((Date.now()-window.performance.timeOrigin)/1000); appendHTML(`<div style="display:flex;gap:20px;"><pre class="ascii-art" style="font-size:10px;">       █████╗  ██████╗\n      ██╔══██╗██╔════╝\n      ███████║██║  ███╗\n      ██╔══██║██║   ██║\n      ██║  ██║╚██████╔╝\n      ╚═╝  ╚═╝ ╚═════╝</pre><div><div>user@as-os</div><div>─────────</div><div>OS: As OS v5.0</div><div>Uptime: ${Math.floor(up/60)}m</div><div>Assets: ${assets.length}</div></div></div>`); break;
+      case 'reboot': output.innerHTML=''; conversationHistory=[]; assets=[]; ctxCount.textContent='0'; await bootSequence(); break;
+      case 'cancel': if(interactiveCallback){interactiveCallback=null;setStatus('online');appendLine('[SYSTEM] Cancelled.','warn');} else appendLine('[SYSTEM] Nothing to cancel.', 'system'); break;
       case 'exit': appendLine('[SYSTEM] Goodbye.', 'warn'); break;
-      default: appendLine(`[ERROR] Unknown command: /${cmd}`, 'error');
+      default: appendLine(`[ERROR] Unknown cmd: /${c}`, 'error');
     }
-  } else {
-    await chat(trimmed);
-  }
+  } else { await chat(tr); }
 }
 
 // ═══════════════════════════════════════════════════════════
-// EVENT LISTENERS
+// EVENTS
 // ═══════════════════════════════════════════════════════════
-input.addEventListener('input', () => { if (!interactiveCallback) checkAutocomplete(); });
-
+input.addEventListener('input', () => { if(!interactiveCallback) checkAutocomplete(); });
 input.addEventListener('keydown', async (e) => {
   if (acState.items.length > 0) {
     if (e.key === 'ArrowDown') { e.preventDefault(); acState.activeIndex = (acState.activeIndex + 1) % acState.items.length; renderAutocomplete(); return; }
@@ -1027,43 +682,15 @@ input.addEventListener('keydown', async (e) => {
     if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); applyAutocomplete(); return; }
     if (e.key === 'Escape') { e.preventDefault(); hideAutocomplete(); return; }
   }
-
   if (e.key === 'Enter') {
-    e.preventDefault();
-    if (!bootDone || (isProcessing && !interactiveCallback)) return;
-    const value = input.value;
-    input.value = '';
-    hideAutocomplete();
-    if (interactiveCallback) {
-      appendLine(value, 'user');
-      const cb = interactiveCallback;
-      interactiveCallback = null;
-      cb(value);
-    } else {
-      isProcessing = true;
-      await processInput(value);
-      isProcessing = false;
-    }
+    e.preventDefault(); if(!bootDone || (isProcessing && !interactiveCallback)) return; const v = input.value; input.value=''; hideAutocomplete();
+    if (interactiveCallback) { appendLine(v, 'user'); const cb = interactiveCallback; interactiveCallback = null; cb(v); } else { isProcessing = true; await processInput(v); isProcessing = false; }
     input.focus();
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (interactiveCallback) return;
-    if (historyIndex > 0) { historyIndex--; input.value = commandHistory[historyIndex] || ''; }
-  } else if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    if (interactiveCallback) return;
-    if (historyIndex < commandHistory.length - 1) { historyIndex++; input.value = commandHistory[historyIndex] || ''; }
-    else { historyIndex = commandHistory.length; input.value = ''; }
-  } else if (e.key === 'l' && e.ctrlKey) {
-    e.preventDefault(); output.innerHTML = '';
-  } else if (e.key === 'c' && e.ctrlKey) {
-    if (interactiveCallback) { e.preventDefault(); interactiveCallback = null; setStatus('online'); appendLine('^C', 'error'); appendLine('[SYSTEM] Cancelled.', 'warn'); }
-  }
+  } else if (e.key === 'ArrowUp') { e.preventDefault(); if(interactiveCallback) return; if(historyIndex>0){historyIndex--; input.value=commandHistory[historyIndex]||'';} } else if (e.key === 'ArrowDown') { e.preventDefault(); if(interactiveCallback) return; if(historyIndex<commandHistory.length-1){historyIndex++; input.value=commandHistory[historyIndex]||'';} else {historyIndex=commandHistory.length; input.value='';} }
+  else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); output.innerHTML=''; }
+  else if (e.key === 'c' && e.ctrlKey) { if(interactiveCallback){e.preventDefault(); interactiveCallback=null; setStatus('online'); appendLine('^C','error'); appendLine('[SYSTEM] Cancelled.','warn');} }
 });
-
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('a') && !e.target.closest('video') && !e.target.closest('button') && !e.target.closest('.ac-item')) input.focus();
-});
+document.addEventListener('click', (e) => { if(!e.target.closest('a') && !e.target.closest('video') && !e.target.closest('button') && !e.target.closest('.ac-item') && !e.target.closest('input')) input.focus(); });
 
 bootSequence();
 </script>
