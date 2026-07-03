@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>As OS // Terminal Interface v9.0</title>
+<title>As OS // Terminal Interface v13.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=VT323&display=swap" rel="stylesheet">
@@ -18,16 +18,7 @@
   body.theme-amber { --bg: #0a0600; --bg-panel: #120800; --bg-input: #0a0500; --fg: #ffb000; --fg-dim: #7a5a00; --fg-bright: #ffd980; --fg-muted: #8a6a20; --accent: #ff8800; --warn: #ffe060; --err: #ff4444; --magenta: #ff66dd; --border: rgba(255, 176, 0, 0.15); --border-bright: rgba(255, 176, 0, 0.4); --glow: 0 0 8px rgba(255, 176, 0, 0.5); }
   body.theme-cyan { --bg: #030608; --bg-panel: #060f14; --bg-input: #040a0e; --fg: #00d4ff; --fg-dim: #1a6680; --fg-bright: #80e8ff; --fg-muted: #3a7a90; --accent: #00ffcc; --warn: #ffcc00; --err: #ff3366; --magenta: #ff44aa; --border: rgba(0, 212, 255, 0.15); --border-bright: rgba(0, 212, 255, 0.4); --glow: 0 0 8px rgba(0, 212, 255, 0.5); }
   body.theme-matrix { --bg: #000300; --bg-panel: #001500; --bg-input: #000a00; --fg: #00ff41; --fg-dim: #1a7a2a; --fg-bright: #80ff80; --fg-muted: #3a8a4a; --accent: #00cc33; --warn: #ffcc00; --err: #ff3333; --magenta: #ff44aa; --border: rgba(0, 255, 65, 0.15); --border-bright: rgba(0, 255, 65, 0.4); --glow: 0 0 8px rgba(0, 255, 65, 0.5); }
-  
-  /* CLI Mode Theme Overlay */
-  body.cli-mode {
-    --bg: #050810; --bg-panel: #0a1020; --bg-input: #080c18;
-    --fg: #d4d4d4; --fg-dim: #5a5a5a; --fg-bright: #ffffff; --fg-muted: #808080;
-    --accent: #569cd6; --warn: #dcdcaa; --err: #f44747; --magenta: #c586c0;
-    --border: rgba(86, 156, 214, 0.2); --border-bright: rgba(86, 156, 214, 0.5);
-    --glow: 0 0 8px rgba(86, 156, 214, 0.3);
-  }
-
+  body.cli-mode { --bg: #0d1117; --bg-panel: #161b22; --bg-input: #010409; --fg: #c9d1d9; --fg-dim: #484f58; --fg-bright: #ffffff; --fg-muted: #8b949e; --accent: #58a6ff; --warn: #d2a8ff; --err: #ff7b72; --magenta: #bc8cff; --border: rgba(139, 148, 158, 0.2); --border-bright: rgba(88, 166, 255, 0.4); --glow: 0 0 8px rgba(88, 166, 255, 0.3); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; width: 100%; background: var(--bg); color: var(--fg); font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 14px; line-height: 1.65; overflow: hidden; -webkit-font-smoothing: antialiased; }
   body { background: radial-gradient(ellipse 100% 80% at 50% 50%, color-mix(in srgb, var(--bg-panel) 80%, var(--bg)) 0%, var(--bg) 70%, #000 100%); transition: background 0.4s; }
@@ -57,43 +48,51 @@
   .line.info { color: var(--accent); } .line.success { color: var(--fg-bright); text-shadow: var(--glow); }
   .line.prompt { color: var(--warn); font-weight: 700; }
   .glow { text-shadow: 0 0 5px currentColor; }
-  
   .think-box { border: 1px dashed var(--fg-muted); background: rgba(0,0,0,0.3); padding: 8px 12px; margin: 6px 0 10px 0; border-radius: 4px; font-size: 12px; color: var(--fg-muted); position: relative; }
   .think-box::before { content: 'THINKING PROCESS'; position: absolute; top: -8px; left: 10px; background: var(--bg); padding: 0 6px; font-size: 10px; color: var(--magenta); font-weight: 700; }
   .think-content { white-space: pre-wrap; margin-top: 4px; }
-
   .ascii-art { color: var(--fg); text-shadow: var(--glow); font-size: 11px; line-height: 1.15; white-space: pre; margin: 10px 0; }
-  .code-block { background: color-mix(in srgb, var(--fg) 5%, transparent); border: 1px solid var(--border); border-left: 3px solid var(--fg); padding: 10px 14px; margin: 8px 0; font-size: 13px; color: var(--fg-bright); white-space: pre; overflow-x: auto; position: relative; }
-  .code-block::before { content: attr(data-lang); position: absolute; top: -1px; right: 8px; background: var(--bg-panel); padding: 0 6px; font-size: 10px; color: var(--fg-muted); border: 1px solid var(--border); border-top: none; }
+  .code-block { background: color-mix(in srgb, var(--fg) 5%, transparent); border: 1px solid var(--border); border-left: 3px solid var(--fg); padding: 10px 14px; margin: 8px 0; font-size: 13px; color: var(--fg-bright); white-space: pre; overflow-x: auto; position: relative; border-radius: 4px; }
+  .code-block::before { content: attr(data-lang); position: absolute; top: -1px; right: 8px; background: var(--bg-panel); padding: 0 6px; font-size: 10px; color: var(--fg-muted); border: 1px solid var(--border); border-top: none; border-radius: 0 0 4px 4px; }
   .code-inline { background: color-mix(in srgb, var(--fg) 12%, transparent); padding: 1px 5px; border-radius: 2px; color: var(--accent); font-size: 13px; }
-  
-  .media-frame { border: 1px solid var(--border-bright); padding: 6px; margin: 14px 0; display: inline-block; position: relative; background: var(--bg-panel); max-width: 100%; box-shadow: 0 0 20px color-mix(in srgb, var(--fg) 15%, transparent); }
+  .action-item { display: flex; align-items: center; gap: 10px; padding: 6px 12px; color: var(--fg-muted); font-size: 12px; margin-bottom: 4px; background: var(--bg-panel); border-left: 2px solid var(--fg-dim); border-radius: 0 4px 4px 0; }
+  .action-item .action-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; font-size: 12px; flex-shrink: 0; }
+  .action-item.create { border-left-color: var(--fg); color: var(--fg-bright); }
+  .action-item.create .action-icon { background: var(--fg); color: var(--bg); }
+  .action-item.edit { border-left-color: var(--warn); color: var(--warn); }
+  .action-item.edit .action-icon { background: var(--warn); color: var(--bg); }
+  .action-item.delete { border-left-color: var(--err); color: var(--err); }
+  .action-item.delete .action-icon { background: var(--err); color: var(--bg); }
+  .file-card { border: 1px solid var(--border-bright); padding: 0; margin: 10px 0 20px 0; background: var(--bg-panel); border-radius: 6px; overflow: hidden; }
+  .file-card-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: color-mix(in srgb, var(--bg-input) 50%, transparent); border-bottom: 1px solid var(--border); }
+  .file-card-header span { color: var(--accent); font-weight: 700; font-size: 13px; }
+  .file-card-body { padding: 0; }
+  .file-card-body .code-block { margin: 0; border: none; border-radius: 0; border-top: 1px solid var(--border); }
+  .file-card-actions { padding: 8px 12px; background: var(--bg-input); border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .preview-container { border: 1px solid var(--border-bright); margin: 10px 0 20px 0; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+  .preview-header { background: var(--bg-panel); color: var(--fg-muted); padding: 6px 12px; font-size: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .preview-header::before { content: '🌐'; }
+  .preview-iframe { width: 100%; height: 400px; border: none; background: #fff; }
+  .media-frame { border: 1px solid var(--border-bright); padding: 6px; margin: 14px 0; display: inline-block; position: relative; background: var(--bg-panel); max-width: 100%; box-shadow: 0 0 20px color-mix(in srgb, var(--fg) 15%, transparent); border-radius: 4px; }
   .media-frame::before { content: '[ ' attr(data-type) ' OUTPUT // ID: @' attr(data-id) ' ]'; position: absolute; top: -10px; left: 8px; background: var(--bg); padding: 0 6px; font-size: 10px; color: var(--fg); letter-spacing: 1px; }
-  .media-frame img, .media-frame video { display: block; max-width: 100%; max-height: 460px; }
+  .media-frame img, .media-frame video { display: block; max-width: 100%; max-height: 460px; border-radius: 2px; }
   .media-meta { font-size: 11px; color: var(--fg-muted); margin-top: 6px; padding: 6px 8px; border-top: 1px dashed var(--border); word-break: break-all; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  
-  .tool-card { border: 1px solid var(--border-bright); padding: 14px; margin: 14px 0; background: var(--bg-panel); display: flex; gap: 16px; align-items: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-  .tool-card img { width: 140px; height: 140px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
+  .tool-card { border: 1px solid var(--border-bright); padding: 14px; margin: 14px 0; background: var(--bg-panel); display: flex; gap: 16px; align-items: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-radius: 4px; }
+  .tool-card img { width: 140px; height: 140px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; border-radius: 4px; }
   .tool-card .info { flex: 1; }
   .tool-card h3 { color: var(--fg-bright); margin-bottom: 6px; font-size: 16px; }
   .tool-card p { color: var(--fg-muted); font-size: 12px; margin-bottom: 8px; }
-
-  .file-card { border: 1px solid var(--accent); padding: 12px; margin: 10px 0; background: var(--bg-panel); border-radius: 4px; }
-  .file-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 4px; }
-  .file-card-header span { color: var(--accent); font-weight: 700; font-size: 13px; }
-
-  .btn { display: inline-block; background: var(--fg); color: var(--bg); padding: 6px 12px; text-decoration: none; font-weight: 700; font-size: 12px; border-radius: 2px; margin-top: 8px; margin-right: 8px; transition: transform 0.1s; cursor: pointer; border: none; }
+  .btn { display: inline-block; background: var(--fg); color: var(--bg); padding: 6px 12px; text-decoration: none; font-weight: 700; font-size: 12px; border-radius: 4px; transition: transform 0.1s; cursor: pointer; border: none; }
   .btn:hover { transform: translateY(-1px); box-shadow: 0 0 10px var(--fg); }
   .btn.secondary { background: transparent; border: 1px solid var(--fg); color: var(--fg); }
   .btn.download { background: var(--accent); color: #000; }
   .btn.danger { background: var(--err); color: #fff; }
-
+  .btn.sm { padding: 4px 8px; font-size: 11px; }
   .spinner { display: inline-block; color: var(--fg); }
   .spinner::after { content: '⠋'; animation: spin 0.8s steps(8) infinite; display: inline-block; font-size: 14px; }
   @keyframes spin { 0% { content: '⠋'; } 12.5% { content: '⠙'; } 25% { content: '⠹'; } 37.5% { content: '⠸'; } 50% { content: '⠼'; } 62.5% { content: '⠴'; } 75% { content: '⠦'; } 87.5% { content: '⠧'; } 100% { content: '⠇'; } }
   .thinking-dots::after { content: '●○○'; animation: thinkDots 1.2s infinite; color: var(--fg-dim); letter-spacing: 2px; }
   @keyframes thinkDots { 0%, 33% { content: '●○○'; color: var(--fg); } 34%, 66% { content: '○●○'; color: var(--fg); } 67%, 100% { content: '○○●'; color: var(--fg); } }
-  
   .input-wrapper { border-top: 1px solid var(--border); background: var(--bg-input); flex-shrink: 0; position: relative; }
   .input-hint { font-size: 11px; color: var(--fg-muted); padding: 6px 22px 2px; display: flex; gap: 10px; flex-wrap: wrap; }
   .input-hint .cmd { color: var(--accent); }
@@ -103,8 +102,7 @@
   .prompt-symbol.prompt { color: var(--magenta); text-shadow: 0 0 6px var(--magenta); }
   .input-field { flex: 1; background: transparent; border: none; outline: none; color: var(--fg-bright); font-family: 'JetBrains Mono', monospace; font-size: 14px; caret-color: var(--fg); }
   .input-field::placeholder { color: var(--fg-dim); } .input-field:disabled { opacity: 0.5; }
-  
-  .autocomplete-box { display: none; position: absolute; bottom: 60px; left: 22px; right: 22px; max-height: 280px; overflow-y: auto; background: var(--bg-panel); border: 1px solid var(--border-bright); box-shadow: 0 0 20px rgba(0,0,0,0.8); z-index: 50; flex-direction: column; }
+  .autocomplete-box { display: none; position: absolute; bottom: 60px; left: 22px; right: 22px; max-height: 280px; overflow-y: auto; background: var(--bg-panel); border: 1px solid var(--border-bright); box-shadow: 0 0 20px rgba(0,0,0,0.8); z-index: 50; flex-direction: column; border-radius: 4px; }
   .ac-item { padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
   .ac-item.active { background: color-mix(in srgb, var(--fg) 12%, transparent); }
   .ac-icon { font-size: 16px; width: 24px; text-align: center; color: var(--accent); }
@@ -112,8 +110,7 @@
   .ac-title { color: var(--fg-bright); font-size: 13px; }
   .ac-desc { color: var(--fg-muted); font-size: 11px; }
   .ac-params { margin-top: 4px; font-size: 10px; color: var(--magenta); }
-  .ac-thumb { width: 32px; height: 32px; object-fit: cover; border: 1px solid var(--border-bright); }
-
+  .ac-thumb { width: 32px; height: 32px; object-fit: cover; border: 1px solid var(--border-bright); border-radius: 2px; }
   .help-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
   .help-table td { padding: 5px 14px; border-bottom: 1px dashed var(--border); vertical-align: top; }
   .help-table td:first-child { color: var(--accent); white-space: nowrap; width: 1%; font-weight: 500; }
@@ -122,7 +119,6 @@
   a { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; } a:hover { text-shadow: 0 0 5px var(--accent); }
   strong { color: var(--fg-bright); font-weight: 700; }
   ::selection { background: var(--fg); color: var(--bg); }
-
   .search-container { border: 1px solid var(--border-bright); padding: 14px; margin: 10px 0; background: var(--bg-panel); border-radius: 4px; }
   .search-logo { color: var(--warn); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .search-item { padding: 8px 0; border-bottom: 1px dashed var(--border); }
@@ -132,12 +128,12 @@
   .search-item h4 a:hover { text-decoration: underline; }
   .search-item .url { color: var(--fg-muted); font-size: 11px; margin-bottom: 4px; word-break: break-all; }
   .search-item p { color: var(--fg); font-size: 12px; margin: 0; line-height: 1.4; }
+  @media (max-width: 768px) { .header { padding: 8px 12px; font-size: 10px; } .logo { font-size: 20px; letter-spacing: 2px; } .header-left, .header-right { gap: 10px; } .status-item:nth-child(3), .status-item:nth-child(4) { display: none; } .output { padding: 12px 14px 8px; font-size: 13px; } .input-area { padding: 8px 14px 12px; } .input-hint { padding: 4px 14px 2px; font-size: 10px; gap: 6px; overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; } .autocomplete-box { left: 14px; right: 14px; bottom: 50px; } .tool-card { flex-direction: column; } .tool-card img { width: 100%; height: auto; } .media-frame img, .media-frame video { max-height: 300px; } .preview-iframe { height: 300px; } .file-card-body .code-block { font-size: 11px; } .btn { padding: 8px 14px; font-size: 13px; } }
 </style>
 </head>
 <body class="theme-green">
 <div class="crt-overlay"></div><div class="crt-vignette"></div><div class="crt-flicker"></div>
 <input type="file" id="fileInput" style="display:none;">
-
 <div id="terminal">
   <header class="header">
     <div class="header-left">
@@ -157,12 +153,11 @@
     <div class="input-hint">
       <span><span class="cmd">/help</span> cmds</span>
       <span><span class="cmd">/code</span> CLI mode</span>
-      <span><span class="cmd">/gh-push</span> export</span>
-      <span><span class="cmd">/gh-pull</span> import</span>
+      <span><span class="cmd">/cancel</span> abort req</span>
       <span><span class="cmd">/brew</span> host html</span>
-      <span><span class="cmd">/anime</span> search</span>
-      <span><span class="cmd">/nasa</span> images</span>
-      <span><span class="cmd">/mbti</span> test</span>
+      <span><span class="cmd">/hash</span> text</span>
+      <span><span class="cmd">/password</span> gen</span>
+      <span><span class="cmd">/bmi</span> calc</span>
     </div>
     <div class="input-area">
       <span class="prompt-symbol" id="promptSymbol">▸</span>
@@ -170,15 +165,14 @@
     </div>
   </div>
 </div>
-
 <script>
 // ═══════════════════════════════════════════════════════════
 // CONFIG & STATE
 // ═══════════════════════════════════════════════════════════
 const API_KEY = 'sk-xC8TdHdVA6Iy797q4U4uhPsa5SPt5gI3osko9DsSWYaa3a0y';
 const API_BASE = 'https://apihub.agnes-ai.com';
-const CORS_PROXY = 'https://corsproxy.io/?url=';
-
+const GET_PROXY = 'https://api.allorigins.win/raw?url=';
+const POST_PROXY = 'https://thingproxy.freeboard.io/fetch/';
 let conversationHistory = [];
 let currentModel = 'agnes-2.0-flash';
 let temperature = 0.7;
@@ -199,10 +193,11 @@ let mailSeenIds = [];
 let codeMode = false;
 let uploadedFileContent = null;
 let githubToken = null;
+let currentAbortController = null;
 
 const AVAILABLE_TOOLS = [
   { type: "function", function: { name: "get_current_datetime", description: "Get the current exact date and time.", parameters: { type: "object", properties: {} } } },
-  { type: "function", function: { name: "web_search", description: "Search the web via DuckDuckGo.", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"] } } },
+  { type: "function", function: { name: "web_search", description: "Search the web via Jina AI.", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"] } } },
   { type: "function", function: { name: "read_url", description: "Read URL content via Jina AI.", parameters: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } } },
   { type: "function", function: { name: "shorten_url", description: "Shorten a URL.", parameters: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } } },
   { type: "function", function: { name: "create_temp_email", description: "Generate a temp email.", parameters: { type: "object", properties: {} } } },
@@ -215,8 +210,10 @@ const COMMANDS_LIST = [
   { cmd: '/help', desc: 'Show all commands' },
   { cmd: '/code', desc: 'Enter Code Mode (CLI)' },
   { cmd: '/exit', desc: 'Exit Code Mode / App' },
-  { cmd: '/gh-push', desc: 'Push file to GitHub', args: [{ name: 'repo', desc: 'owner/repo' }, { name: 'path', desc: 'file path' }, { name: 'token', desc: 'GitHub token' }] },
-  { cmd: '/gh-pull', desc: 'Pull file from GitHub', args: [{ name: 'repo', desc: 'owner/repo' }, { name: 'path', desc: 'file path' }, { name: 'token', desc: 'GitHub token' }] },
+  { cmd: '/cancel', desc: 'Abort active AI request' },
+  { cmd: '/token', desc: 'Set GitHub Token', args: [{ name: 'token', desc: 'GitHub PAT' }] },
+  { cmd: '/gh-push', desc: 'Push file to GitHub', args: [{ name: 'repo', desc: 'owner/repo' }, { name: 'path', desc: 'file path' }] },
+  { cmd: '/gh-pull', desc: 'Pull file from GitHub', args: [{ name: 'repo', desc: 'owner/repo' }, { name: 'path', desc: 'file path' }] },
   { cmd: '/image', desc: 'Generate image', args: [{ name: 'prompt', desc: 'Image description' }] },
   { cmd: '/image2', desc: 'High-density image', args: [{ name: 'prompt', desc: 'Image description' }] },
   { cmd: '/video', desc: 'Generate video', args: [{ name: 'prompt', desc: 'Video description' }] },
@@ -230,7 +227,7 @@ const COMMANDS_LIST = [
   { cmd: '/mbti', desc: 'MBTI personality test', args: [{ name: 'code', desc: 'INTJ or "test"' }] },
   { cmd: '/yt', desc: 'YouTube downloader', args: [{ name: 'url', desc: 'YouTube URL' }] },
   { cmd: '/movie', desc: 'Movie database', args: [{ name: 'title', desc: 'Movie title' }] },
-  { cmd: '/search', desc: 'Web search (DuckDuckGo)', args: [{ name: 'query', desc: 'Search query' }] },
+  { cmd: '/search', desc: 'Web search (Jina AI)', args: [{ name: 'query', desc: 'Search query' }] },
   { cmd: '/read', desc: 'Read URL content', args: [{ name: 'url', desc: 'URL to read' }] },
   { cmd: '/shorten', desc: 'Shorten a URL', args: [{ name: 'url', desc: 'Long URL' }] },
   { cmd: '/mail', desc: 'Temp email generator' },
@@ -244,7 +241,88 @@ const COMMANDS_LIST = [
   { cmd: '/reset', desc: 'Reset history' },
   { cmd: '/neofetch', desc: 'System info' },
   { cmd: '/reboot', desc: 'Reboot system' },
-  { cmd: '/cancel', desc: 'Cancel prompt' }
+  { cmd: '/sysinfo', desc: 'Detailed system info' },
+  { cmd: '/ip', desc: 'Get public IP address' },
+  { cmd: '/uuid', desc: 'Generate a UUID' },
+  { cmd: '/base64', desc: 'Encode/Decode Base64', args: [{ name: 'mode', desc: 'encode/decode' }, { name: 'text', desc: 'Input text' }] },
+  { cmd: '/hex2rgb', desc: 'Hex to RGB', args: [{ name: 'hex', desc: 'Hex color (e.g. #fff)' }] },
+  { cmd: '/rgb2hex', desc: 'RGB to Hex', args: [{ name: 'r,g,b', desc: 'RGB values' }] },
+  { cmd: '/uptime', desc: 'Show session uptime' },
+  { cmd: '/history', desc: 'Show command history' },
+  { cmd: '/flip', desc: 'Flip a coin' },
+  { cmd: '/roll', desc: 'Roll dice', args: [{ name: 'dN', desc: 'e.g. 2d6 or d20' }] },
+  { cmd: '/8ball', desc: 'Magic 8-ball', args: [{ name: 'question', desc: 'Yes/No question' }] },
+  { cmd: '/rps', desc: 'Rock Paper Scissors', args: [{ name: 'move', desc: 'rock/paper/scissors' }] },
+  { cmd: '/reverse', desc: 'Reverse text', args: [{ name: 'text', desc: 'Text to reverse' }] },
+  { cmd: '/leet', desc: 'Leetspeak converter', args: [{ name: 'text', desc: 'Text to convert' }] },
+  { cmd: '/morse', desc: 'Text to Morse code', args: [{ name: 'text', desc: 'Text to convert' }] },
+  { cmd: '/qr', desc: 'Generate QR Code', args: [{ name: 'text', desc: 'Text/URL for QR' }] },
+  { cmd: '/quote', desc: 'Random inspirational quote' },
+  { cmd: '/fact', desc: 'Random useless fact' },
+  { cmd: '/cat', desc: 'Random cat fact' },
+  { cmd: '/dog', desc: 'Random dog image' },
+  { cmd: '/btc', desc: 'Bitcoin price' },
+  { cmd: '/eth', desc: 'Ethereum price' },
+  { cmd: '/dns', desc: 'DNS Lookup', args: [{ name: 'domain', desc: 'e.g. google.com' }] },
+  { cmd: '/headers', desc: 'HTTP Headers', args: [{ name: 'url', desc: 'URL to check' }] },
+  { cmd: '/json', desc: 'Format JSON', args: [{ name: 'data', desc: 'JSON string' }] },
+  { cmd: '/regex', desc: 'Test Regex', args: [{ name: 'pattern', desc: 'Regex pattern' }, { name: 'text', desc: 'Text to test' }] },
+  { cmd: '/country', desc: 'Country info', args: [{ name: 'code', desc: 'e.g. US, JP, GB' }] },
+  { cmd: '/geo', desc: 'IP Geolocation', args: [{ name: 'ip', desc: 'IP address' }] },
+  { cmd: '/calc', desc: 'Calculator', args: [{ name: 'expr', desc: 'Math expression' }] },
+  { cmd: '/time', desc: 'World time', args: [{ name: 'timezone', desc: 'e.g. America/New_York' }] },
+  // --- 50 NEW COMMANDS ---
+  { cmd: '/hash', desc: 'Hash text (SHA-256)', args: [{ name: 'text', desc: 'Text to hash' }] },
+  { cmd: '/bin2text', desc: 'Binary to Text', args: [{ name: 'text', desc: 'Binary string' }] },
+  { cmd: '/text2bin', desc: 'Text to Binary', args: [{ name: 'text', desc: 'Text to convert' }] },
+  { cmd: '/charcount', desc: 'Count characters', args: [{ name: 'text', desc: 'Text to count' }] },
+  { cmd: '/wordcount', desc: 'Count words', args: [{ name: 'text', desc: 'Text to count' }] },
+  { cmd: '/slugify', desc: 'Slugify text', args: [{ name: 'text', desc: 'Text to slugify' }] },
+  { cmd: '/password', desc: 'Generate password', args: [{ name: 'length', desc: 'Length (default 16)' }] },
+  { cmd: '/lorem', desc: 'Lorem Ipsum', args: [{ name: 'count', desc: 'Number of words' }] },
+  { cmd: '/urlenc', desc: 'URL Encode', args: [{ name: 'text', desc: 'Text to encode' }] },
+  { cmd: '/urldec', desc: 'URL Decode', args: [{ name: 'text', desc: 'Text to decode' }] },
+  { cmd: '/timestamp', desc: 'Unix timestamp' },
+  { cmd: '/datediff', desc: 'Date difference', args: [{ name: 'date1', desc: 'YYYY-MM-DD' }, { name: 'date2', desc: 'YYYY-MM-DD' }] },
+  { cmd: '/weekday', desc: 'Day of week', args: [{ name: 'date', desc: 'YYYY-MM-DD' }] },
+  { cmd: '/whois', desc: 'WHOIS lookup', args: [{ name: 'domain', desc: 'Domain name' }] },
+  { cmd: '/ssl', desc: 'SSL certificate info', args: [{ name: 'domain', desc: 'Domain name' }] },
+  { cmd: '/hex2dec', desc: 'Hex to Decimal', args: [{ name: 'hex', desc: 'Hex number' }] },
+  { cmd: '/dec2hex', desc: 'Decimal to Hex', args: [{ name: 'dec', desc: 'Decimal number' }] },
+  { cmd: '/bin2dec', desc: 'Binary to Decimal', args: [{ name: 'bin', desc: 'Binary number' }] },
+  { cmd: '/dec2bin', desc: 'Decimal to Binary', args: [{ name: 'dec', desc: 'Decimal number' }] },
+  { cmd: '/rom2dec', desc: 'Roman to Decimal', args: [{ name: 'roman', desc: 'Roman numeral' }] },
+  { cmd: '/dec2rom', desc: 'Decimal to Roman', args: [{ name: 'dec', desc: 'Decimal number' }] },
+  { cmd: '/celsius', desc: 'Fahrenheit to Celsius', args: [{ name: 'temp', desc: 'Temp in F' }] },
+  { cmd: '/fahrenheit', desc: 'Celsius to Fahrenheit', args: [{ name: 'temp', desc: 'Temp in C' }] },
+  { cmd: '/km2mi', desc: 'KM to Miles', args: [{ name: 'km', desc: 'Kilometers' }] },
+  { cmd: '/mi2km', desc: 'Miles to KM', args: [{ name: 'mi', desc: 'Miles' }] },
+  { cmd: '/kg2lb', desc: 'KG to Pounds', args: [{ name: 'kg', desc: 'Kilograms' }] },
+  { cmd: '/lb2kg', desc: 'Pounds to KG', args: [{ name: 'lb', desc: 'Pounds' }] },
+  { cmd: '/bmi', desc: 'Calculate BMI', args: [{ name: 'weight_kg', desc: 'Weight in kg' }, { name: 'height_m', desc: 'Height in m' }] },
+  { cmd: '/trivia', desc: 'Random trivia' },
+  { cmd: '/compliment', desc: 'Random compliment' },
+  { cmd: '/insult', desc: 'Random nerd insult' },
+  { cmd: '/ascii', desc: 'ASCII art text', args: [{ name: 'text', desc: 'Text to convert' }] },
+  { cmd: '/caesar', desc: 'Caesar cipher', args: [{ name: 'shift', desc: 'Shift number' }, { name: 'text', desc: 'Text' }] },
+  { cmd: '/rot13', desc: 'ROT13 cipher', args: [{ name: 'text', desc: 'Text to encode' }] },
+  { cmd: '/logs', desc: 'Show console logs' },
+  { cmd: '/export', desc: 'Export history', args: [{ name: 'format', desc: 'txt or json' }] },
+  { cmd: '/shortcuts', desc: 'Keyboard shortcuts' },
+  { cmd: '/credits', desc: 'App credits' },
+  { cmd: '/health', desc: 'API health check' },
+  { cmd: '/version', desc: 'App version' },
+  { cmd: '/changelog', desc: 'View changelog' },
+  { cmd: '/remind', desc: 'Set a timer', args: [{ name: 'minutes', desc: 'Minutes' }, { name: 'msg', desc: 'Message' }] },
+  { cmd: '/upper', desc: 'UPPERCASE text', args: [{ name: 'text', desc: 'Text' }] },
+  { cmd: '/lower', desc: 'lowercase text', args: [{ name: 'text', desc: 'Text' }] },
+  { cmd: '/title', desc: 'Title Case text', args: [{ name: 'text', desc: 'Text' }] },
+  { cmd: '/piglatin', desc: 'Pig Latin', args: [{ name: 'text', desc: 'Text' }] },
+  { cmd: '/palindrome', desc: 'Check palindrome', args: [{ name: 'text', desc: 'Text' }] },
+  { cmd: '/anagram', desc: 'Generate anagram', args: [{ name: 'text', desc: 'Text' }] },
+  { cmd: '/prime', desc: 'Check prime number', args: [{ name: 'num', desc: 'Number' }] },
+  { cmd: '/fibonacci', desc: 'Fibonacci sequence', args: [{ name: 'count', desc: 'Count' }] },
+  { cmd: '/say', desc: 'Echo text', args: [{ name: 'text', desc: 'Text to echo' }] }
 ];
 
 // ═══════════════════════════════════════════════════════════
@@ -266,625 +344,227 @@ function updateClock() { const n = new Date(); clock.textContent = `${String(n.g
 setInterval(updateClock, 1000); updateClock();
 function appendLine(text, type = '') { const l = document.createElement('div'); l.className = `line ${type}`; l.textContent = text; output.appendChild(l); output.scrollTop = output.scrollHeight; return l; }
 function appendHTML(html, className = '') { const d = document.createElement('div'); d.className = className; d.innerHTML = html; output.appendChild(d); output.scrollTop = output.scrollHeight; return d; }
-
-function setStatus(status) {
-  statusDot.className = 'status-dot'; promptSymbol.classList.remove('busy', 'prompt');
-  // Allow typing even when busy, but change visual state
-  if (status === 'busy') { statusDot.classList.add('busy'); statusText.textContent = 'PROCESSING'; promptSymbol.classList.add('busy'); input.disabled = false; }
-  else if (status === 'error') { statusDot.classList.add('error'); statusText.textContent = 'ERROR'; input.disabled = false; }
-  else if (status === 'tool') { statusDot.classList.add('tool'); statusText.textContent = 'TOOL CALL'; promptSymbol.classList.add('prompt'); input.disabled = false; }
-  else if (status === 'prompt') { statusDot.classList.add('busy'); statusText.textContent = 'AWAITING INPUT'; promptSymbol.classList.add('prompt'); input.disabled = false; }
-  else { statusText.textContent = codeMode ? 'CODE MODE' : 'ONLINE'; input.disabled = false; }
-}
-
+function setStatus(status) { statusDot.className = 'status-dot'; promptSymbol.classList.remove('busy', 'prompt'); if (status === 'busy') { statusDot.classList.add('busy'); statusText.textContent = 'PROCESSING'; promptSymbol.classList.add('busy'); input.disabled = false; } else if (status === 'error') { statusDot.classList.add('error'); statusText.textContent = 'ERROR'; input.disabled = false; } else if (status === 'tool') { statusDot.classList.add('tool'); statusText.textContent = 'TOOL CALL'; promptSymbol.classList.add('prompt'); input.disabled = false; } else if (status === 'prompt') { statusDot.classList.add('busy'); statusText.textContent = 'AWAITING INPUT'; promptSymbol.classList.add('prompt'); input.disabled = false; } else { statusText.textContent = codeMode ? 'CODE MODE' : 'ONLINE'; input.disabled = false; } }
 function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-
-function renderMarkdown(text) {
-  let html = escapeHtml(text);
-  // Parse File Blocks
-  html = html.replace(/\[FILE:\s*(.+?)\]\n?```[\s\S]*?\n?([\s\S]*?)\n?```/g, (m, path, content) => {
-    const safeContent = escapeHtml(content.trim());
-    const safePath = escapeHtml(path.trim());
-    return `<div class="file-card"><div class="file-card-header"><span>📄 ${safePath}</span></div><div class="code-block" data-lang="file">${safeContent}</div><button class="btn download" onclick="downloadFile('${safePath}', \`${safeContent.replace(/`/g, '\\`')}\`)">Download</button></div>`;
-  });
-  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, l, c) => `<div class="code-block" data-lang="${l||'code'}">${c.trim()}</div>`);
-  html = html.replace(/`([^`\n]+)`/g, '<span class="code-inline">$1</span>');
-  html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/^### (.+)$/gm, '<div style="color:var(--accent);font-weight:700;margin:8px 0 4px">$1</div>');
-  html = html.replace(/^## (.+)$/gm, '<div style="color:var(--accent);font-weight:700;font-size:15px;margin:10px 0 4px">$1</div>');
-  html = html.replace(/^# (.+)$/gm, '<div style="color:var(--accent);font-weight:700;font-size:16px;margin:10px 0 4px">$1</div>');
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-  html = html.replace(/(^|[^"=])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank">$2</a>');
-  html = html.replace(/^[-*] (.+)$/gm, '<div style="padding-left:16px;color:var(--fg)">• $1</div>');
-  return html;
-}
-
-function downloadFile(filename, content) {
-  const blob = new Blob([content], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename.split('/').pop(); a.click();
-  URL.revokeObjectURL(url);
-}
-
-// UTF-8 Base64
-function b64EncodeUnicode(str) {
-  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) { return String.fromCharCode('0x' + p1); }));
-}
-function b64DecodeUnicode(str) {
-  return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(''));
-}
+function escapeAttr(t) { return t.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function renderMarkdown(text) { let html = escapeHtml(text); const actionRegex = /\[ACTION:\s*(CREATE|EDIT|DELETE|PREVIEW)\]\s*([^\n]+)\n?```(?:\w+)?\n?([\s\S]*?)\n?```/g; html = html.replace(actionRegex, (match, action, file, content) => { const safeFile = escapeHtml(file.trim()); const safeContent = escapeHtml(content.trim()); const rawContent = content.trim(); const lang = file.split('.').pop() || 'code'; let icon = '✎'; let actionText = `Edited <strong>${safeFile}</strong>`; let actionClass = 'edit'; if (action === 'CREATE') { icon = '+'; actionText = `Created <strong>${safeFile}</strong>`; actionClass = 'create'; } if (action === 'DELETE') { icon = '-'; actionText = `Deleted <strong>${safeFile}</strong>`; actionClass = 'delete'; } let previewHtml = ''; if (action === 'PREVIEW' || (file.endsWith('.html') && action === 'CREATE')) { const escapedRawContent = escapeAttr(rawContent); previewHtml = `<div class="preview-container"><div class="preview-header">Live Preview: ${safeFile}</div><iframe srcdoc="${escapedRawContent}" class="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe></div>`; } const jsSafeContent = safeContent.replace(/`/g, '\\`').replace(/\$/g, '\\$'); return `<div class="action-item ${actionClass}"><span class="action-icon">${icon}</span><span class="action-text">${actionText}</span></div><div class="file-card"><div class="file-card-header"><span>📄 ${safeFile}</span></div><div class="file-card-body"><div class="code-block" data-lang="${lang}">${safeContent}</div></div><div class="file-card-actions"><button class="btn download sm" onclick="downloadFile('${safeFile}', \`${jsSafeContent}\`)">Download</button><button class="btn secondary sm" onclick="copyCode(this)">Copy</button></div></div>${previewHtml}`; }); html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, l, c) => `<div class="code-block" data-lang="${l||'code'}">${c.trim()}</div>`); html = html.replace(/`([^`\n]+)`/g, '<span class="code-inline">$1</span>'); html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>'); html = html.replace(/^### (.+)$/gm, '<div style="color:var(--accent);font-weight:700;margin:8px 0 4px">$1</div>'); html = html.replace(/^## (.+)$/gm, '<div style="color:var(--accent);font-weight:700;font-size:15px;margin:10px 0 4px">$1</div>'); html = html.replace(/^# (.+)$/gm, '<div style="color:var(--accent);font-weight:700;font-size:16px;margin:10px 0 4px">$1</div>'); html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>'); html = html.replace(/(^|[^"=])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank">$2</a>'); html = html.replace(/^[-*] (.+)$/gm, '<div style="padding-left:16px;color:var(--fg)">• $1</div>'); return html; }
+function downloadFile(filename, content) { const blob = new Blob([content], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename.split('/').pop(); a.click(); URL.revokeObjectURL(url); }
+function copyCode(btn) { const code = btn.parentElement.previousElementSibling.querySelector('code')?.textContent || btn.parentElement.previousElementSibling.textContent; navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1500); }
+function b64EncodeUnicode(str) { return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) { return String.fromCharCode('0x' + p1); })); }
+function b64DecodeUnicode(str) { return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join('')); }
+async function fetchJson(url) { const r = await fetch(url); return await r.json(); }
 
 // ═══════════════════════════════════════════════════════════
 // AUTOCOMPLETE & FORMS
 // ═══════════════════════════════════════════════════════════
-function checkAutocomplete() {
-  const val = input.value; const cp = input.selectionStart; const t = val.substring(0, cp);
-  const atMatch = t.match(/(?:^|\s)@([^\s]*)$/);
-  if (atMatch) {
-    acState.type = 'asset'; acState.items = assets.filter(a => a.id.toString().startsWith(atMatch[1]));
-    if (acState.items.length > 0) { acState.activeIndex = 0; renderAssetList(); return; }
-  }
-  const parts = val.split(' ');
-  if (parts[0].startsWith('/') && parts.length === 1) {
-    acState.type = 'command'; acState.items = COMMANDS_LIST.filter(c => c.cmd.startsWith('/' + parts[0].slice(1)));
-    if (acState.items.length > 0) { acState.activeIndex = 0; renderCommandList(); return; }
-  } else if (parts[0].startsWith('/') && parts.length > 1) {
-    const cmdObj = COMMANDS_LIST.find(c => c.cmd === parts[0]);
-    if (cmdObj && cmdObj.args) {
-      const argIdx = parts.length - 2; const currentArg = cmdObj.args[argIdx]; const currentText = parts[parts.length - 1];
-      if (currentArg && currentArg.options) {
-        acState.type = 'options'; acState.items = currentArg.options.filter(o => o.startsWith(currentText));
-        acState.cmdObj = cmdObj; acState.argIdx = argIdx;
-        if (acState.items.length > 0) { acState.activeIndex = 0; renderParamHint(); return; }
-      } else { acState.type = 'param'; acState.cmdObj = cmdObj; acState.argIdx = argIdx; renderParamHint(); return; }
-    }
-  }
-  hideAutocomplete();
-}
-function renderCommandList() {
-  acBox.innerHTML = '';
-  acState.items.forEach((item, idx) => {
-    const div = document.createElement('div');
-    div.className = 'ac-item' + (idx === acState.activeIndex ? ' active' : '');
-    let paramsHtml = item.args ? `<div class="ac-params">Args: ${item.args.map(a=>`<${a.name}>`).join(' ')}</div>` : '';
-    div.innerHTML = `<div class="ac-icon">▸</div><div class="ac-content"><div class="ac-title">${item.cmd}</div><div class="ac-desc">${item.desc || ''}</div>${paramsHtml}</div>`;
-    div.addEventListener('click', () => applyCommandAutocomplete(idx));
-    acBox.appendChild(div);
-  });
-  acBox.style.display = 'flex';
-}
-function renderAssetList() {
-  acBox.innerHTML = '';
-  acState.items.forEach((item, idx) => {
-    const div = document.createElement('div');
-    div.className = 'ac-item' + (idx === acState.activeIndex ? ' active' : '');
-    const t = item.type === 'image' ? `<img src="${item.url}" class="ac-thumb">` : `<div class="ac-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--magenta);font-size:10px;">VID</div>`;
-    div.innerHTML = `${t}<div class="ac-content"><div class="ac-title">@${item.id} [${item.type.toUpperCase()}]</div><div class="ac-desc">${escapeHtml(item.prompt.substring(0, 60))}</div></div>`;
-    div.addEventListener('click', () => applyAssetAutocomplete(idx));
-    acBox.appendChild(div);
-  });
-  acBox.style.display = 'flex';
-}
-function renderParamHint() {
-  acBox.innerHTML = ''; const cmdObj = acState.cmdObj; const argIdx = acState.argIdx;
-  const header = document.createElement('div');
-  header.className = 'ac-item'; header.style.cursor = 'default'; header.style.background = 'var(--bg-input)';
-  let paramsHtml = cmdObj.args.map((a, i) => `<span style="color:${i===argIdx?'var(--warn)':'var(--fg-dim)'};font-weight:${i===argIdx?'700':'400'}">${i===argIdx?'▶ ':'  '}${a.name}</span>`).join('<br>');
-  header.innerHTML = `<div class="ac-icon">▸</div><div class="ac-content"><div class="ac-title">${cmdObj.cmd}</div><div class="ac-desc">${cmdObj.desc}</div><div class="ac-params" style="margin-top:6px; border-top:1px dashed var(--border); padding-top:4px;">${paramsHtml}</div></div>`;
-  acBox.appendChild(header);
-  if (acState.type === 'options') {
-    acState.items.forEach((opt, idx) => {
-      const div = document.createElement('div');
-      div.className = 'ac-item' + (idx === acState.activeIndex ? ' active' : '');
-      div.innerHTML = `<div class="ac-icon">•</div><div class="ac-content"><div class="ac-title">${opt}</div></div>`;
-      div.addEventListener('click', () => applyOptionAutocomplete(idx));
-      acBox.appendChild(div);
-    });
-  }
-  acBox.style.display = 'flex';
-}
+function checkAutocomplete() { const val = input.value; const cp = input.selectionStart; const t = val.substring(0, cp); const atMatch = t.match(/(?:^|\s)@([^\s]*)$/); if (atMatch) { acState.type = 'asset'; acState.items = assets.filter(a => a.id.toString().startsWith(atMatch[1])); if (acState.items.length > 0) { acState.activeIndex = 0; renderAssetList(); return; } } const parts = val.split(' '); if (parts[0].startsWith('/') && parts.length === 1) { acState.type = 'command'; acState.items = COMMANDS_LIST.filter(c => c.cmd.startsWith('/' + parts[0].slice(1))); if (acState.items.length > 0) { acState.activeIndex = 0; renderCommandList(); return; } } else if (parts[0].startsWith('/') && parts.length > 1) { const cmdObj = COMMANDS_LIST.find(c => c.cmd === parts[0]); if (cmdObj && cmdObj.args) { const argIdx = parts.length - 2; const currentArg = cmdObj.args[argIdx]; const currentText = parts[parts.length - 1]; if (currentArg && currentArg.options) { acState.type = 'options'; acState.items = currentArg.options.filter(o => o.startsWith(currentText)); acState.cmdObj = cmdObj; acState.argIdx = argIdx; if (acState.items.length > 0) { acState.activeIndex = 0; renderParamHint(); return; } } else { acState.type = 'param'; acState.cmdObj = cmdObj; acState.argIdx = argIdx; renderParamHint(); return; } } } hideAutocomplete(); }
+function renderCommandList() { acBox.innerHTML = ''; acState.items.forEach((item, idx) => { const div = document.createElement('div'); div.className = 'ac-item' + (idx === acState.activeIndex ? ' active' : ''); let paramsHtml = item.args ? `<div class="ac-params">Args: ${item.args.map(a=>`<${a.name}>`).join(' ')}</div>` : ''; div.innerHTML = `<div class="ac-icon">▸</div><div class="ac-content"><div class="ac-title">${item.cmd}</div><div class="ac-desc">${item.desc || ''}</div>${paramsHtml}</div>`; div.addEventListener('click', () => applyCommandAutocomplete(idx)); acBox.appendChild(div); }); acBox.style.display = 'flex'; }
+function renderAssetList() { acBox.innerHTML = ''; acState.items.forEach((item, idx) => { const div = document.createElement('div'); div.className = 'ac-item' + (idx === acState.activeIndex ? ' active' : ''); const t = item.type === 'image' ? `<img src="${item.url}" class="ac-thumb">` : `<div class="ac-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--magenta);font-size:10px;">VID</div>`; div.innerHTML = `${t}<div class="ac-content"><div class="ac-title">@${item.id} [${item.type.toUpperCase()}]</div><div class="ac-desc">${escapeHtml(item.prompt.substring(0, 60))}</div></div>`; div.addEventListener('click', () => applyAssetAutocomplete(idx)); acBox.appendChild(div); }); acBox.style.display = 'flex'; }
+function renderParamHint() { acBox.innerHTML = ''; const cmdObj = acState.cmdObj; const argIdx = acState.argIdx; const header = document.createElement('div'); header.className = 'ac-item'; header.style.cursor = 'default'; header.style.background = 'var(--bg-input)'; let paramsHtml = cmdObj.args.map((a, i) => `<span style="color:${i===argIdx?'var(--warn)':'var(--fg-dim)'};font-weight:${i===argIdx?'700':'400'}">${i===argIdx?'▶ ':'  '}${a.name}</span>`).join('<br>'); header.innerHTML = `<div class="ac-icon">▸</div><div class="ac-content"><div class="ac-title">${cmdObj.cmd}</div><div class="ac-desc">${cmdObj.desc}</div><div class="ac-params" style="margin-top:6px; border-top:1px dashed var(--border); padding-top:4px;">${paramsHtml}</div></div>`; acBox.appendChild(header); if (acState.type === 'options') { acState.items.forEach((opt, idx) => { const div = document.createElement('div'); div.className = 'ac-item' + (idx === acState.activeIndex ? ' active' : ''); div.innerHTML = `<div class="ac-icon">•</div><div class="ac-content"><div class="ac-title">${opt}</div></div>`; div.addEventListener('click', () => applyOptionAutocomplete(idx)); acBox.appendChild(div); }); } acBox.style.display = 'flex'; }
 function applyCommandAutocomplete(idx) { idx = idx===undefined?acState.activeIndex:idx; const item = acState.items[idx]; if(!item) return; input.value = item.cmd + ' '; input.focus(); input.setSelectionRange(input.value.length, input.value.length); checkAutocomplete(); }
 function applyAssetAutocomplete(idx) { idx = idx===undefined?acState.activeIndex:idx; const item = acState.items[idx]; if(!item) return; const val = input.value; const cp = input.selectionStart; const t = val.substring(0, cp); const ins = '@' + item.id + ' '; const m = t.match(/(?:^|\s)@([^\s]*)$/); const ws = m.index + (m[0].length - m[1].length); input.value = val.substring(0, ws) + ins + val.substring(cp); input.focus(); input.setSelectionRange(ws + ins.length, ws + ins.length); hideAutocomplete(); }
 function applyOptionAutocomplete(idx) { idx = idx===undefined?acState.activeIndex:idx; const opt = acState.items[idx]; if(!opt) return; const parts = input.value.split(' '); parts[parts.length - 1] = opt + ' '; input.value = parts.join(' '); input.focus(); input.setSelectionRange(input.value.length, input.value.length); hideAutocomplete(); }
 function hideAutocomplete() { acBox.style.display = 'none'; acState.type = null; acState.items = []; }
-
 function waitForInput() { return new Promise(resolve => { setStatus('prompt'); interactiveCallback = (val) => { setStatus('online'); resolve(val); }; input.focus(); }); }
-async function runForm(title, fields) {
-  appendLine(`═══ ${title} ═══`, 'info'); let responses = {};
-  for (let field of fields) {
-    let valid = false;
-    while (!valid) {
-      appendLine(field.question, 'prompt');
-      if (field.options) field.options.forEach((o, i) => appendLine(`  ${i + 1}. ${o}`, 'system'));
-      let ans = await waitForInput(); appendLine(ans, 'user');
-      if (field.options) {
-        let idx = parseInt(ans) - 1;
-        if (idx >= 0 && idx < field.options.length) { responses[field.name] = field.options[idx]; valid = true; }
-        else if (field.values && field.values.includes(ans)) { responses[field.name] = ans; valid = true; }
-        else appendLine('[ERROR] Invalid choice.', 'error');
-      } else if (field.validator) {
-        let res = field.validator(ans);
-        if (res.valid) { responses[field.name] = res.value; valid = true; } else appendLine(`[ERROR] ${res.error}`, 'error');
-      } else { if (!ans && field.required !== false) appendLine('[ERROR] Required.', 'error'); else { responses[field.name] = ans; valid = true; } }
-    }
-  }
-  return responses;
-}
+async function runForm(title, fields) { appendLine(`═══ ${title} ═══`, 'info'); let responses = {}; for (let field of fields) { let valid = false; while (!valid) { appendLine(field.question, 'prompt'); if (field.options) field.options.forEach((o, i) => appendLine(`  ${i + 1}. ${o}`, 'system')); let ans = await waitForInput(); if (ans === null) { appendLine('[SYSTEM] Form cancelled.', 'warn'); return null; } appendLine(ans, 'user'); if (field.options) { let idx = parseInt(ans) - 1; if (idx >= 0 && idx < field.options.length) { responses[field.name] = field.options[idx]; valid = true; } else if (field.values && field.values.includes(ans)) { responses[field.name] = ans; valid = true; } else appendLine('[ERROR] Invalid choice.', 'error'); } else if (field.validator) { let res = field.validator(ans); if (res.valid) { responses[field.name] = res.value; valid = true; } else appendLine(`[ERROR] ${res.error}`, 'error'); } else { if (!ans && field.required !== false) appendLine('[ERROR] Required.', 'error'); else { responses[field.name] = ans; valid = true; } } } } return responses; }
 
 // ═══════════════════════════════════════════════════════════
 // ASSETS & TOOL EXEC
 // ═══════════════════════════════════════════════════════════
 function addAsset(type, url, prompt) { const id = assets.length + 1; assets.push({ id, type, url, prompt }); appendLine(`[SYSTEM] Saved as asset @${id}`, 'success'); return id; }
-function resolveReferences(text) {
-  const idM = [...text.matchAll(/@(\d+)/g)]; const urlM = [...text.matchAll(/(https?:\/\/[^\s]+)/g)];
-  const urls = [], refs = []; let cT = text;
-  idM.forEach(m => { const id = parseInt(m[1]); const a = assets.find(x => x.id === id); if (a) { urls.push(a.url); refs.push(a); cT = cT.replace(m[0], `[Ref @${id}]`); } });
-  urlM.forEach(m => { if (!urls.includes(m[0])) { urls.push(m[0]); refs.push({ type: 'url', url: m[0], id: 'URL' }); cT = cT.replace(m[0], `[Ref URL]`); } });
-  return { urls, text: cT, refs };
-}
+function resolveReferences(text) { const idM = [...text.matchAll(/@(\d+)/g)]; const urlM = [...text.matchAll(/(https?:\/\/[^\s]+)/g)]; const urls = [], refs = []; let cT = text; idM.forEach(m => { const id = parseInt(m[1]); const a = assets.find(x => x.id === id); if (a) { urls.push(a.url); refs.push(a); cT = cT.replace(m[0], `[Ref @${id}]`); } }); urlM.forEach(m => { if (!urls.includes(m[0])) { urls.push(m[0]); refs.push({ type: 'url', url: m[0], id: 'URL' }); cT = cT.replace(m[0], `[Ref URL]`); } }); return { urls, text: cT, refs }; }
 async function executeToolCall(name, args) {
   appendLine(`[TOOL] Executing: ${name}(${JSON.stringify(args)})`, 'info');
   try {
     if (name === 'get_current_datetime') return new Date().toString();
-    if (name === 'web_search') {
-      const r = await fetch(`${CORS_PROXY}${encodeURIComponent(`https://api.duckduckgo.com/?q=${encodeURIComponent(args.query)}&format=json&no_html=1&skip_disambig=1`)}`);
-      const d = await r.json();
-      let res = d.AbstractText ? d.AbstractText + "\nSource: " + d.AbstractURL : "No instant answer. ";
-      if (d.RelatedTopics && d.RelatedTopics.length > 0) {
-        res += "\nRelated:\n" + d.RelatedTopics.slice(0,5).map(t => `- ${t.Text} (${t.FirstURL})`).join('\n');
-      }
-      return res;
-    }
+    // FIXED WEB SEARCH: Using Jina AI s.jina.ai
+    if (name === 'web_search') { const r = await fetch(`https://s.jina.ai/${encodeURIComponent(args.query)}`); return await r.text(); }
     if (name === 'read_url') return await (await fetch(`https://r.jina.ai/${args.url}`)).text();
-    if (name === 'shorten_url') { const r = await (await fetch(`${CORS_PROXY}${encodeURIComponent(`https://is.gd/create.php?format=json&url=${encodeURIComponent(args.url)}`)}`)).json(); return r.shorturl || 'Failed'; }
-    if (name === 'create_temp_email') { const r = await (await fetch(`${CORS_PROXY}${encodeURIComponent('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1')}`)).json(); return r[0] || 'Failed'; }
-    if (name === 'publish_to_brewpage') {
-      const r = await fetch(`${CORS_PROXY}${encodeURIComponent('https://brewpage.app/api/html?format=' + args.format)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: args.content }) });
-      const d = await r.json();
-      if (d.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>Content Hosted</h3><p>URL: <a href="${d.link}" target="_blank">${d.link}</a></p></div></div>`); return `Published successfully! URL: ${d.link}`; }
-      return 'Failed to publish';
-    }
-    if (name === 'generate_visual_aid') {
-      const r = await fetch(`${API_BASE}/v1/images/generations`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'agnes-image-2.0-flash', prompt: args.prompt, size: '1024x1024', extra_body: { response_format: 'url' } }) });
-      const d = await r.json(); const url = d.data?.[0]?.url;
-      if (url) { const id = addAsset('image', url, args.prompt); appendHTML(`<div class="media-frame" data-type="AI_IMAGE" data-id="${id}"><img src="${url}"><div class="media-meta"><span>AI Visual Aid</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); return `Image generated and displayed as @${id}. URL: ${url}`; }
-      return 'Failed to generate image';
-    }
-    if (name === 'search_nasa_images') {
-      const r = await fetch(`https://images-api.nasa.gov/search?q=${encodeURIComponent(args.query)}&media_type=image`); const d = await r.json();
-      const items = d.collection?.items || [];
-      let imgItem = items.find(i => i.links && i.links[0].href && i.data[0].media_type === 'image');
-      if (imgItem) {
-        const url = imgItem.links[0].href; const id = addAsset('image', url, 'NASA: ' + args.query);
-        appendHTML(`<div class="media-frame" data-type="NASA_IMG" data-id="${id}"><img src="${url}"><div class="media-meta"><span>NASA Image: ${args.query}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`);
-        return `Found and displayed NASA image for "${args.query}" as @${id}. URL: ${url}`;
-      }
-      return `No images found for "${args.query}"`;
-    }
-  } catch (e) { return `Tool failed: ${e.message}`; }
+    if (name === 'shorten_url') { const r = await (await fetch(`${GET_PROXY}${encodeURIComponent(`https://is.gd/create.php?format=json&url=${encodeURIComponent(args.url)}`)}`)).json(); return r.shorturl || 'Failed'; }
+    if (name === 'create_temp_email') { const r = await (await fetch(`${GET_PROXY}${encodeURIComponent('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1')}`)).json(); return r[0] || 'Failed'; }
+    if (name === 'publish_to_brewpage') { const targetUrl = 'https://brewpage.app/api/html?format=' + args.format; const r = await fetch(`${POST_PROXY}${targetUrl}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: args.content }) }); const d = await r.json(); if (d.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>Content Hosted</h3><p>URL: <a href="${d.link}" target="_blank">${d.link}</a></p></div></div>`); return `Published successfully! URL: ${d.link}`; } return 'Failed to publish'; }
+    if (name === 'generate_visual_aid') { const r = await fetch(`${API_BASE}/v1/images/generations`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'agnes-image-2.0-flash', prompt: args.prompt, size: '1024x1024', extra_body: { response_format: 'url' } }), signal: currentAbortController.signal }); const d = await r.json(); const url = d.data?.[0]?.url; if (url) { const id = addAsset('image', url, args.prompt); appendHTML(`<div class="media-frame" data-type="AI_IMAGE" data-id="${id}"><img src="${url}"><div class="media-meta"><span>AI Visual Aid</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); return `Image generated and displayed as @${id}. URL: ${url}`; } return 'Failed to generate image'; }
+    if (name === 'search_nasa_images') { const r = await fetch(`https://images-api.nasa.gov/search?q=${encodeURIComponent(args.query)}&media_type=image`); const d = await r.json(); const items = d.collection?.items || []; let imgItem = items.find(i => i.links && i.links[0].href && i.data[0].media_type === 'image'); if (imgItem) { const url = imgItem.links[0].href; const id = addAsset('image', url, 'NASA: ' + args.query); appendHTML(`<div class="media-frame" data-type="NASA_IMG" data-id="${id}"><img src="${url}"><div class="media-meta"><span>NASA Image: ${args.query}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); return `Found and displayed NASA image for "${args.query}" as @${id}. URL: ${url}`; } return `No images found for "${args.query}"`; }
+  } catch (e) { if (e.name === 'AbortError') return 'Tool execution aborted.'; return `Tool failed: ${e.message}`; }
   return "Tool not found";
 }
 
 // ═══════════════════════════════════════════════════════════
 // CHAT LOGIC & QUEUE
 // ═══════════════════════════════════════════════════════════
-async function processQueue() {
-  if (isProcessing || messageQueue.length === 0) return;
-  isProcessing = true;
-  const { msg, vision, think } = messageQueue.shift();
-  await chat(msg, vision, think);
-  isProcessing = false;
-  processQueue();
-}
-
+async function processQueue() { if (isProcessing || messageQueue.length === 0) return; isProcessing = true; const { msg, vision, think } = messageQueue.shift(); await chat(msg, vision, think); isProcessing = false; processQueue(); }
 async function chat(userMessage, visionContent = null, enableThinking = false) {
-  conversationHistory = conversationHistory.filter(m => m.role !== 'system');
-  conversationHistory.unshift({ role: 'system', content: systemPrompt });
-  
-  let finalMessage = userMessage;
-  if (uploadedFileContent) {
-    finalMessage = `The user uploaded a file. File content:\n\`\`\`\n${uploadedFileContent}\n\`\`\`\n\nUser query: ${userMessage}`;
-    uploadedFileContent = null;
-  }
-
-  if (visionContent) conversationHistory.push({ role: 'user', content: visionContent });
-  else conversationHistory.push({ role: 'user', content: finalMessage });
+  conversationHistory = conversationHistory.filter(m => m.role !== 'system'); conversationHistory.unshift({ role: 'system', content: systemPrompt });
+  let finalMessage = userMessage; if (uploadedFileContent) { finalMessage = `The user uploaded a file. File content:\n\`\`\`\n${uploadedFileContent}\n\`\`\`\n\nUser query: ${userMessage}`; uploadedFileContent = null; }
+  if (visionContent) conversationHistory.push({ role: 'user', content: visionContent }); else conversationHistory.push({ role: 'user', content: finalMessage });
   ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length;
-  
-  const aDiv = document.createElement('div'); aDiv.className = 'line assistant';
-  const pfx = document.createElement('span'); pfx.className = 'assistant-prefix'; pfx.textContent = codeMode ? 'code▸' : 'as▸'; aDiv.appendChild(pfx);
-  const cSpan = document.createElement('span'); aDiv.appendChild(cSpan);
-  const cur = document.createElement('span'); cur.className = 'tw-cursor'; aDiv.appendChild(cur);
-  output.appendChild(aDiv); output.scrollTop = output.scrollHeight;
-  cSpan.innerHTML = '<span class="thinking-dots"></span>'; setStatus('busy');
-
+  const aDiv = document.createElement('div'); aDiv.className = 'line assistant'; const pfx = document.createElement('span'); pfx.className = 'assistant-prefix'; pfx.textContent = codeMode ? 'code▸' : 'as▸'; aDiv.appendChild(pfx); const cSpan = document.createElement('span'); aDiv.appendChild(cSpan); const cur = document.createElement('span'); cur.className = 'tw-cursor'; aDiv.appendChild(cur); output.appendChild(aDiv); output.scrollTop = output.scrollHeight; cSpan.innerHTML = '<span class="thinking-dots"></span>'; setStatus('busy');
+  currentAbortController = new AbortController();
   try {
-    let payload = { model: currentModel, messages: conversationHistory, stream: false, temperature };
-    if (enableThinking) payload.chat_template_kwargs = { enable_thinking: true };
-    if (!visionContent) payload.tools = AVAILABLE_TOOLS;
-
-    let res = await fetch(`${API_BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-    let data = await res.json(); let msg = data.choices[0].message;
-
+    let payload = { model: currentModel, messages: conversationHistory, stream: false, temperature }; if (enableThinking) payload.chat_template_kwargs = { enable_thinking: true }; if (!visionContent) payload.tools = AVAILABLE_TOOLS;
+    let res = await fetch(`${API_BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: currentAbortController.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`); let data = await res.json(); let msg = data.choices[0].message;
     if (msg.tool_calls && msg.tool_calls.length > 0) {
-      cur.remove(); cSpan.innerHTML = '<span style="color:var(--magenta)">[Initiating Tool Call...]</span>'; setStatus('tool');
-      conversationHistory.push(msg);
-      for (let tc of msg.tool_calls) {
-        const args = JSON.parse(tc.function.arguments);
-        const result = await executeToolCall(tc.function.name, args);
-        appendLine(`[TOOL] Result received.`, 'success');
-        conversationHistory.push({ role: "tool", tool_call_id: tc.id, name: tc.function.name, content: result });
-      }
-      cSpan.innerHTML = ''; aDiv.appendChild(cur); setStatus('busy');
-      payload = { model: currentModel, messages: conversationHistory, stream: true, temperature };
-      if (enableThinking) payload.chat_template_kwargs = { enable_thinking: true };
-      res = await fetch(`${API_BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    } else {
-      const txt = msg.content || ""; msg.content = "";
-      const fakeStream = async () => { const ch = txt.match(/.{1,5}/g) || []; const enc = new TextEncoder(); const s = new ReadableStream({ start(c) { ch.forEach(x => c.enqueue(enc.encode(`data: ${JSON.stringify({choices:[{delta:{content:x}}]})}\n\n`))); c.enqueue(enc.encode('data: [DONE]\n\n')); c.close(); } }); return new Response(s); };
-      res = await fakeStream();
-    }
-
-    const reader = res.body.getReader(); const decoder = new TextDecoder();
-    let buffer = '', fullResp = '', firstTok = true, tBox = null, tCont = null;
-    while (true) {
-      const { done, value } = await reader.read(); if (done) break;
-      buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop() || '';
-      for (let line of lines) {
-        const t = line.trim(); if (!t || !t.startsWith('data:')) continue; const d = t.slice(5).trim(); if (d === '[DONE]') continue;
-        try {
-          const p = JSON.parse(d); const delta = p.choices?.[0]?.delta?.content || '';
-          if (delta) {
-            if (firstTok) { cSpan.innerHTML = ''; firstTok = false; }
-            fullResp += delta;
-            if (fullResp.includes("<think") && !fullResp.includes("</think")) {
-              if (!tBox) { tBox = document.createElement('div'); tBox.className = 'think-box'; tCont = document.createElement('div'); tCont.className = 'think-content'; tBox.appendChild(tCont); cSpan.appendChild(tBox); }
-              tCont.textContent = fullResp.split("<think")[1].replace(/^[^>]*>/, '');
-            } else if (fullResp.includes("</think")) {
-              const parts = fullResp.split("</think");
-              if (tCont && parts[0]) tCont.textContent = parts[0].split("<think")[1].replace(/^[^>]*>/, '');
-              let main = cSpan.querySelector('.main-output'); if (!main) { main = document.createElement('div'); main.className = 'main-output'; cSpan.appendChild(main); }
-              main.innerHTML = renderMarkdown(parts[1] || "");
-            } else {
-              let main = cSpan.querySelector('.main-output'); if (!main) { main = document.createElement('div'); main.className = 'main-output'; cSpan.appendChild(main); }
-              main.innerHTML = renderMarkdown(fullResp);
-            }
-            output.scrollTop = output.scrollHeight;
-          }
-        } catch (e) {}
-      }
-    }
-    cur.remove(); if (!fullResp) cSpan.innerHTML = '<span style="color:var(--warn)">(empty response)</span>';
-    const clean = fullResp.replace(/<think[\s\S]*?<\/think>/g, '').trim();
-    conversationHistory.push({ role: 'assistant', content: clean });
-    ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length; setStatus('online');
-  } catch (e) { cur.remove(); cSpan.innerHTML = `<span style="color:var(--err)">[ERROR] ${escapeHtml(e.message)}</span>`; setStatus('error'); setTimeout(() => setStatus('online'), 3000); conversationHistory.pop(); ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length; }
+      cur.remove(); cSpan.innerHTML = '<span style="color:var(--magenta)">[Initiating Tool Call...]</span>'; setStatus('tool'); conversationHistory.push(msg);
+      for (let tc of msg.tool_calls) { const args = JSON.parse(tc.function.arguments); const result = await executeToolCall(tc.function.name, args); appendLine(`[TOOL] Result received.`, 'success'); conversationHistory.push({ role: "tool", tool_call_id: tc.id, name: tc.function.name, content: result }); }
+      cSpan.innerHTML = ''; aDiv.appendChild(cur); setStatus('busy'); payload = { model: currentModel, messages: conversationHistory, stream: true, temperature }; if (enableThinking) payload.chat_template_kwargs = { enable_thinking: true };
+      res = await fetch(`${API_BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: currentAbortController.signal });
+    } else { const txt = msg.content || ""; msg.content = ""; const fakeStream = async () => { const ch = txt.match(/.{1,5}/g) || []; const enc = new TextEncoder(); const s = new ReadableStream({ start(c) { ch.forEach(x => c.enqueue(enc.encode(`data: ${JSON.stringify({choices:[{delta:{content:x}}]})}\n\n`))); c.enqueue(enc.encode('data: [DONE]\n\n')); c.close(); } }); return new Response(s); }; res = await fakeStream(); }
+    const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = '', fullResp = '', firstTok = true, tBox = null, tCont = null;
+    while (true) { const { done, value } = await reader.read(); if (done) break; buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop() || ''; for (let line of lines) { const t = line.trim(); if (!t || !t.startsWith('data:')) continue; const d = t.slice(5).trim(); if (d === '[DONE]') continue; try { const p = JSON.parse(d); const delta = p.choices?.[0]?.delta?.content || ''; if (delta) { if (firstTok) { cSpan.innerHTML = ''; firstTok = false; } fullResp += delta; if (fullResp.includes("<think") && !fullResp.includes("</think")) { if (!tBox) { tBox = document.createElement('div'); tBox.className = 'think-box'; tCont = document.createElement('div'); tCont.className = 'think-content'; tBox.appendChild(tCont); cSpan.appendChild(tBox); } tCont.textContent = fullResp.split("<think")[1].replace(/^[^>]*>/, ''); } else if (fullResp.includes("</think")) { const parts = fullResp.split("</think"); if (tCont && parts[0]) tCont.textContent = parts[0].split("<think")[1].replace(/^[^>]*>/, ''); let main = cSpan.querySelector('.main-output'); if (!main) { main = document.createElement('div'); main.className = 'main-output'; cSpan.appendChild(main); } main.innerHTML = renderMarkdown(parts[1] || ""); } else { let main = cSpan.querySelector('.main-output'); if (!main) { main = document.createElement('div'); main.className = 'main-output'; cSpan.appendChild(main); } main.innerHTML = renderMarkdown(fullResp); } output.scrollTop = output.scrollHeight; } } catch (e) {} } }
+    cur.remove(); if (!fullResp) cSpan.innerHTML = '<span style="color:var(--warn)">(empty response)</span>'; const clean = fullResp.replace(/<think[\s\S]*?<\/think>/g, '').trim(); conversationHistory.push({ role: 'assistant', content: clean }); ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length; setStatus('online');
+  } catch (e) { cur.remove(); if (e.name === 'AbortError') { cSpan.innerHTML = '<span style="color:var(--err)">[ABORTED]</span>'; conversationHistory.pop(); } else { cSpan.innerHTML = `<span style="color:var(--err)">[ERROR] ${escapeHtml(e.message)}</span>`; setStatus('error'); setTimeout(() => setStatus('online'), 3000); conversationHistory.pop(); } ctxCount.textContent = conversationHistory.filter(m => m.role !== 'system').length; } finally { currentAbortController = null; }
 }
 
 // ═══════════════════════════════════════════════════════════
 // MEDIA GEN
 // ═══════════════════════════════════════════════════════════
-async function generateImageFlow(initialPrompt, model) {
-  const { urls, text, refs } = resolveReferences(initialPrompt);
-  let prompt = text;
-  if (!prompt) { const res = await runForm('IMAGE GENERATOR', [{ name: 'prompt', question: 'Enter image prompt:' }]); prompt = res.prompt; }
-  const sizeRes = await runForm('IMAGE SIZE', [{ name: 'size', question: 'Select output size:', options: ['1024x1024', '1280x720', '720x1280', '1024x768', '768x1024'] }]);
-  appendLine(`[IMAGE] Gen init... Model: ${model}, Size: ${sizeRes.size}`, 'info');
-  const spin = appendHTML('<span class="spinner"></span> Rendering...'); setStatus('busy');
-  try {
-    const body = { model, prompt, size: sizeRes.size, extra_body: { response_format: 'url' } };
-    if (urls.length > 0) body.extra_body.image = urls;
-    const res = await fetch(`${API_BASE}/v1/images/generations`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`); const data = await res.json(); spin.remove();
-    if (data.data?.[0]?.url) { const url = data.data[0].url; const id = addAsset('image', url, prompt); appendHTML(`<div class="media-frame" data-type="IMAGE" data-id="${id}"><img src="${url}"><div class="media-meta"><span>Model: ${model} | Size: ${sizeRes.size}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); appendLine(`[IMAGE] Complete.`, 'success'); }
-    else throw new Error('No URL');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('error'); setTimeout(() => setStatus('online'), 3000); }
-  setStatus('online');
-}
-async function generateVideoFlow(initialPrompt) {
-  const { urls, text, refs } = resolveReferences(initialPrompt);
-  let prompt = text;
-  if (!prompt) { const res = await runForm('VIDEO GENERATOR', [{ name: 'prompt', question: 'Enter video prompt:' }]); prompt = res.prompt; }
-  const resForm = await runForm('VIDEO RESOLUTION', [{ name: 'res', question: 'Select resolution:', options: ['1152x768 (16:9)', '768x1152 (9:16)', '768x768 (1:1)'] }]);
-  let w = 1152, h = 768; if (resForm.res.includes('768x1152')) { w = 768; h = 1152; } else if (resForm.res.includes('768x768')) { w = 768; h = 768; }
-  const durForm = await runForm('VIDEO DURATION', [{ name: 'dur', question: 'Select duration:', options: ['~3s (81 frames)', '~5s (121 frames)', '~10s (241 frames)'] }]);
-  let frames = 121; if (durForm.dur.includes('81')) frames = 81; else if (durForm.dur.includes('241')) frames = 241;
-  appendLine(`[VIDEO] Gen init... Size: ${w}x${h}, Frames: ${frames}`, 'info'); const spin = appendHTML('<span class="spinner"></span> Creating task...'); setStatus('busy');
-  try {
-    const body = { model: 'agnes-video-v2.0', prompt, width: w, height: h, num_frames: frames, frame_rate: 24 }; if (urls[0]) body.image = urls[0];
-    let res = await fetch(`${API_BASE}/v1/videos`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`); let data = await res.json(); spin.remove(); const vid = data.video_id; appendLine(`[VIDEO] Task ID: ${vid}`, 'success');
-    const prog = appendHTML(`<div class="progress-container"><div class="progress-bar"><div class="progress-fill" style="width:0%"></div><div class="progress-text">0% - Queued</div></div></div>`);
-    let att = 0;
-    while (att < 120) {
-      await new Promise(r => setTimeout(r, 5000)); att++;
-      try {
-        const sRes = await fetch(`${API_BASE}/agnesapi?video_id=${vid}`, { headers: { 'Authorization': `Bearer ${API_KEY}` } }); if (!sRes.ok) continue;
-        const sData = await sRes.json(); const p = sData.progress || 0; prog.querySelector('.progress-fill').style.width = `${p}%`; prog.querySelector('.progress-text').textContent = `${p}% - ${sData.status}`;
-        if (sData.status === 'completed') { const vUrl = sData.remixed_from_video_id; prog.remove(); const id = addAsset('video', vUrl, prompt); appendHTML(`<div class="media-frame" data-type="VIDEO" data-id="${id}"><video src="${vUrl}" controls autoplay loop muted playsinline></video><div class="media-meta"><span>Duration: ${sData.seconds}s</span><a href="${vUrl}" download class="btn download">Download MP4</a></div></div>`); appendLine(`[VIDEO] Complete.`, 'success'); setStatus('online'); return; }
-        if (sData.status === 'failed') throw new Error('Failed');
-      } catch (e) {}
-    } throw new Error('Timeout');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('error'); setTimeout(() => setStatus('online'), 3000); }
-}
+async function generateImageFlow(initialPrompt, model) { const { urls, text, refs } = resolveReferences(initialPrompt); let prompt = text; if (!prompt) { const res = await runForm('IMAGE GENERATOR', [{ name: 'prompt', question: 'Enter image prompt:' }]); if(!res) return; prompt = res.prompt; } const sizeRes = await runForm('IMAGE SIZE', [{ name: 'size', question: 'Select output size:', options: ['1024x1024', '1280x720', '720x1280', '1024x768', '768x1024'] }]); if (!sizeRes) return; appendLine(`[IMAGE] Gen init... Model: ${model}, Size: ${sizeRes.size}`, 'info'); const spin = appendHTML('<span class="spinner"></span> Rendering...'); setStatus('busy'); try { const body = { model, prompt, size: sizeRes.size, extra_body: { response_format: 'url' } }; if (urls.length > 0) body.extra_body.image = urls; const res = await fetch(`${API_BASE}/v1/images/generations`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); if (!res.ok) throw new Error(`HTTP ${res.status}`); const data = await res.json(); spin.remove(); if (data.data?.[0]?.url) { const url = data.data[0].url; const id = addAsset('image', url, prompt); appendHTML(`<div class="media-frame" data-type="IMAGE" data-id="${id}"><img src="${url}"><div class="media-meta"><span>Model: ${model} | Size: ${sizeRes.size}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); appendLine(`[IMAGE] Complete.`, 'success'); } else throw new Error('No URL'); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('error'); setTimeout(() => setStatus('online'), 3000); } setStatus('online'); }
+async function generateVideoFlow(initialPrompt) { const { urls, text, refs } = resolveReferences(initialPrompt); let prompt = text; if (!prompt) { const res = await runForm('VIDEO GENERATOR', [{ name: 'prompt', question: 'Enter video prompt:' }]); if(!res) return; prompt = res.prompt; } const resForm = await runForm('VIDEO RESOLUTION', [{ name: 'res', question: 'Select resolution:', options: ['1152x768 (16:9)', '768x1152 (9:16)', '768x768 (1:1)'] }]); if (!resForm) return; let w = 1152, h = 768; if (resForm.res.includes('768x1152')) { w = 768; h = 1152; } else if (resForm.res.includes('768x768')) { w = 768; h = 768; } const durForm = await runForm('VIDEO DURATION', [{ name: 'dur', question: 'Select duration:', options: ['~3s (81 frames)', '~5s (121 frames)', '~10s (241 frames)'] }]); if (!durForm) return; let frames = 121; if (durForm.dur.includes('81')) frames = 81; else if (durForm.dur.includes('241')) frames = 241; appendLine(`[VIDEO] Gen init... Size: ${w}x${h}, Frames: ${frames}`, 'info'); const spin = appendHTML('<span class="spinner"></span> Creating task...'); setStatus('busy'); try { const body = { model: 'agnes-video-v2.0', prompt, width: w, height: h, num_frames: frames, frame_rate: 24 }; if (urls[0]) body.image = urls[0]; let res = await fetch(`${API_BASE}/v1/videos`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); if (!res.ok) throw new Error(`HTTP ${res.status}`); let data = await res.json(); spin.remove(); const vid = data.video_id; appendLine(`[VIDEO] Task ID: ${vid}`, 'success'); const prog = appendHTML(`<div class="progress-container"><div class="progress-bar"><div class="progress-fill" style="width:0%"></div><div class="progress-text">0% - Queued</div></div></div>`); let att = 0; while (att < 120) { await new Promise(r => setTimeout(r, 5000)); att++; try { const sRes = await fetch(`${API_BASE}/agnesapi?video_id=${vid}`, { headers: { 'Authorization': `Bearer ${API_KEY}` } }); if (!sRes.ok) continue; const sData = await sRes.json(); const p = sData.progress || 0; prog.querySelector('.progress-fill').style.width = `${p}%`; prog.querySelector('.progress-text').textContent = `${p}% - ${sData.status}`; if (sData.status === 'completed') { const vUrl = sData.remixed_from_video_id; prog.remove(); const id = addAsset('video', vUrl, prompt); appendHTML(`<div class="media-frame" data-type="VIDEO" data-id="${id}"><video src="${vUrl}" controls autoplay loop muted playsinline></video><div class="media-meta"><span>Duration: ${sData.seconds}s</span><a href="${vUrl}" download class="btn download">Download MP4</a></div></div>`); appendLine(`[VIDEO] Complete.`, 'success'); setStatus('online'); return; } if (sData.status === 'failed') throw new Error('Failed'); } catch (e) {} } throw new Error('Timeout'); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('error'); setTimeout(() => setStatus('online'), 3000); } }
 
 // ═══════════════════════════════════════════════════════════
-// GITHUB & COMMANDS
+// GITHUB, BREWPAGE & MAIL
 // ═══════════════════════════════════════════════════════════
-async function githubPush(args) {
-  const parts = args.split(' ');
-  if (parts.length < 3) { appendLine('[ERROR] Usage: /gh-push <owner/repo> <path> <token>', 'error'); return; }
-  const repo = parts[0]; const path = parts[1]; const token = parts[2];
-  appendLine(`[GITHUB] Preparing to push to ${repo}/${path}...`, 'info');
-  
-  if (!uploadedFileContent) { appendLine('[ERROR] No file content loaded. Use /upload first.', 'error'); return; }
-  const content = uploadedFileContent;
-  uploadedFileContent = null;
+async function tokenCommand(arg) { if (arg) { githubToken = arg; appendLine('[CONFIG] GitHub token saved for this session.', 'success'); } else { appendLine('═══ GITHUB TOKEN SETUP ═══', 'info'); appendLine('To push/pull code to GitHub, you need a Personal Access Token.', 'system'); appendHTML(`<div class="tool-card" style="display:block;"><div class="info"><h3>How to get your token:</h3><p>1. Click the link below to open GitHub settings.<br>2. Click "Generate new token".<br>3. Select the <strong>repo</strong> scope (full control of private repositories).<br>4. Click "Generate token" and copy it.<br>5. Paste it here using: <code>/token YOUR_TOKEN</code></p><a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank" class="btn download">Open GitHub Token Page</a></div></div>`); } }
+async function githubPush(args) { const parts = args.split(' '); if (parts.length < 2) { appendLine('[ERROR] Usage: /gh-push <owner/repo> <path>', 'error'); return; } const repo = parts[0]; const path = parts[1]; if (!githubToken) { appendLine('[ERROR] GitHub token not set. Use /token to set it.', 'error'); return; } appendLine(`[GITHUB] Preparing to push to ${repo}/${path}...`, 'info'); if (!uploadedFileContent) { appendLine('[ERROR] No file content loaded. Use /upload first.', 'error'); return; } const content = uploadedFileContent; uploadedFileContent = null; const spin = appendHTML('<span class="spinner"></span> Pushing to GitHub...'); try { let sha = null; const checkRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, { headers: { 'Authorization': `Bearer ${githubToken}` } }); if (checkRes.ok) { const checkData = await checkRes.json(); sha = checkData.sha; appendLine('[GITHUB] File exists. Updating...', 'system'); } const body = { message: `Update ${path} via As OS`, content: b64EncodeUnicode(content) }; if (sha) body.sha = sha; const pushRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, { method: 'PUT', headers: { 'Authorization': `Bearer ${githubToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); const pushData = await pushRes.json(); spin.remove(); if (pushRes.ok) { appendHTML(`<div class="tool-card"><div class="info"><h3>Push Successful!</h3><p>File: ${path}</p><p>Commit: ${pushData.commit.sha.substring(0,7)}</p><a href="${pushData.content.html_url}" target="_blank" class="btn">View on GitHub</a></div></div>`); appendLine('[GITHUB] Push complete.', 'success'); } else throw new Error(pushData.message || 'Push failed'); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function githubPull(args) { const parts = args.split(' '); if (parts.length < 2) { appendLine('[ERROR] Usage: /gh-pull <owner/repo> <path>', 'error'); return; } const repo = parts[0]; const path = parts[1]; if (!githubToken) { appendLine('[ERROR] GitHub token not set. Use /token to set it.', 'error'); return; } appendLine(`[GITHUB] Pulling ${repo}/${path}...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Fetching...'); try { const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, { headers: { 'Authorization': `Bearer ${githubToken}` } }); const data = await res.json(); spin.remove(); if (res.ok) { const content = b64DecodeUnicode(data.content); uploadedFileContent = content; appendHTML(`<div class="file-card"><div class="file-card-header"><span>📄 ${data.name}</span></div><div class="file-card-body"><div class="code-block" data-lang="${data.name.split('.').pop()}">${escapeHtml(content)}</div></div></div>`); appendLine('[GITHUB] File pulled into context. You can now ask the AI about it or push it back.', 'success'); } else throw new Error(data.message || 'Pull failed'); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function brewCommand(text) { if (!text) { const res = await runForm('BREWPAGE HOST', [{ name: 'content', question: 'Enter HTML or Markdown content:' }]); if(!res) return; text = res.content; } appendLine('[BREW] Publishing to BrewPage...', 'info'); const spin = appendHTML('<span class="spinner"></span> Uploading...'); try { const fmt = text.startsWith('<') || text.includes('<html') ? 'html' : 'markdown'; const targetUrl = 'https://brewpage.app/api/html?format=' + fmt; const res = await fetch(`${POST_PROXY}${targetUrl}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: text }) }); const data = await res.json(); spin.remove(); if (data.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>Content Hosted!</h3><p>Format: ${fmt.toUpperCase()}</p><p>URL: <a href="${data.link}" target="_blank">${data.link}</a></p></div></div>`); appendLine('[BREW] Success.', 'success'); } else throw new Error('Failed to publish'); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function uploadFile() { fileInput.click(); fileInput.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; if (file.type.startsWith('text') || file.name.match(/\.(txt|md|js|py|html|css|json|ts|tsx|jsx|java|c|cpp|cs|go|rb|php)$/i)) { appendLine(`[CODE] Reading file: ${file.name}...`, 'info'); const text = await file.text(); uploadedFileContent = text; appendLine(`[CODE] File loaded (${text.length} chars). Ask me anything about it.`, 'success'); } else { if (file.size > 5 * 1024 * 1024) { appendLine('[ERROR] File exceeds 5MB limit.', 'error'); return; } appendLine(`[UPLOAD] Uploading ${file.name}...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Uploading...'); const fd = new FormData(); fd.append('file', file); try { const res = await fetch(`${POST_PROXY}https://brewpage.app/api/files?ns=public`, { method: 'POST', body: fd }); const data = await res.json(); spin.remove(); if (data.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>File Uploaded!</h3><p>Name: ${file.name}</p><p>URL: <a href="${data.link}" target="_blank">${data.link}</a></p><a href="${data.link}" target="_blank" class="btn download">Open File</a></div></div>`); appendLine('[UPLOAD] Success.', 'success'); } else throw new Error('Upload failed'); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } } fileInput.value = ''; }; }
+async function mailCommand(arg) { if (arg === 'stop') { if (mailPoller) { clearInterval(mailPoller); mailPoller = null; appendLine('[MAIL] Polling stopped.', 'warn'); } else { appendLine('[MAIL] No active poller.', 'system'); } return; } if (mailPoller) { appendLine('[MAIL] Already running. Use /mail stop.', 'warn'); return; } appendLine('[MAIL] Generating temp email...', 'info'); const spin = appendHTML('<span class="spinner"></span> Generating...'); try { const targetUrl = 'https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1'; const r = await fetch(`${GET_PROXY}${encodeURIComponent(targetUrl)}`); const d = await r.json(); spin.remove(); const email = d[0]; const [user, domain] = email.split('@'); mailSeenIds = []; appendHTML(`<div class="tool-card"><div class="info"><h3>Temp Email Active</h3><p style="font-size:16px;color:var(--fg-bright);">${email}</p><p>Polling every 10s. Use <strong>/mail stop</strong> to stop.</p><a href="https://www.1secmail.com/?login=${user}&domain=${domain}" target="_blank" class="btn">Open Webmail</a></div></div>`); mailPoller = setInterval(async () => { try { const mTargetUrl = `https://www.1secmail.com/api/v1/?action=getMessages&username=${user}&domain=${domain}`; const mRes = await fetch(`${GET_PROXY}${encodeURIComponent(mTargetUrl)}`); const mData = await mRes.json(); mData.forEach(msg => { if (!mailSeenIds.includes(msg.id)) { mailSeenIds.push(msg.id); appendLine(`[MAIL] ✉ New mail from ${msg.from}: ${msg.subject}`, 'success'); } }); } catch (e) {} }, 10000); } catch(e){ spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
 
-  const spin = appendHTML('<span class="spinner"></span> Pushing to GitHub...');
-  try {
-    // Check if file exists to get SHA
-    let sha = null;
-    const checkRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, { headers: { 'Authorization': `Bearer ${token}` } });
-    if (checkRes.ok) { const checkData = await checkRes.json(); sha = checkData.sha; appendLine('[GITHUB] File exists. Updating...', 'system'); }
-
-    const body = { message: `Update ${path} via As OS`, content: b64EncodeUnicode(content) };
-    if (sha) body.sha = sha;
-
-    const pushRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const pushData = await pushRes.json();
-    spin.remove();
-    if (pushRes.ok) { appendHTML(`<div class="tool-card"><div class="info"><h3>Push Successful!</h3><p>File: ${path}</p><p>Commit: ${pushData.commit.sha.substring(0,7)}</p><a href="${pushData.content.html_url}" target="_blank" class="btn">View on GitHub</a></div></div>`); appendLine('[GITHUB] Push complete.', 'success'); }
-    else throw new Error(pushData.message || 'Push failed');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-
-async function githubPull(args) {
-  const parts = args.split(' ');
-  if (parts.length < 3) { appendLine('[ERROR] Usage: /gh-pull <owner/repo> <path> <token>', 'error'); return; }
-  const repo = parts[0]; const path = parts[1]; const token = parts[2];
-  appendLine(`[GITHUB] Pulling ${repo}/${path}...`, 'info');
-  const spin = appendHTML('<span class="spinner"></span> Fetching...');
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, { headers: { 'Authorization': `Bearer ${token}` } });
-    const data = await res.json();
-    spin.remove();
-    if (res.ok) {
-      const content = b64DecodeUnicode(data.content);
-      uploadedFileContent = content;
-      appendHTML(`<div class="file-card"><div class="file-card-header"><span>📄 ${data.name}</span></div><div class="code-block" data-lang="${data.name.split('.').pop()}">${escapeHtml(content)}</div></div>`);
-      appendLine('[GITHUB] File pulled into context. You can now ask the AI about it or push it back.', 'success');
-    } else throw new Error(data.message || 'Pull failed');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-
-async function brewCommand(text) {
-  if (!text) { const res = await runForm('BREWPAGE HOST', [{ name: 'content', question: 'Enter HTML or Markdown content:' }]); text = res.content; }
-  appendLine('[BREW] Publishing to BrewPage...', 'info'); const spin = appendHTML('<span class="spinner"></span> Uploading...');
-  try {
-    const fmt = text.startsWith('<') || text.includes('<html') ? 'html' : 'markdown';
-    const res = await fetch(`${CORS_PROXY}${encodeURIComponent('https://brewpage.app/api/html?format=' + fmt)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: text }) });
-    const data = await res.json(); spin.remove();
-    if (data.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>Content Hosted!</h3><p>Format: ${fmt.toUpperCase()}</p><p>URL: <a href="${data.link}" target="_blank">${data.link}</a></p></div></div>`); appendLine('[BREW] Success.', 'success'); }
-    else throw new Error('Failed to publish');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function uploadFile() {
-  fileInput.click();
-  fileInput.onchange = async (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    if (file.type.startsWith('text') || file.name.match(/\.(txt|md|js|py|html|css|json|ts|tsx|jsx|java|c|cpp|cs|go|rb|php)$/i)) {
-      appendLine(`[CODE] Reading file: ${file.name}...`, 'info');
-      const text = await file.text(); uploadedFileContent = text;
-      appendLine(`[CODE] File loaded (${text.length} chars). Ask me anything about it.`, 'success');
-    } else {
-      if (file.size > 5 * 1024 * 1024) { appendLine('[ERROR] File exceeds 5MB limit.', 'error'); return; }
-      appendLine(`[UPLOAD] Uploading ${file.name}...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Uploading...');
-      const fd = new FormData(); fd.append('file', file);
-      try {
-        const res = await fetch(`${CORS_PROXY}${encodeURIComponent('https://brewpage.app/api/files?ns=public')}`, { method: 'POST', body: fd });
-        const data = await res.json(); spin.remove();
-        if (data.link) { appendHTML(`<div class="tool-card"><div class="info"><h3>File Uploaded!</h3><p>Name: ${file.name}</p><p>URL: <a href="${data.link}" target="_blank">${data.link}</a></p><a href="${data.link}" target="_blank" class="btn download">Open File</a></div></div>`); appendLine('[UPLOAD] Success.', 'success'); }
-        else throw new Error('Upload failed');
-      } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-    }
-    fileInput.value = '';
-  };
-}
-async function githubCommand(user) {
-  if (!user) { const res = await runForm('GITHUB', [{ name: 'username', question: 'Enter GitHub username:' }]); user = res.username; }
-  appendLine(`[GITHUB] Generating chart for ${user}...`, 'info');
-  const url = `https://ghchart.rshah.org/${user}`;
-  appendHTML(`<div class="media-frame" data-type="GITHUB_CHART"><img src="${url}" alt="GitHub Contributions"><div class="media-meta"><span>User: ${user}</span><a href="${url}" download class="btn secondary">Download PNG</a></div></div>`);
-  appendLine('[GITHUB] Chart generated.', 'success');
-}
-async function nasaCommand(query) {
-  if (!query) { const res = await runForm('NASA SEARCH', [{ name: 'query', question: 'Enter search term:' }]); query = res.query; }
-  appendLine(`[NASA] Searching images for "${query}"...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Searching...');
-  try {
-    const res = await fetch(`https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}&media_type=image`); const data = await res.json(); spin.remove();
-    const items = data.collection?.items || [];
-    let imgItem = items.find(i => i.links && i.links[0].href && i.data[0].media_type === 'image');
-    if (imgItem) {
-      const url = imgItem.links[0].href; const id = addAsset('image', url, 'NASA: ' + query);
-      appendHTML(`<div class="media-frame" data-type="NASA_IMG" data-id="${id}"><img src="${url}"><div class="media-meta"><span>Query: ${query}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`);
-      appendLine('[NASA] Image displayed.', 'success');
-    } else { appendLine('[NASA] No images found.', 'warn'); }
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function animeCommand(t) {
-  if (!t) { const res = await runForm('ANIME SEARCH', [{ name: 'title', question: 'Enter anime title:' }]); t = res.title; }
-  appendLine(`[ANIME] Searching "${t}"...`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching...');
-  try {
-    const r = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(t)}&limit=1&sfw`); const d = await r.json(); s.remove();
-    if (d.data && d.data.length > 0) {
-      const a = d.data[0];
-      appendHTML(`<div class="tool-card"><img src="${a.images.jpg.image_url}"><div class="info"><h3>${a.title}</h3><p style="color:var(--warn)">Score: ${a.score || 'N/A'}</p><p>Episodes: ${a.episodes || 'N/A'}</p><p>${a.synopsis ? a.synopsis.substring(0, 200)+'...' : ''}</p><a href="${a.url}" target="_blank" class="btn">View on MAL</a></div></div>`);
-    } else { appendLine('[ANIME] Not found.', 'warn'); }
-  } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function mbtiCommand(arg) {
-  if (!arg) { const res = await runForm('MBTI TOOL', [{ name: 'action', question: 'What do you want?', options: ['Take the test', 'Look up a type'] }]); if (res.action === 'Take the test') arg = 'test'; else { const tRes = await runForm('MBTI LOOKUP', [{ name: 'code', question: 'Enter 4-letter code:' }]); arg = tRes.code; } }
-  if (arg === 'test') {
-    appendLine('[MBTI] Starting test...', 'info');
-    try {
-      const res = await fetch('https://personality.fyi/api/v1/test/items'); const data = await res.json();
-      mbtiState.items = data.items; mbtiState.answers = []; mbtiState.index = 0;
-      appendLine('═══ MBTI PERSONALITY TEST ═══', 'info'); appendLine('Rate 1 (Strongly Disagree) to 5 (Strongly Agree).', 'system');
-      askMbtiQuestion();
-    } catch (e) { appendLine(`[ERROR] ${e.message}`, 'error'); }
-  } else {
-    appendLine(`[MBTI] Fetching profile for ${arg.toUpperCase()}...`, 'info');
-    try {
-      const res = await fetch(`https://personality.fyi/api/v1/types/${arg.toUpperCase()}`); const data = await res.json();
-      appendHTML(`<div class="tool-card"><div class="info"><h3>${data.code} - ${data.name}</h3><p style="color:var(--accent)">${data.title}</p><p><strong>Cognitive:</strong> ${data.cognitive}</p><p><strong>Strengths:</strong> ${data.strengths.join(', ')}</p><a href="${data.url}" target="_blank" class="btn">Full Profile</a></div></div>`);
-    } catch (e) { appendLine('[ERROR] Invalid MBTI code.', 'error'); }
+// ═══════════════════════════════════════════════════════════
+// OLD COMMANDS (v12)
+// ═══════════════════════════════════════════════════════════
+async function oldCommandExecutor(c, a) {
+  switch (c) {
+    case 'sysinfo': appendHTML(`<div class="code-block" data-lang="sysinfo">OS: As OS v13.0\nBrowser: ${navigator.userAgent}\nPlatform: ${navigator.platform}\nCores: ${navigator.hardwareConcurrency}\nMemory: ${navigator.deviceMemory || 'N/A'} GB\nScreen: ${window.screen.width}x${window.screen.height}\nUptime: ${Math.floor((Date.now() - window.performance.timeOrigin)/1000)}s</div>`); break;
+    case 'ip': try { const d = await fetchJson('https://api.ipify.org?format=json'); appendLine(`[IP] Public IP: ${d.ip}`, 'info'); } catch(e) { appendLine('[ERROR] Failed to fetch IP.', 'error'); } break;
+    case 'uuid': appendLine(`[UUID] ${crypto.randomUUID()}`, 'success'); break;
+    case 'base64': { const [mode, ...text] = a.split(' '); const t = text.join(' '); if(!t) { appendLine('[ERROR] Usage: /base64 <encode|decode> <text>', 'error'); break; } try { const res = mode === 'decode' ? b64DecodeUnicode(t) : b64EncodeUnicode(t); appendLine(`[BASE64] ${res}`, 'success'); } catch(e) { appendLine('[ERROR] Invalid Base64 string.', 'error'); } break; }
+    case 'hex2rgb': { if(!a) { appendLine('[ERROR] Usage: /hex2rgb #fff', 'error'); break; } let hex = a.replace('#',''); if(hex.length === 3) hex = hex.split('').map(c=>c+c).join(''); const r = parseInt(hex.substring(0,2),16); const g = parseInt(hex.substring(2,4),16); const b = parseInt(hex.substring(4,6),16); appendLine(`[HEX2RGB] rgb(${r}, ${g}, ${b})`, 'success'); break; }
+    case 'rgb2hex': { const parts = a.split(',').map(p=>parseInt(p.trim())); if(parts.length !== 3 || parts.some(isNaN)) { appendLine('[ERROR] Usage: /rgb2hex 255,0,128', 'error'); break; } appendLine(`[RGB2HEX] #${parts.map(p=>p.toString(16).padStart(2,'0')).join('')}`, 'success'); break; }
+    case 'uptime': appendLine(`[UPTIME] ${Math.floor((Date.now() - window.performance.timeOrigin)/1000)} seconds`, 'info'); break;
+    case 'history': appendLine('═══ COMMAND HISTORY ═══', 'info'); commandHistory.forEach((cmd, i) => appendLine(`${i+1}. ${cmd}`, 'system')); break;
+    case 'flip': appendLine(`[FLIP] ${Math.random() < 0.5 ? 'Heads' : 'Tails'}`, 'success'); break;
+    case 'roll': { if(!a) { appendLine(`[ROLL] ${Math.floor(Math.random() * 6) + 1}`, 'success'); break; } const m = a.match(/(\d*)d(\d+)/); if(m) { const count = parseInt(m[1]) || 1; const sides = parseInt(m[2]); const rolls = Array.from({length: count}, () => Math.floor(Math.random() * sides) + 1); appendLine(`[ROLL] Rolled ${count}d${sides}: [${rolls.join(', ')}] (Total: ${rolls.reduce((a,b)=>a+b,0)})`, 'success'); } else { appendLine('[ERROR] Usage: /roll 2d6', 'error'); } break; }
+    case '8ball': { if(!a) { appendLine('[ERROR] Usage: /8ball <question>', 'error'); break; } const answers = ['It is certain.', 'Without a doubt.', 'Yes, definitely.', 'Most likely.', 'Outlook good.', 'Yes.', 'Ask again later.', 'Cannot predict now.', 'Don\'t count on it.', 'My reply is no.', 'Very doubtful.']; appendLine(`[8BALL] ${answers[Math.floor(Math.random() * answers.length)]}`, 'success'); break; }
+    case 'rps': { if(!a) { appendLine('[ERROR] Usage: /rps <rock|paper|scissors>', 'error'); break; } const moves = ['rock', 'paper', 'scissors']; const ai = moves[Math.floor(Math.random() * 3)]; const user = a.toLowerCase(); if(!moves.includes(user)) { appendLine('[ERROR] Invalid move.', 'error'); break; } let res = 'Draw!'; if((user === 'rock' && ai === 'scissors') || (user === 'paper' && ai === 'rock') || (user === 'scissors' && ai === 'paper')) res = 'You win!'; else if(user !== ai) res = 'AI wins!'; appendLine(`[RPS] You: ${user} | AI: ${ai} => ${res}`, 'success'); break; }
+    case 'reverse': appendLine(`[REVERSE] ${a.split('').reverse().join('')}`, 'success'); break;
+    case 'leet': appendLine(`[LEET] ${a.replace(/a/gi, '4').replace(/e/gi, '3').replace(/i/gi, '1').replace(/o/gi, '0').replace(/s/gi, '5').replace(/t/gi, '7')}`, 'success'); break;
+    case 'morse': { const map = { 'A':'.-', 'B':'-...', 'C':'-.-.', 'D':'-..', 'E':'.', 'F':'..-.', 'G':'--.', 'H':'....', 'I':'..', 'J':'.---', 'K':'-.-', 'L':'.-..', 'M':'--', 'N':'-.', 'O':'---', 'P':'.--.', 'Q':'--.-', 'R':'.-.', 'S':'...', 'T':'-', 'U':'..-', 'V':'...-', 'W':'.--', 'X':'-..-', 'Y':'-.--', 'Z':'--..', '1':'.----', '2':'..---', '3':'...--', '4':'....-', '5':'.....', '6':'-....', '7':'--...', '8':'---..', '9':'----.', '0':'-----' }; const res = a.toUpperCase().split('').map(c => c === ' ' ? '/' : (map[c] || '')).join(' '); appendLine(`[MORSE] ${res}`, 'success'); break; }
+    case 'qr': if(!a) { appendLine('[ERROR] Usage: /qr <text>', 'error'); break; } appendHTML(`<div class="media-frame" data-type="QR_CODE"><img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(a)}" alt="QR Code"><div class="media-meta"><span>QR Code generated.</span></div></div>`); break;
+    case 'quote': try { const d = await fetchJson('https://api.quotable.io/random'); appendLine(`[QUOTE] "${d.content}" - ${d.author}`, 'success'); } catch(e) { appendLine('[ERROR] Failed to fetch quote.', 'error'); } break;
+    case 'fact': try { const d = await fetchJson('https://uselessfacts.jsph.pl/api/v2/facts/random'); appendLine(`[FACT] ${d.text}`, 'success'); } catch(e) { appendLine('[ERROR] Failed to fetch fact.', 'error'); } break;
+    case 'cat': try { const d = await fetchJson('https://catfact.ninja/fact'); appendLine(`[CAT] ${d.fact}`, 'success'); } catch(e) { appendLine('[ERROR] Failed to fetch cat fact.', 'error'); } break;
+    case 'dog': try { const d = await fetchJson('https://dog.ceo/api/breeds/image/random'); appendHTML(`<div class="media-frame" data-type="DOG_IMG"><img src="${d.message}"><div class="media-meta"><span>Random Dog</span></div></div>`); } catch(e) { appendLine('[ERROR] Failed to fetch dog.', 'error'); } break;
+    case 'btc': try { const d = await fetchJson('https://api.coindesk.com/v1/bpi/currentprice.json'); appendLine(`[BTC] 1 BTC = $${d.bpi.USD.rate_float.toLocaleString()} USD`, 'success'); } catch(e) { appendLine('[ERROR] Failed to fetch BTC price.', 'error'); } break;
+    case 'eth': try { const d = await fetchJson('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'); appendLine(`[ETH] 1 ETH = $${d.ethereum.usd} USD`, 'success'); } catch(e) { appendLine('[ERROR] Failed to fetch ETH price.', 'error'); } break;
+    case 'dns': { if(!a) { appendLine('[ERROR] Usage: /dns <domain>', 'error'); break; } try { const d = await fetchJson(`https://dns.google/resolve?name=${a}`); const ans = d.Answer ? d.Answer.map(r => `${r.name} (${r.type}) -> ${r.data}`).join('\n') : 'No records found.'; appendHTML(`<div class="code-block" data-lang="dns">${ans}</div>`); } catch(e) { appendLine('[ERROR] DNS lookup failed.', 'error'); } break; }
+    case 'headers': { if(!a) { appendLine('[ERROR] Usage: /headers <url>', 'error'); break; } try { const d = await fetchJson(`${GET_PROXY}${encodeURIComponent(a)}`); const headers = Object.entries(d).map(([k,v]) => `${k}: ${v}`).join('\n'); appendHTML(`<div class="code-block" data-lang="headers">${headers}</div>`); } catch(e) { appendLine('[ERROR] Failed to fetch headers.', 'error'); } break; }
+    case 'json': { if(!a) { appendLine('[ERROR] Usage: /json <data>', 'error'); break; } try { const obj = JSON.parse(a); appendHTML(`<div class="code-block" data-lang="json">${JSON.stringify(obj, null, 2)}</div>`); } catch(e) { appendLine('[ERROR] Invalid JSON.', 'error'); } break; }
+    case 'regex': { const parts = a.match(/^(\/.*\/[gim]*)\s+(.*)$/); if(!parts) { appendLine('[ERROR] Usage: /regex /pattern/ text', 'error'); break; } try { const match = parts[2].match(new RegExp(parts[1].slice(1, -1), '')); appendLine(`[REGEX] ${match ? `Matched: ${match[0]}` : 'No match.'}`, 'success'); } catch(e) { appendLine('[ERROR] Invalid regex.', 'error'); } break; }
+    case 'country': { if(!a) { appendLine('[ERROR] Usage: /country <code>', 'error'); break; } try { const d = await fetchJson(`https://restcountries.com/v3.1/alpha/${a}`); const c = d[0]; appendHTML(`<div class="tool-card"><img src="${c.flags.png}"><div class="info"><h3>${c.name.common}</h3><p>Capital: ${c.capital?.[0] || 'N/A'}</p><p>Population: ${c.population.toLocaleString()}</p><p>Region: ${c.region}</p></div></div>`); } catch(e) { appendLine('[ERROR] Country not found.', 'error'); } break; }
+    case 'geo': { if(!a) { appendLine('[ERROR] Usage: /geo <ip>', 'error'); break; } try { const d = await fetchJson(`http://ip-api.com/json/${a}`); appendHTML(`<div class="code-block" data-lang="geo">IP: ${d.query}\nCountry: ${d.country} (${d.countryCode})\nRegion: ${d.regionName}\nCity: ${d.city}\nISP: ${d.isp}\nLat/Lon: ${d.lat}, ${d.lon}</div>`); } catch(e) { appendLine('[ERROR] Geo lookup failed.', 'error'); } break; }
+    case 'calc': { if(!a) { appendLine('[ERROR] Usage: /calc <expression>', 'error'); break; } try { const res = eval(a); appendLine(`[CALC] ${a} = ${res}`, 'success'); } catch(e) { appendLine('[ERROR] Invalid expression.', 'error'); } break; }
+    case 'time': { if(!a) { appendLine(`[TIME] ${new Date().toLocaleString()}`, 'success'); break; } try { const d = new Date().toLocaleString('en-US', { timeZone: a }); appendLine(`[TIME] ${a}: ${d}`, 'success'); } catch(e) { appendLine('[ERROR] Invalid timezone.', 'error'); } break; }
+    default: return false;
   }
+  return true;
 }
-function askMbtiQuestion() {
-  if (mbtiState.index < mbtiState.items.length) {
-    const item = mbtiState.items[mbtiState.index];
-    appendLine(`Q${mbtiState.index + 1}/${mbtiState.items.length}: ${item.statement}`, 'prompt');
-    appendLine(`(1=Strongly Disagree [${item.disagreePole}], 3=Neutral, 5=Strongly Agree [${item.agreePole}])`, 'system');
-    setStatus('prompt');
-    interactiveCallback = (ans) => { appendLine(ans, 'user'); const val = parseInt(ans); if (isNaN(val) || val < 1 || val > 5) { appendLine('[ERROR] Enter 1-5.', 'error'); askMbtiQuestion(); return; } mbtiState.answers.push(val); mbtiState.index++; askMbtiQuestion(); };
-  } else { finishMbtiTest(); }
+
+// ═══════════════════════════════════════════════════════════
+// 50 NEW COMMANDS IMPLEMENTATION
+// ═══════════════════════════════════════════════════════════
+async function newCommandExecutor(c, a) {
+  switch (c) {
+    case 'hash': { if(!a) { appendLine('[ERROR] Usage: /hash <text>', 'error'); break; } try { const data = new TextEncoder().encode(a); const hashBuffer = await crypto.subtle.digest('SHA-256', data); const hashArray = Array.from(new Uint8Array(hashBuffer)); const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); appendLine(`[HASH] SHA-256: ${hashHex}`, 'success'); } catch(e) { appendLine('[ERROR] Hashing failed.', 'error'); } break; }
+    case 'bin2text': { if(!a) { appendLine('[ERROR] Usage: /bin2text <binary>', 'error'); break; } try { const text = a.split(' ').map(b => String.fromCharCode(parseInt(b, 2))).join(''); appendLine(`[BIN2TEXT] ${text}`, 'success'); } catch(e) { appendLine('[ERROR] Invalid binary string.', 'error'); } break; }
+    case 'text2bin': { if(!a) { appendLine('[ERROR] Usage: /text2bin <text>', 'error'); break; } const bin = a.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' '); appendLine(`[TEXT2BIN] ${bin}`, 'success'); break; }
+    case 'charcount': appendLine(`[CHARCOUNT] ${a.length} characters`, 'success'); break;
+    case 'wordcount': appendLine(`[WORDCOUNT] ${a.split(' ').filter(Boolean).length} words`, 'success'); break;
+    case 'slugify': appendLine(`[SLUGIFY] ${a.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-')}`, 'success'); break;
+    case 'password': { const len = parseInt(a) || 16; const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+'; const pass = Array.from({length: len}, () => chars[Math.floor(Math.random() * chars.length)]).join(''); appendLine(`[PASSWORD] ${pass}`, 'success'); break; }
+    case 'lorem': { const count = parseInt(a) || 50; const words = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'.split(' '); const text = Array.from({length: count}, () => words[Math.floor(Math.random() * words.length)]).join(' '); appendLine(`[LOREM] ${text}`, 'success'); break; }
+    case 'urlenc': appendLine(`[URLENC] ${encodeURIComponent(a)}`, 'success'); break;
+    case 'urldec': try { appendLine(`[URLDEC] ${decodeURIComponent(a)}`, 'success'); } catch(e) { appendLine('[ERROR] Invalid URL encoding.', 'error'); } break;
+    case 'timestamp': appendLine(`[TIMESTAMP] ${Math.floor(Date.now() / 1000)}`, 'success'); break;
+    case 'datediff': { const [d1, d2] = a.split(' '); if(!d1 || !d2) { appendLine('[ERROR] Usage: /datediff <date1> <date2>', 'error'); break; } const diff = Math.abs(new Date(d2) - new Date(d1)); const days = Math.floor(diff / (1000 * 60 * 60 * 24)); appendLine(`[DATEDIFF] ${days} days`, 'success'); break; }
+    case 'weekday': { if(!a) { appendLine('[ERROR] Usage: /weekday <YYYY-MM-DD>', 'error'); break; } const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; appendLine(`[WEEKDAY] ${days[new Date(a).getDay()]}`, 'success'); break; }
+    case 'whois': { if(!a) { appendLine('[ERROR] Usage: /whois <domain>', 'error'); break; } try { const d = await fetchJson(`${GET_PROXY}${encodeURIComponent(`https://api.allorigins.win/raw?url=https://rdap.org/domain/${a}`)}`); appendHTML(`<div class="code-block" data-lang="json">${escapeHtml(JSON.stringify(d, null, 2))}</div>`); } catch(e) { appendLine('[ERROR] WHOIS failed.', 'error'); } break; }
+    case 'ssl': { if(!a) { appendLine('[ERROR] Usage: /ssl <domain>', 'error'); break; } appendLine(`[SSL] Click <a href="https://www.sslshopper.com/ssl-checker.html#hostname=${a}" target="_blank">here</a> to check SSL for ${a}`, 'info'); break; }
+    case 'hex2dec': appendLine(`[HEX2DEC] ${parseInt(a, 16)}`, 'success'); break;
+    case 'dec2hex': appendLine(`[DEC2HEX] ${parseInt(a).toString(16)}`, 'success'); break;
+    case 'bin2dec': appendLine(`[BIN2DEC] ${parseInt(a, 2)}`, 'success'); break;
+    case 'dec2bin': appendLine(`[DEC2BIN] ${parseInt(a).toString(2)}`, 'success'); break;
+    case 'rom2dec': { const map = { 'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000 }; let res = 0; const str = a.toUpperCase(); for(let i=0; i<str.length; i++) { if(map[str[i]] < map[str[i+1]]) res -= map[str[i]]; else res += map[str[i]]; } appendLine(`[ROM2DEC] ${res}`, 'success'); break; }
+    case 'dec2rom': { const num = parseInt(a); const map = [[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']]; let res = ''; let n = num; for(let [v, s] of map) { while(n >= v) { res += s; n -= v; } } appendLine(`[DEC2ROM] ${res}`, 'success'); break; }
+    case 'celsius': appendLine(`[CELSIUS] ${(parseFloat(a) - 32) * 5/9}°C`, 'success'); break;
+    case 'fahrenheit': appendLine(`[FAHRENHEIT] ${(parseFloat(a) * 9/5) + 32}°F`, 'success'); break;
+    case 'km2mi': appendLine(`[KM2MI] ${parseFloat(a) * 0.621371} mi`, 'success'); break;
+    case 'mi2km': appendLine(`[MI2KM] ${parseFloat(a) * 1.60934} km`, 'success'); break;
+    case 'kg2lb': appendLine(`[KG2LB] ${parseFloat(a) * 2.20462} lb`, 'success'); break;
+    case 'lb2kg': appendLine(`[LB2KG] ${parseFloat(a) * 0.453592} kg`, 'success'); break;
+    case 'bmi': { const [w, h] = a.split(' ').map(parseFloat); if(!w || !h) { appendLine('[ERROR] Usage: /bmi <weight_kg> <height_m>', 'error'); break; } const bmi = w / (h * h); appendLine(`[BMI] ${bmi.toFixed(1)} (${bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese'})`, 'success'); break; }
+    case 'trivia': try { const d = await fetchJson('https://opentdb.com/api.php?amount=1&type=multiple'); const q = d.results[0]; appendLine(`[TRIVIA] ${q.question}`, 'prompt'); appendLine(`Category: ${q.category} | Difficulty: ${q.difficulty}`, 'system'); break; } catch(e) { appendLine('[ERROR] Failed to fetch trivia.', 'error'); } break;
+    case 'compliment': try { const d = await fetchJson('https://complimentr.com/api'); appendLine(`[COMPLIMENT] ${d.compliment}`, 'success'); } catch(e) { appendLine('[ERROR] Failed to fetch compliment.', 'error'); } break;
+    case 'insult': try { const d = await fetchJson('https://evilinsult.com/generate_insult.php?lang=en&type=json'); appendLine(`[INSULT] ${d.insult}`, 'success'); } catch(e) { appendLine('[ERROR] Failed to fetch insult.', 'error'); } break;
+    case 'ascii': { if(!a) { appendLine('[ERROR] Usage: /ascii <text>', 'error'); break; } appendHTML(`<pre class="ascii-art">${figlet(a)}</pre>`); break; }
+    case 'caesar': { const [shift, ...text] = a.split(' '); if(!shift || !text.length) { appendLine('[ERROR] Usage: /caesar <shift> <text>', 'error'); break; } const s = parseInt(shift); const res = text.join(' ').split('').map(c => { if(c.match(/[a-z]/i)) { const code = c.charCodeAt(0); const base = code >= 97 ? 97 : 65; return String.fromCharCode(((code - base + s) % 26 + 26) % 26 + base); } return c; }).join(''); appendLine(`[CAESAR] ${res}`, 'success'); break; }
+    case 'rot13': { const res = a.split('').map(c => { if(c.match(/[a-z]/i)) { const code = c.charCodeAt(0); const base = code >= 97 ? 97 : 65; return String.fromCharCode(((code - base + 13) % 26) + base); } return c; }).join(''); appendLine(`[ROT13] ${res}`, 'success'); break; }
+    case 'logs': appendLine('[LOGS] Check browser developer console (F12).', 'info'); break;
+    case 'export': { const fmt = a || 'txt'; const data = fmt === 'json' ? JSON.stringify(commandHistory, null, 2) : commandHistory.join('\n'); const blob = new Blob([data], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `as-os-history.${fmt}`; link.click(); appendLine(`[EXPORT] History exported as ${fmt}.`, 'success'); break; }
+    case 'shortcuts': appendLine('═══ KEYBOARD SHORTCUTS ═══', 'info'); appendLine('↑/↓: History navigation', 'system'); appendLine('Tab: Autocomplete command', 'system'); appendLine('Ctrl+L: Clear terminal', 'system'); appendLine('Ctrl+C: Cancel active request/prompt', 'system'); appendLine('Esc: Close autocomplete', 'system'); break;
+    case 'credits': appendLine('═══ AS OS CREDITS ═══', 'info'); appendLine('AI Engine: Sapiens AI (Agnes 2.0 Flash)', 'system'); appendLine('UI Framework: Vanilla JS + CSS', 'system'); appendLine('Proxies: allorigins.win, thingproxy.freeboard.io', 'system'); appendLine('APIs: NASA, Jikan, TMDB, 1secmail, DuckDuckGo, Jina AI, BrewPage', 'system'); break;
+    case 'health': try { const start = Date.now(); await fetch(`${API_BASE}/v1/chat/completions`, { method: 'POST', headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: currentModel, messages: [{role:'user', content:'hi'}], max_tokens: 1 }) }); appendLine(`[HEALTH] API is ONLINE. Latency: ${Date.now() - start}ms`, 'success'); } catch(e) { appendLine(`[HEALTH] API is DOWN. ${e.message}`, 'error'); } break;
+    case 'version': appendLine('As OS v13.0.0', 'info'); break;
+    case 'changelog': appendLine('═══ CHANGELOG v13.0 ═══', 'info'); appendLine('- Fixed web_search to use Jina AI (s.jina.ai)', 'system'); appendLine('- Added 50 new commands', 'system'); appendLine('- Total commands: 115+', 'system'); break;
+    case 'remind': { const [min, ...msg] = a.split(' '); if(!min || !msg.length) { appendLine('[ERROR] Usage: /remind <minutes> <message>', 'error'); break; } const ms = parseFloat(min) * 60000; appendLine(`[REMIND] Timer set for ${min} minutes.`, 'success'); setTimeout(() => { appendLine(`[REMIND] ⏰ ${msg.join(' ')}`, 'warn'); }, ms); break; }
+    case 'upper': appendLine(`[UPPER] ${a.toUpperCase()}`, 'success'); break;
+    case 'lower': appendLine(`[LOWER] ${a.toLowerCase()}`, 'success'); break;
+    case 'title': appendLine(`[TITLE] ${a.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substr(1).toLowerCase())}`, 'success'); break;
+    case 'piglatin': { if(!a) { appendLine('[ERROR] Usage: /piglatin <text>', 'error'); break; } const res = a.split(' ').map(w => { if(!w.match(/[aeiou]/i)) return w + 'ay'; const idx = w.search(/[aeiou]/i); return w.slice(idx) + w.slice(0, idx) + 'ay'; }).join(' '); appendLine(`[PIGLATIN] ${res}`, 'success'); break; }
+    case 'palindrome': { const clean = a.toLowerCase().replace(/[^a-z0-9]/g, ''); appendLine(`[PALINDROME] ${clean === clean.split('').reverse().join('') ? 'Yes' : 'No'}`, 'success'); break; }
+    case 'anagram': { const arr = a.split(''); for(let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } appendLine(`[ANAGRAM] ${arr.join('')}`, 'success'); break; }
+    case 'prime': { const num = parseInt(a); if(isNaN(num)) { appendLine('[ERROR] Usage: /prime <number>', 'error'); break; } if(num < 2) { appendLine(`[PRIME] No`, 'success'); break; } for(let i = 2; i <= Math.sqrt(num); i++) { if(num % i === 0) { appendLine(`[PRIME] No`, 'success'); break; } } appendLine(`[PRIME] Yes`, 'success'); break; }
+    case 'fibonacci': { const count = parseInt(a) || 10; let a=0, b=1, res=[a,b]; for(let i=2; i<count; i++) { [a,b] = [b, a+b]; res.push(b); } appendLine(`[FIBONACCI] ${res.join(', ')}`, 'success'); break; }
+    case 'say': appendLine(a, 'info'); break;
+    default: return false;
+  }
+  return true;
 }
-async function finishMbtiTest() {
-  setStatus('busy'); appendLine('[MBTI] Calculating...', 'info'); const spin = appendHTML('<span class="spinner"></span> Scoring...');
-  try {
-    const res = await fetch('https://personality.fyi/api/v1/test/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers: mbtiState.answers }) });
-    const score = await res.json(); spin.remove();
-    const profRes = await fetch(`https://personality.fyi/api/v1/types/${score.type}`); const prof = await profRes.json();
-    appendHTML(`<div class="tool-card"><div class="info"><h3>Your Type: ${score.type} - ${prof.name}</h3><p style="color:var(--accent)">${prof.title}</p><p><strong>Confidence:</strong> I:${score.confidence.I}% N:${score.confidence.N}% T:${score.confidence.T}% J:${score.confidence.J}%</p><a href="${prof.url}" target="_blank" class="btn">Read Full Profile</a></div></div>`);
-    appendLine('[MBTI] Test complete.', 'success'); setStatus('online');
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('online'); }
+
+// Simple Figlet for ASCII art
+function figlet(text) {
+  const font = {
+    'A': ['  ▄▀█  ', ' █▀▀█  ', ' █  █  '], 'B': ['  █▀▄  ', '  █▀▄  ', '  █ ▀  '], 'C': ['  ▄▀▀  ', '  █    ', '  ▀▄▄  '], 'D': ['  █▀▄  ', '  █ █  ', '  █▄▀  '], 'E': ['  █▀▀  ', '  █▀   ', '  ▀▀▀  '], 'F': ['  █▀▀  ', '  █▀   ', '  █    '], 'G': ['  ▄▀▀  ', '  █ ▀█ ', '  ▀▄▄▀ '], 'H': ['  █ █  ', '  █▀█  ', '  █ █  '], 'I': ['  ▀█▀  ', '   █   ', '   █   '], 'J': ['   ▀█  ', '   █   ', '  ▀▄   '], 'K': ['  █ ▄  ', '  █▀▄  ', '  █ █  '], 'L': ['  █    ', '  █    ', '  ▀▀▀  '], 'M': ['  █▀▄▀█', '  █ ▀ █', '  █   █'], 'N': ['  █▀▄  ', '  █ █  ', '  █ █  '], 'O': ['  ▄▀▄  ', '  █ █  ', '  ▀▄▀  '], 'P': ['  █▀▄  ', '  █▀   ', '  █    '], 'Q': ['  ▄▀▄  ', '  █ █  ', '  ▀▄█▀ '], 'R': ['  █▀▄  ', '  █▀▄  ', '  █ █  '], 'S': ['  ▄▀▀  ', '   ▀▄  ', '  ▀▀   '], 'T': ['  ▀█▀  ', '   █   ', '   █   '], 'U': ['  █ █  ', '  █ █  ', '  ▀▄▀  '], 'V': ['  █ █  ', '  █ █  ', '   ▀   '], 'W': ['  █   █', '  █ ▄ █', '  ▀▀▀▀▀'], 'X': ['  █ █  ', '   █   ', '  █ █  '], 'Y': ['  █ █  ', '   █   ', '   █   '], 'Z': ['  ▀▀█  ', '   █   ', '  █▀▀  '], ' ': ['       ', '       ', '       ']
+  };
+  const upper = text.toUpperCase();
+  const lines = ['', '', ''];
+  for (const ch of upper) {
+    const glyph = font[ch] || font[' '];
+    lines[0] += glyph[0]; lines[1] += glyph[1]; lines[2] += glyph[2];
+  }
+  return lines.join('\n');
 }
-async function ytCommand(url) {
-  if (!url) { const res = await runForm('YOUTUBE', [{ name: 'url', question: 'Enter YouTube URL:' }]); url = res.url; }
-  appendLine(`[YT] Fetching info...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Loading...');
-  try {
-    const res = await fetch(`https://www.youtube.com/oembed?url=${url}&format=json`); if (!res.ok) throw new Error('Invalid URL'); const data = await res.json(); spin.remove();
-    const vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/); const vidId = vidMatch ? vidMatch[1] : null;
-    appendHTML(`<div class="tool-card"><img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg"><div class="info"><h3>${escapeHtml(data.title)}</h3><p>Author: ${escapeHtml(data.author_name)}</p><a href="https://cobalt.tools/?u=${encodeURIComponent(url)}" target="_blank" class="btn download">Download MP4/MP3</a><a href="${url}" target="_blank" class="btn secondary">Watch</a></div></div>`);
-  } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function movieCommand(t) {
-  if (!t) { const res = await runForm('MOVIE DB', [{ name: 'title', question: 'Enter movie title:' }]); t = res.title; }
-  appendLine(`[MOVIE] Searching "${t}"...`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching...');
-  try {
-    const r = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=8265bd1679663a7ea12ac168da84d2e8&query=${encodeURIComponent(t)}`); const d = await r.json(); s.remove();
-    if (d.results && d.results.length > 0) {
-      const m = d.results[0]; const poster = m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : '';
-      appendHTML(`<div class="tool-card">${poster?`<img src="${poster}">`:''}<div class="info"><h3>${m.title}</h3><p style="color:var(--warn)">Rating: ${m.vote_average}</p><p>Release: ${m.release_date}</p><p>${m.overview}</p></div></div>`);
-    } else { appendLine('[MOVIE] Not found.', 'warn'); }
-  } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function mailCommand(arg) {
-  if (arg === 'stop') { if (mailPoller) { clearInterval(mailPoller); mailPoller = null; appendLine('[MAIL] Polling stopped.', 'warn'); } else { appendLine('[MAIL] No active poller.', 'system'); } return; }
-  if (mailPoller) { appendLine('[MAIL] Already running. Use /mail stop.', 'warn'); return; }
-  appendLine('[MAIL] Generating temp email...', 'info'); const spin = appendHTML('<span class="spinner"></span> Generating...');
-  try {
-    const r = await fetch(`${CORS_PROXY}${encodeURIComponent('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1')}`);
-    const d = await r.json(); spin.remove();
-    const email = d[0]; const [user, domain] = email.split('@'); mailSeenIds = [];
-    appendHTML(`<div class="tool-card"><div class="info"><h3>Temp Email Active</h3><p style="font-size:16px;color:var(--fg-bright);">${email}</p><p>Polling every 10s. Use <strong>/mail stop</strong> to stop.</p><a href="https://www.1secmail.com/?login=${user}&domain=${domain}" target="_blank" class="btn">Open Webmail</a></div></div>`);
-    mailPoller = setInterval(async () => {
-      try {
-        const mRes = await fetch(`${CORS_PROXY}${encodeURIComponent(`https://www.1secmail.com/api/v1/?action=getMessages&username=${user}&domain=${domain}`)}`);
-        const mData = await mRes.json();
-        mData.forEach(msg => { if (!mailSeenIds.includes(msg.id)) { mailSeenIds.push(msg.id); appendLine(`[MAIL] ✉ New mail from ${msg.from}: ${msg.subject}`, 'success'); } });
-      } catch (e) {}
-    }, 10000);
-  } catch(e){ spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function searchCommand(q) {
-  if(!q) { const res = await runForm('WEB SEARCH', [{ name: 'query', question: 'Enter search query:' }]); q = res.query; }
-  appendLine(`[SEARCH] "${q}"`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching...');
-  try {
-    const r = await fetch(`${CORS_PROXY}${encodeURIComponent(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`)}`);
-    const d = await r.json(); s.remove();
-    let html = `<div class="search-container"><div class="search-logo">🦆 DuckDuckGo Search</div>`;
-    if (d.AbstractText) {
-      html += `<div class="search-item"><h4><a href="${d.AbstractURL}" target="_blank">${d.Heading}</a></h4><div class="url">${d.AbstractURL}</div><p>${d.AbstractText}</p></div>`;
-    }
-    if (d.RelatedTopics && d.RelatedTopics.length > 0) {
-      d.RelatedTopics.slice(0, 8).forEach(t => {
-        if (t.Text && t.FirstURL) {
-          html += `<div class="search-item"><h4><a href="${t.FirstURL}" target="_blank">${t.Text.split(' - ')[0]}</a></h4><div class="url">${t.FirstURL}</div><p>${t.Text}</p></div>`;
-        }
-      });
-    }
-    html += `</div>`;
-    if (!d.AbstractText && (!d.RelatedTopics || d.RelatedTopics.length === 0)) {
-      appendLine('[SEARCH] No results found.', 'warn');
-    } else {
-      appendHTML(html);
-    }
-  } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function readCommand(u) {
-  if(!u) { const res = await runForm('READ URL', [{ name: 'url', question: 'Enter URL to read:' }]); u = res.url; }
-  appendLine(`[READ] ${u}`, 'info'); const s = appendHTML('<span class="spinner"></span> Reading...');
-  try { const r = await fetch(`https://r.jina.ai/${u}`); const t = await r.text(); s.remove(); appendHTML(`<div class="code-block" data-lang="markdown">${escapeHtml(t.substring(0,2000))}${t.length>2000?'...(truncated)':''}</div>`); } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); }
-}
-async function shortenCommand(u) {
-  if(!u) { const res = await runForm('SHORTEN URL', [{ name: 'url', question: 'Enter long URL:' }]); u = res.url; }
-  try { const r = await fetch(`${CORS_PROXY}${encodeURIComponent(`https://is.gd/create.php?format=json&url=${encodeURIComponent(u)}`)}`); const d = await r.json(); if(d.shorturl) appendHTML(`<div class="tool-card"><div class="info"><h3>Shortened</h3><p><a href="${d.shorturl}" target="_blank">${d.shorturl}</a></p></div></div>`); } catch(e){ appendLine(`[ERROR] ${e.message}`,'error'); }
-}
+
+// Other Existing Commands
+async function githubCommand(user) { if (!user) { const res = await runForm('GITHUB', [{ name: 'username', question: 'Enter GitHub username:' }]); if(!res) return; user = res.username; } appendLine(`[GITHUB] Generating chart for ${user}...`, 'info'); const url = `https://ghchart.rshah.org/${user}`; appendHTML(`<div class="media-frame" data-type="GITHUB_CHART"><img src="${url}" alt="GitHub Contributions"><div class="media-meta"><span>User: ${user}</span><a href="${url}" download class="btn secondary">Download PNG</a></div></div>`); appendLine('[GITHUB] Chart generated.', 'success'); }
+async function nasaCommand(query) { if (!query) { const res = await runForm('NASA SEARCH', [{ name: 'query', question: 'Enter search term:' }]); if(!res) return; query = res.query; } appendLine(`[NASA] Searching images for "${query}"...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Searching...'); try { const res = await fetch(`https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}&media_type=image`); const data = await res.json(); spin.remove(); const items = data.collection?.items || []; let imgItem = items.find(i => i.links && i.links[0].href && i.data[0].media_type === 'image'); if (imgItem) { const url = imgItem.links[0].href; const id = addAsset('image', url, 'NASA: ' + query); appendHTML(`<div class="media-frame" data-type="NASA_IMG" data-id="${id}"><img src="${url}"><div class="media-meta"><span>Query: ${query}</span><a href="${url}" download class="btn secondary">Download</a></div></div>`); appendLine('[NASA] Image displayed.', 'success'); } else { appendLine('[NASA] No images found.', 'warn'); } } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function animeCommand(t) { if (!t) { const res = await runForm('ANIME SEARCH', [{ name: 'title', question: 'Enter anime title:' }]); if(!res) return; t = res.title; } appendLine(`[ANIME] Searching "${t}"...`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching...'); try { const r = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(t)}&limit=1&sfw`); const d = await r.json(); s.remove(); if (d.data && d.data.length > 0) { const a = d.data[0]; appendHTML(`<div class="tool-card"><img src="${a.images.jpg.image_url}"><div class="info"><h3>${a.title}</h3><p style="color:var(--warn)">Score: ${a.score || 'N/A'}</p><p>Episodes: ${a.episodes || 'N/A'}</p><p>${a.synopsis ? a.synopsis.substring(0, 200)+'...' : ''}</p><a href="${a.url}" target="_blank" class="btn">View on MAL</a></div></div>`); } else { appendLine('[ANIME] Not found.', 'warn'); } } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function mbtiCommand(arg) { if (!arg) { const res = await runForm('MBTI TOOL', [{ name: 'action', question: 'What do you want?', options: ['Take the test', 'Look up a type'] }]); if(!res) return; if (res.action === 'Take the test') arg = 'test'; else { const tRes = await runForm('MBTI LOOKUP', [{ name: 'code', question: 'Enter 4-letter code:' }]); if(!tRes) return; arg = tRes.code; } } if (arg === 'test') { appendLine('[MBTI] Starting test...', 'info'); try { const res = await fetch('https://personality.fyi/api/v1/test/items'); const data = await res.json(); mbtiState.items = data.items; mbtiState.answers = []; mbtiState.index = 0; appendLine('═══ MBTI PERSONALITY TEST ═══', 'info'); appendLine('Rate 1 (Strongly Disagree) to 5 (Strongly Agree).', 'system'); askMbtiQuestion(); } catch (e) { appendLine(`[ERROR] ${e.message}`, 'error'); } } else { appendLine(`[MBTI] Fetching profile for ${arg.toUpperCase()}...`, 'info'); try { const res = await fetch(`https://personality.fyi/api/v1/types/${arg.toUpperCase()}`); const data = await res.json(); appendHTML(`<div class="tool-card"><div class="info"><h3>${data.code} - ${data.name}</h3><p style="color:var(--accent)">${data.title}</p><p><strong>Cognitive:</strong> ${data.cognitive}</p><p><strong>Strengths:</strong> ${data.strengths.join(', ')}</p><a href="${data.url}" target="_blank" class="btn">Full Profile</a></div></div>`); } catch (e) { appendLine('[ERROR] Invalid MBTI code.', 'error'); } } }
+function askMbtiQuestion() { if (mbtiState.index < mbtiState.items.length) { const item = mbtiState.items[mbtiState.index]; appendLine(`Q${mbtiState.index + 1}/${mbtiState.items.length}: ${item.statement}`, 'prompt'); appendLine(`(1=Strongly Disagree [${item.disagreePole}], 3=Neutral, 5=Strongly Agree [${item.agreePole}])`, 'system'); setStatus('prompt'); interactiveCallback = (ans) => { if (ans === null) { appendLine('[SYSTEM] MBTI test cancelled.', 'warn'); return; } appendLine(ans, 'user'); const val = parseInt(ans); if (isNaN(val) || val < 1 || val > 5) { appendLine('[ERROR] Enter 1-5.', 'error'); askMbtiQuestion(); return; } mbtiState.answers.push(val); mbtiState.index++; askMbtiQuestion(); }; } else { finishMbtiTest(); } }
+async function finishMbtiTest() { setStatus('busy'); appendLine('[MBTI] Calculating...', 'info'); const spin = appendHTML('<span class="spinner"></span> Scoring...'); try { const res = await fetch('https://personality.fyi/api/v1/test/score', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answers: mbtiState.answers }) }); const score = await res.json(); spin.remove(); const profRes = await fetch(`https://personality.fyi/api/v1/types/${score.type}`); const prof = await profRes.json(); appendHTML(`<div class="tool-card"><div class="info"><h3>Your Type: ${score.type} - ${prof.name}</h3><p style="color:var(--accent)">${prof.title}</p><p><strong>Confidence:</strong> I:${score.confidence.I}% N:${score.confidence.N}% T:${score.confidence.T}% J:${score.confidence.J}%</p><a href="${prof.url}" target="_blank" class="btn">Read Full Profile</a></div></div>`); appendLine('[MBTI] Test complete.', 'success'); setStatus('online'); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); setStatus('online'); } }
+async function ytCommand(url) { if (!url) { const res = await runForm('YOUTUBE', [{ name: 'url', question: 'Enter YouTube URL:' }]); if(!res) return; url = res.url; } appendLine(`[YT] Fetching info...`, 'info'); const spin = appendHTML('<span class="spinner"></span> Loading...'); try { const res = await fetch(`https://www.youtube.com/oembed?url=${url}&format=json`); if (!res.ok) throw new Error('Invalid URL'); const data = await res.json(); spin.remove(); const vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/); const vidId = vidMatch ? vidMatch[1] : null; appendHTML(`<div class="tool-card"><img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg"><div class="info"><h3>${escapeHtml(data.title)}</h3><p>Author: ${escapeHtml(data.author_name)}</p><a href="https://cobalt.tools/?u=${encodeURIComponent(url)}" target="_blank" class="btn download">Download MP4/MP3</a><a href="${url}" target="_blank" class="btn secondary">Watch</a></div></div>`); } catch (e) { spin.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function movieCommand(t) { if (!t) { const res = await runForm('MOVIE DB', [{ name: 'title', question: 'Enter movie title:' }]); if(!res) return; t = res.title; } appendLine(`[MOVIE] Searching "${t}"...`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching...'); try { const r = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=8265bd1679663a7ea12ac168da84d2e8&query=${encodeURIComponent(t)}`); const d = await r.json(); s.remove(); if (d.results && d.results.length > 0) { const m = d.results[0]; const poster = m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : ''; appendHTML(`<div class="tool-card">${poster?`<img src="${poster}">`:''}<div class="info"><h3>${m.title}</h3><p style="color:var(--warn)">Rating: ${m.vote_average}</p><p>Release: ${m.release_date}</p><p>${m.overview}</p></div></div>`); } else { appendLine('[MOVIE] Not found.', 'warn'); } } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function searchCommand(q) { if(!q) { const res = await runForm('WEB SEARCH', [{ name: 'query', question: 'Enter search query:' }]); if(!res) return; q = res.query; } appendLine(`[SEARCH] "${q}"`, 'info'); const s = appendHTML('<span class="spinner"></span> Searching Jina AI...'); try { const r = await fetch(`https://s.jina.ai/${encodeURIComponent(q)}`); const t = await r.text(); s.remove(); appendHTML(`<div class="code-block" data-lang="markdown">${escapeHtml(t)}</div>`); } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function readCommand(u) { if(!u) { const res = await runForm('READ URL', [{ name: 'url', question: 'Enter URL to read:' }]); if(!res) return; u = res.url; } appendLine(`[READ] ${u}`, 'info'); const s = appendHTML('<span class="spinner"></span> Reading...'); try { const r = await fetch(`https://r.jina.ai/${u}`); const t = await r.text(); s.remove(); appendHTML(`<div class="code-block" data-lang="markdown">${escapeHtml(t.substring(0,2000))}${t.length>2000?'...(truncated)':''}</div>`); } catch(e){ s.remove(); appendLine(`[ERROR] ${e.message}`, 'error'); } }
+async function shortenCommand(u) { if(!u) { const res = await runForm('SHORTEN URL', [{ name: 'url', question: 'Enter long URL:' }]); if(!res) return; u = res.url; } try { const targetUrl = `https://is.gd/create.php?format=json&url=${encodeURIComponent(u)}`; const r = await fetch(`${GET_PROXY}${encodeURIComponent(targetUrl)}`); const d = await r.json(); if(d.shorturl) appendHTML(`<div class="tool-card"><div class="info"><h3>Shortened</h3><p><a href="${d.shorturl}" target="_blank">${d.shorturl}</a></p></div></div>`); } catch(e){ appendLine(`[ERROR] ${e.message}`,'error'); } }
 
 // ═══════════════════════════════════════════════════════════
 // BOOT & HELP
 // ═══════════════════════════════════════════════════════════
-async function bootSequence() {
-  const logo = `\n   █████╗  ██████╗ ███████╗███████╗\n  ██╔══██╗██╔════╝ ██╔════╝██╔════╝\n  ███████║██║  ███╗███████╗█████╗  \n  ██╔══██║██║   ██║╚════██║██╔══╝  \n  ██║  ██║╚██████╔╝███████║███████╗\n  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝`;
-  const lD = document.createElement('pre'); lD.className = 'ascii-art'; lD.textContent = logo; output.appendChild(lD);
-  appendLine('As OS — Terminal Interface v9.0.0', 'system'); appendLine('© Sapiens AI // Powered by Agnes neural networks', 'system'); appendLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system');
-  const bl = ['[BOOT] Initializing As OS kernel...','[ OK ] TLS handshake complete.','[ OK ] Auth token verified.','[BOOT] Loading model: agnes-2.0-flash','[BOOT] Initializing tools (Code Mode, GitHub, BrewPage, NASA, Anime)...','[ OK ] All systems operational.'];
-  for (const t of bl) { const el = document.createElement('div'); el.className = 'line ' + (t.includes('[ OK ]') ? 'success' : 'system'); output.appendChild(el); for (let i=0; i<t.length; i++) { el.textContent += t[i]; if(i%3===0) output.scrollTop = output.scrollHeight; await new Promise(r=>setTimeout(r,4)); } await new Promise(r=>setTimeout(r,30)); }
-  appendLine('Welcome to As OS v9.0. Type /help to see commands.', 'info'); appendLine('New: GitHub Push/Pull, File Generation, Non-blocking Chat, CLI Theme.', 'info'); appendLine('', 'system'); bootDone = true; input.focus();
-}
-function showHelp() {
-  appendHTML(`<div class="line info glow">═══ COMMAND REFERENCE v9.0 ═══</div>
-  <div class="help-section">▸ AI & CODE MODE</div><table class="help-table">
-    <tr><td>/code</td><td>Enter Code Mode (CLI pair programmer)</td></tr>
-    <tr><td>/exit</td><td>Exit Code Mode</td></tr>
-    <tr><td>/upload</td><td>Read local code file into context</td></tr>
-    <tr><td>/gh-push</td><td>Push loaded file to GitHub (repo path token)</td></tr>
-    <tr><td>/gh-pull</td><td>Pull file from GitHub into context</td></tr>
-    <tr><td>/think &lt;msg&gt;</td><td>Chat with visible &lt;think&gt; process</td></tr>
-    <tr><td>/look &lt;ref&gt; &lt;q&gt;</td><td>Vision: analyze image (@id or URL)</td></tr>
-  </table>
-  <div class="help-section">▸ HOSTING & DATA</div><table class="help-table">
-    <tr><td>/brew &lt;text|html&gt;</td><td>Host content & get short URL</td></tr>
-    <tr><td>/shorten &lt;url&gt;</td><td>Shorten URL</td></tr>
-    <tr><td>/mail</td><td>Generate temp email & poll</td></tr>
-  </table>
-  <div class="help-section">▸ MEDIA & VISUAL TOOLS</div><table class="help-table">
-    <tr><td>/image &lt;prompt&gt;</td><td>Generate image</td></tr>
-    <tr><td>/video &lt;prompt&gt;</td><td>Generate video</td></tr>
-    <tr><td>/yt &lt;url&gt;</td><td>YouTube info + download</td></tr>
-    <tr><td>/movie &lt;title&gt;</td><td>Movie database (TMDB)</td></tr>
-    <tr><td>/anime &lt;title&gt;</td><td>Anime database (MAL)</td></tr>
-    <tr><td>/nasa &lt;query&gt;</td><td>Search NASA images</td></tr>
-    <tr><td>/github &lt;user&gt;</td><td>GitHub contributions chart</td></tr>
-  </table>
-  <div class="help-section">▸ UTILITY & SYSTEM</div><table class="help-table">
-    <tr><td>/search &lt;query&gt;</td><td>Web search (DuckDuckGo)</td></tr>
-    <tr><td>/read &lt;url&gt;</td><td>Read URL content (Jina)</td></tr>
-    <tr><td>/mbti test</td><td>MBTI personality test</td></tr>
-    <tr><td>/temp &lt;0-2&gt;</td><td>Set temperature</td></tr>
-    <tr><td>/theme &lt;name&gt;</td><td>green, amber, cyan, matrix</td></tr>
-    <tr><td>/clear</td><td>Clear terminal</td></tr>
-    <tr><td>/reboot</td><td>Reboot system</td></tr>
-  </table>`);
-}
+async function bootSequence() { const logo = `\n   █████╗  ██████╗ ███████╗███████╗\n  ██╔══██╗██╔════╝ ██╔════╝██╔════╝\n  ███████║██║  ███╗███████╗█████╗  \n  ██╔══██║██║   ██║╚════██║██╔══╝  \n  ██║  ██║╚██████╔╝███████║███████╗\n  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝`; const lD = document.createElement('pre'); lD.className = 'ascii-art'; lD.textContent = logo; output.appendChild(lD); appendLine('As OS — Terminal Interface v13.0.0', 'system'); appendLine('© Sapiens AI // Powered by Agnes neural networks', 'system'); appendLine('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'system'); const bl = ['[BOOT] Initializing As OS kernel...','[ OK ] TLS handshake complete.','[ OK ] Auth token verified.','[BOOT] Loading model: agnes-2.0-flash','[BOOT] Initializing tools (115+ Commands, Jina Search, GitHub, BrewPage)...','[ OK ] All systems operational.']; for (const t of bl) { const el = document.createElement('div'); el.className = 'line ' + (t.includes('[ OK ]') ? 'success' : 'system'); output.appendChild(el); for (let i=0; i<t.length; i++) { el.textContent += t[i]; if(i%3===0) output.scrollTop = output.scrollHeight; await new Promise(r=>setTimeout(r,4)); } await new Promise(r=>setTimeout(r,30)); } appendLine('Welcome to As OS v13.0. Type /help to see commands.', 'info'); appendLine('New: Fixed Web Search (Jina AI), Added 50 New Commands.', 'info'); appendLine('', 'system'); bootDone = true; input.focus(); }
+function showHelp() { appendHTML(`<div class="line info glow">═══ COMMAND REFERENCE v13.0 ═══</div><div class="help-section">▸ AI & CODE MODE</div><table class="help-table"><tr><td>/code</td><td>Enter Code Mode (CLI pair programmer)</td></tr><tr><td>/exit</td><td>Exit Code Mode</td></tr><tr><td>/cancel</td><td>Abort active AI generation</td></tr><tr><td>/upload</td><td>Read local code file into context</td></tr><tr><td>/token</td><td>Set GitHub token (asks once)</td></tr><tr><td>/gh-push</td><td>Push file to GitHub (repo path)</td></tr><tr><td>/gh-pull</td><td>Pull file from GitHub (repo path)</td></tr><tr><td>/think &lt;msg&gt;</td><td>Chat with visible &lt;think&gt; process</td></tr><tr><td>/look &lt;ref&gt; &lt;q&gt;</td><td>Vision: analyze image (@id or URL)</td></tr></table><div class="help-section">▸ HOSTING & DATA</div><table class="help-table"><tr><td>/brew &lt;text|html&gt;</td><td>Host content & get short URL</td></tr><tr><td>/shorten &lt;url&gt;</td><td>Shorten URL</td></tr><tr><td>/mail</td><td>Generate temp email & poll</td></tr></table><div class="help-section">▸ MEDIA & VISUAL TOOLS</div><table class="help-table"><tr><td>/image &lt;prompt&gt;</td><td>Generate image</td></tr><tr><td>/video &lt;prompt&gt;</td><td>Generate video</td></tr><tr><td>/yt &lt;url&gt;</td><td>YouTube info + download</td></tr><tr><td>/movie &lt;title&gt;</td><td>Movie database (TMDB)</td></tr><tr><td>/anime &lt;title&gt;</td><td>Anime database (MAL)</td></tr><tr><td>/nasa &lt;query&gt;</td><td>Search NASA images</td></tr><tr><td>/github &lt;user&gt;</td><td>GitHub contributions chart</td></tr></table><div class="help-section">▸ UTILITY & SYSTEM</div><table class="help-table"><tr><td>/search &lt;query&gt;</td><td>Web search (Jina AI)</td></tr><tr><td>/read &lt;url&gt;</td><td>Read URL content (Jina)</td></tr><tr><td>/mbti test</td><td>MBTI personality test</td></tr><tr><td>/temp &lt;0-2&gt;</td><td>Set temperature</td></tr><tr><td>/theme &lt;name&gt;</td><td>green, amber, cyan, matrix</td></tr><tr><td>/clear</td><td>Clear terminal</td></tr><tr><td>/reboot</td><td>Reboot system</td></tr></table><div class="help-section">▸ 30 COMMANDS (v12)</div><table class="help-table"><tr><td>/sysinfo</td><td>System details</td></tr><tr><td>/ip</td><td>Public IP address</td></tr><tr><td>/uuid</td><td>Generate UUID</td></tr><tr><td>/base64 &lt;e|d&gt; &lt;text&gt;</td><td>Base64 encode/decode</td></tr><tr><td>/hex2rgb &lt;hex&gt;</td><td>Hex to RGB</td></tr><tr><td>/rgb2hex &lt;r,g,b&gt;</td><td>RGB to Hex</td></tr><tr><td>/uptime</td><td>Session uptime</td></tr><tr><td>/history</td><td>Command history</td></tr><tr><td>/flip</td><td>Flip a coin</td></tr><tr><td>/roll &lt;dN&gt;</td><td>Roll dice (e.g. 2d6)</td></tr><tr><td>/8ball &lt;q&gt;</td><td>Magic 8-ball</td></tr><tr><td>/rps &lt;move&gt;</td><td>Rock Paper Scissors</td></tr><tr><td>/reverse &lt;text&gt;</td><td>Reverse text</td></tr><tr><td>/leet &lt;text&gt;</td><td>Leetspeak converter</td></tr><tr><td>/morse &lt;text&gt;</td><td>Text to Morse</td></tr><tr><td>/qr &lt;text&gt;</td><td>Generate QR Code</td></tr><tr><td>/quote</td><td>Random quote</td></tr><tr><td>/fact</td><td>Random fact</td></tr><tr><td>/cat</td><td>Random cat fact</td></tr><tr><td>/dog</td><td>Random dog image</td></tr><tr><td>/btc</td><td>Bitcoin price</td></tr><tr><td>/eth</td><td>Ethereum price</td></tr><tr><td>/dns &lt;domain&gt;</td><td>DNS lookup</td></tr><tr><td>/headers &lt;url&gt;</td><td>HTTP headers</td></tr><tr><td>/json &lt;data&gt;</td><td>Format JSON</td></tr><tr><td>/regex &lt;pat&gt; &lt;text&gt;</td><td>Test regex</td></tr><tr><td>/country &lt;code&gt;</td><td>Country info</td></tr><tr><td>/geo &lt;ip&gt;</td><td>IP geolocation</td></tr><tr><td>/calc &lt;expr&gt;</td><td>Calculator</td></tr><tr><td>/time &lt;tz&gt;</td><td>World time</td></tr></table><div class="help-section">▸ 50 NEW COMMANDS (v13)</div><table class="help-table"><tr><td>/hash &lt;text&gt;</td><td>SHA-256 hash</td></tr><tr><td>/bin2text &lt;bin&gt;</td><td>Binary to text</td></tr><tr><td>/text2bin &lt;text&gt;</td><td>Text to binary</td></tr><tr><td>/charcount &lt;text&gt;</td><td>Count characters</td></tr><tr><td>/wordcount &lt;text&gt;</td><td>Count words</td></tr><tr><td>/slugify &lt;text&gt;</td><td>Slugify text</td></tr><tr><td>/password &lt;len&gt;</td><td>Generate password</td></tr><tr><td>/lorem &lt;count&gt;</td><td>Lorem Ipsum</td></tr><tr><td>/urlenc &lt;text&gt;</td><td>URL encode</td></tr><tr><td>/urldec &lt;text&gt;</td><td>URL decode</td></tr><tr><td>/timestamp</td><td>Unix timestamp</td></tr><tr><td>/datediff &lt;d1&gt; &lt;d2&gt;</td><td>Date difference</td></tr><tr><td>/weekday &lt;date&gt;</td><td>Day of week</td></tr><tr><td>/whois &lt;domain&gt;</td><td>WHOIS lookup</td></tr><tr><td>/ssl &lt;domain&gt;</td><td>SSL check link</td></tr><tr><td>/hex2dec &lt;hex&gt;</td><td>Hex to decimal</td></tr><tr><td>/dec2hex &lt;dec&gt;</td><td>Decimal to hex</td></tr><tr><td>/bin2dec &lt;bin&gt;</td><td>Binary to decimal</td></tr><tr><td>/dec2bin &lt;dec&gt;</td><td>Decimal to binary</td></tr><tr><td>/rom2dec &lt;rom&gt;</td><td>Roman to decimal</td></tr><tr><td>/dec2rom &lt;dec&gt;</td><td>Decimal to Roman</td></tr><tr><td>/celsius &lt;f&gt;</td><td>F to C</td></tr><tr><td>/fahrenheit &lt;c&gt;</td><td>C to F</td></tr><tr><td>/km2mi &lt;km&gt;</td><td>KM to Miles</td></tr><tr><td>/mi2km &lt;mi&gt;</td><td>Miles to KM</td></tr><tr><td>/kg2lb &lt;kg&gt;</td><td>KG to Pounds</td></tr><tr><td>/lb2kg &lt;lb&gt;</td><td>Pounds to KG</td></tr><tr><td>/bmi &lt;kg&gt; &lt;m&gt;</td><td>Calculate BMI</td></tr><tr><td>/trivia</td><td>Random trivia</td></tr><tr><td>/compliment</td><td>Random compliment</td></tr><tr><td>/insult</td><td>Random insult</td></tr><tr><td>/ascii &lt;text&gt;</td><td>ASCII art</td></tr><tr><td>/caesar &lt;shift&gt; &lt;text&gt;</td><td>Caesar cipher</td></tr><tr><td>/rot13 &lt;text&gt;</td><td>ROT13 cipher</td></tr><tr><td>/logs</td><td>Show logs info</td></tr><tr><td>/export &lt;txt|json&gt;</td><td>Export history</td></tr><tr><td>/shortcuts</td><td>Keyboard shortcuts</td></tr><tr><td>/credits</td><td>App credits</td></tr><tr><td>/health</td><td>API health check</td></tr><tr><td>/version</td><td>App version</td></tr><tr><td>/changelog</td><td>View changelog</td></tr><tr><td>/remind &lt;min&gt; &lt;msg&gt;</td><td>Set timer</td></tr><tr><td>/upper &lt;text&gt;</td><td>UPPERCASE</td></tr><tr><td>/lower &lt;text&gt;</td><td>lowercase</td></tr><tr><td>/title &lt;text&gt;</td><td>Title Case</td></tr><tr><td>/piglatin &lt;text&gt;</td><td>Pig Latin</td></tr><tr><td>/palindrome &lt;text&gt;</td><td>Check palindrome</td></tr><tr><td>/anagram &lt;text&gt;</td><td>Generate anagram</td></tr><tr><td>/prime &lt;num&gt;</td><td>Check prime</td></tr><tr><td>/fibonacci &lt;count&gt;</td><td>Fibonacci sequence</td></tr><tr><td>/say &lt;text&gt;</td><td>Echo text</td></tr></table>`); }
 
 // ═══════════════════════════════════════════════════════════
 // PROCESS INPUT
@@ -895,35 +575,16 @@ async function processInput(text) {
     const si = tr.indexOf(' '); const c = (si===-1?tr.slice(1):tr.slice(1,si)).toLowerCase(); const a = si===-1?'':tr.slice(si+1).trim();
     switch (c) {
       case 'help': case 'h': case '?': showHelp(); break;
-      case 'code':
-        codeMode = true; document.body.classList.add('cli-mode'); logoText.textContent = 'As CLI';
-        promptSymbol.textContent = 'code▸'; promptSymbol.style.color = 'var(--magenta)';
-        systemPrompt += '\nYou are now in Code Mode. Focus on software development. If the user asks to host code or a web page, use `publish_to_brewpage`. If you generate code, format it as [FILE: path/to/file]```code ``` so the UI can render it as a file card.';
-        appendLine('[CODE] Entered Code Mode. AI is now a pair programmer. Type /exit to leave.', 'info');
-        setStatus('online'); break;
-      case 'exit':
-        if (codeMode) {
-          codeMode = false; document.body.classList.remove('cli-mode'); logoText.textContent = 'As OS';
-          promptSymbol.textContent = '▸'; promptSymbol.style.color = 'var(--accent)';
-          appendLine('[CODE] Exited Code Mode. Memory retained.', 'info');
-          systemPrompt = baseSystemPrompt; setStatus('online');
-        } else { appendLine('[SYSTEM] Goodbye.', 'warn'); }
-        break;
+      case 'code': codeMode = true; document.body.classList.add('cli-mode'); logoText.textContent = 'As CLI'; promptSymbol.textContent = 'code▸'; promptSymbol.style.color = 'var(--magenta)'; systemPrompt += '\nYou are now in Code Mode (like Lovable/Cursor). Focus on software development. When you write code, you MUST output an action tag before each file block: [ACTION: CREATE] filename, [ACTION: EDIT] filename, [ACTION: DELETE] filename, or [ACTION: PREVIEW] index.html. Followed by a standard markdown code block. This allows the UI to render a timeline and live preview.'; appendLine('[CODE] Entered Code Mode. AI is now a pair programmer. Type /exit to leave.', 'info'); setStatus('online'); break;
+      case 'exit': if (codeMode) { codeMode = false; document.body.classList.remove('cli-mode'); logoText.textContent = 'As OS'; promptSymbol.textContent = '▸'; promptSymbol.style.color = 'var(--accent)'; appendLine('[CODE] Exited Code Mode. Memory retained.', 'info'); systemPrompt = baseSystemPrompt; setStatus('online'); } else { appendLine('[SYSTEM] Goodbye.', 'warn'); } break;
+      case 'cancel': if (currentAbortController) { currentAbortController.abort(); appendLine('[SYSTEM] Active request aborted.', 'warn'); } if (interactiveCallback) { interactiveCallback = null; setStatus('online'); appendLine('[SYSTEM] Interactive prompt cancelled.', 'warn'); } if (!currentAbortController && !interactiveCallback) { appendLine('[SYSTEM] Nothing to cancel.', 'system'); } break;
+      case 'token': await tokenCommand(a); break;
       case 'gh-push': await githubPush(a); break;
       case 'gh-pull': await githubPull(a); break;
       case 'image': case 'img': await generateImageFlow(a, 'agnes-image-2.0-flash'); break;
       case 'image2': case 'img2': await generateImageFlow(a, 'agnes-image-2.1-flash'); break;
       case 'video': case 'vid': await generateVideoFlow(a); break;
-      case 'look': case 'vision': case 'see': {
-        if(!a) { appendLine('[ERROR] Usage: /look <@id|url> <question>', 'error'); break; }
-        const refMatch = a.match(/^(@\d+|https?:\/\/[^\s]+)\s*(.*)/);
-        if (refMatch) {
-          const ref = refMatch[1]; const question = refMatch[2] || 'Describe this image.';
-          const { urls } = resolveReferences(ref);
-          if (urls.length > 0) messageQueue.push({ msg: question, vision: [{type:'text', text:question}, ...urls.map(u=>({type:'image_url', image_url:{url:u}}))] });
-        } else { appendLine('[ERROR] Usage: /look <@id|url> <question>', 'error'); }
-        break;
-      }
+      case 'look': case 'vision': case 'see': { if(!a) { appendLine('[ERROR] Usage: /look <@id|url> <question>', 'error'); break; } const refMatch = a.match(/^(@\d+|https?:\/\/[^\s]+)\s*(.*)/); if (refMatch) { const ref = refMatch[1]; const question = refMatch[2] || 'Describe this image.'; const { urls } = resolveReferences(ref); if (urls.length > 0) messageQueue.push({ msg: question, vision: [{type:'text', text:question}, ...urls.map(u=>({type:'image_url', image_url:{url:u}}))] }); } else { appendLine('[ERROR] Usage: /look <@id|url> <question>', 'error'); } break; }
       case 'think': if(a) messageQueue.push({ msg: a, think: true }); else appendLine('[ERROR] Usage: /think <msg>', 'error'); break;
       case 'brew': await brewCommand(a); break;
       case 'upload': await uploadFile(); break;
@@ -945,10 +606,13 @@ async function processInput(text) {
       case 'theme': if(!a) appendLine(`[CONFIG] Theme: ${currentTheme}`, 'info'); else { const th=['green','amber','cyan','matrix']; if(th.includes(a.toLowerCase())){document.body.className=`theme-${a.toLowerCase()}${codeMode?' cli-mode':''}`;currentTheme=a.toLowerCase();appendLine(`[CONFIG] Theme: ${a}`, 'success');} else appendLine('[ERROR] Invalid theme.', 'error'); } break;
       case 'clear': case 'cls': output.innerHTML=''; appendLine('[SYSTEM] Cleared.', 'system'); break;
       case 'reset': conversationHistory=[]; ctxCount.textContent='0'; appendLine('[SYSTEM] History reset.', 'success'); break;
-      case 'neofetch': const up=Math.floor((Date.now()-window.performance.timeOrigin)/1000); appendHTML(`<div style="display:flex;gap:20px;"><pre class="ascii-art" style="font-size:10px;">       █████╗  ██████╗\n      ██╔══██╗██╔════╝\n      ███████║██║  ███╗\n      ██╔══██║██║   ██║\n      ██║  ██║╚██████╔╝\n      ╚═╝  ╚═╝ ╚═════╝</pre><div><div>user@as-os</div><div>─────────</div><div>OS: As OS v9.0</div><div>Uptime: ${Math.floor(up/60)}m</div><div>Assets: ${assets.length}</div></div></div>`); break;
+      case 'neofetch': const up=Math.floor((Date.now()-window.performance.timeOrigin)/1000); appendHTML(`<div style="display:flex;gap:20px;"><pre class="ascii-art" style="font-size:10px;">       █████╗  ██████╗\n      ██╔══██╗██╔════╝\n      ███████║██║  ███╗\n      ██╔══██║██║   ██║\n      ██║  ██║╚██████╔╝\n      ╚═╝  ╚═╝ ╚═════╝</pre><div><div>user@as-os</div><div>─────────</div><div>OS: As OS v13.0</div><div>Uptime: ${Math.floor(up/60)}m</div><div>Assets: ${assets.length}</div></div></div>`); break;
       case 'reboot': output.innerHTML=''; conversationHistory=[]; assets=[]; ctxCount.textContent='0'; codeMode=false; document.body.classList.remove('cli-mode'); logoText.textContent='As OS'; promptSymbol.textContent='▸'; systemPrompt=baseSystemPrompt; await bootSequence(); break;
-      case 'cancel': if(interactiveCallback){interactiveCallback=null;setStatus('online');appendLine('[SYSTEM] Cancelled.','warn');} else appendLine('[SYSTEM] Nothing to cancel.', 'system'); break;
-      default: appendLine(`[ERROR] Unknown cmd: /${c}`, 'error');
+      default: 
+        // Try executing from old or new commands
+        let executed = await oldCommandExecutor(c, a);
+        if (!executed) { executed = await newCommandExecutor(c, a); }
+        if (!executed) { appendLine(`[ERROR] Unknown cmd: /${c}`, 'error'); }
     }
   } else { messageQueue.push({ msg: tr }); }
   processQueue();
@@ -962,30 +626,18 @@ input.addEventListener('keydown', async (e) => {
   if (acBox.style.display === 'flex' && acState.items.length > 0) {
     if (e.key === 'ArrowDown') { e.preventDefault(); acState.activeIndex = (acState.activeIndex + 1) % acState.items.length; if(acState.type==='command') renderCommandList(); else if(acState.type==='asset') renderAssetList(); else if(acState.type==='options') renderParamHint(); return; }
     if (e.key === 'ArrowUp') { e.preventDefault(); acState.activeIndex = (acState.activeIndex - 1 + acState.items.length) % acState.items.length; if(acState.type==='command') renderCommandList(); else if(acState.type==='asset') renderAssetList(); else if(acState.type==='options') renderParamHint(); return; }
-    if (e.key === 'Enter' || e.key === 'Tab') {
-      if (acState.type === 'param') { hideAutocomplete(); } 
-      else {
-        e.preventDefault();
-        if (acState.type === 'command') applyCommandAutocomplete();
-        else if (acState.type === 'asset') applyAssetAutocomplete();
-        else if (acState.type === 'options') applyOptionAutocomplete();
-        return;
-      }
-    }
+    if (e.key === 'Enter' || e.key === 'Tab') { if (acState.type === 'param') { hideAutocomplete(); } else { e.preventDefault(); if (acState.type === 'command') applyCommandAutocomplete(); else if (acState.type === 'asset') applyAssetAutocomplete(); else if (acState.type === 'options') applyOptionAutocomplete(); return; } }
     if (e.key === 'Escape') { e.preventDefault(); hideAutocomplete(); return; }
   }
-
   if (e.key === 'Enter') {
     e.preventDefault(); if(!bootDone) return; const v = input.value; input.value=''; hideAutocomplete();
-    if (interactiveCallback) { appendLine(v, 'user'); const cb = interactiveCallback; interactiveCallback = null; cb(v); } 
-    else { processInput(v); }
+    if (interactiveCallback) { const cb = interactiveCallback; interactiveCallback = null; if (v.trim().toLowerCase() === '/cancel') { appendLine(v, 'user'); appendLine('[SYSTEM] Cancelled.', 'warn'); cb(null); } else { appendLine(v, 'user'); cb(v); } } else { processInput(v); }
     input.focus();
   } else if (e.key === 'ArrowUp') { e.preventDefault(); if(interactiveCallback) return; if(historyIndex>0){historyIndex--; input.value=commandHistory[historyIndex]||'';} } else if (e.key === 'ArrowDown') { e.preventDefault(); if(interactiveCallback) return; if(historyIndex<commandHistory.length-1){historyIndex++; input.value=commandHistory[historyIndex]||'';} else {historyIndex=commandHistory.length; input.value='';} }
   else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); output.innerHTML=''; }
-  else if (e.key === 'c' && e.ctrlKey) { if(interactiveCallback){e.preventDefault(); interactiveCallback=null; setStatus('online'); appendLine('^C','error'); appendLine('[SYSTEM] Cancelled.','warn');} }
+  else if (e.key === 'c' && e.ctrlKey) { if (interactiveCallback) { e.preventDefault(); const cb = interactiveCallback; interactiveCallback = null; setStatus('online'); appendLine('^C', 'error'); appendLine('[SYSTEM] Cancelled.', 'warn'); cb(null); } else if (currentAbortController) { e.preventDefault(); currentAbortController.abort(); appendLine('^C', 'error'); appendLine('[SYSTEM] Request aborted.', 'warn'); } }
 });
 document.addEventListener('click', (e) => { if(!e.target.closest('a') && !e.target.closest('video') && !e.target.closest('button') && !e.target.closest('.ac-item') && !e.target.closest('input')) input.focus(); });
-
 bootSequence();
 </script>
 </body>
